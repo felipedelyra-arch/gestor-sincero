@@ -90,6 +90,17 @@ function limpar(dados: unknown): Record<string, Primitivo> {
   );
 }
 
+/** Argumentos de fbq e gtag para um evento nosso. Função pura. */
+export function montarChamadas(nome: NomeEvento, dadosBrutos?: unknown): { meta: unknown[]; ga4: unknown[] } {
+  const [meta, ga4] = mapa[nome];
+  const { idEvento, ...dados } = limpar(dadosBrutos);
+  return {
+    // eventID deduplica com o mesmo evento enviado pelo servidor (API de Conversões).
+    meta: [meta ? "track" : "trackCustom", meta ?? nome, dados, ...(idEvento ? [{ eventID: String(idEvento) }] : [])],
+    ga4: ["event", ga4, dados],
+  };
+}
+
 export function Rastreamento() {
   const aceito = useConsentimento() === "aceito";
 
@@ -102,10 +113,9 @@ export function Rastreamento() {
     const repassar = (e: CustomEvent<DetalheEvento>) => {
       const nome = e.detail?.nome;
       if (!nome || !Object.hasOwn(mapa, nome)) return;
-      const [meta, ga4] = mapa[nome];
-      const dados = limpar(e.detail.dados);
-      if (metaPixelId) window.fbq?.(meta ? "track" : "trackCustom", meta ?? nome, dados);
-      if (ga4Id) window.gtag?.("event", ga4, dados);
+      const { meta, ga4 } = montarChamadas(nome, e.detail.dados);
+      if (metaPixelId) window.fbq?.(...meta);
+      if (ga4Id) window.gtag?.(...ga4);
     };
     window.addEventListener(EVENTO_RASTREAMENTO, repassar);
     return () => window.removeEventListener(EVENTO_RASTREAMENTO, repassar);
