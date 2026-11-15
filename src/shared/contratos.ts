@@ -68,7 +68,9 @@ export type PedidoRessonancia = z.infer<typeof pedidoRessonanciaSchema>;
 
 // Respostas das rotas. Nunca carregam detalhe interno.
 export type RespostaFormulario =
-  | { ok: true; manualUrl?: string } // manualUrl: link assinado e com validade (só no cadastro da Jornada)
+  // manualUrl: link assinado e com validade (só no cadastro da Jornada)
+  // idEvento: id aleatório do evento de conversão; o navegador repassa ao Pixel para a Meta não contar em dobro
+  | { ok: true; manualUrl?: string; idEvento?: string }
   | { ok: false; erro: "validacao"; campos: Record<string, string> } // chave = nome do campo
   | { ok: false; erro: "limite" | "antirrobo" | "indisponivel" };
 
