@@ -45,12 +45,11 @@ const organizacao = {
   ...(perfis.length > 0 && { sameAs: perfis }),
 };
 
-// shortcut: o conteúdo não tem um campo só com o nome da pessoa; usa o nome da marca-personagem.
-// Trocar quando o schema ganhar esse campo (pedido ao orquestrador).
 const pessoa = {
   "@type": "Person",
   "@id": `${site.url}/#pessoa`,
-  name: site.nome,
+  name: pagina.rodape.pessoa,
+  alternateName: site.nome,
   description: pagina.quemE.paragrafos[0],
   award: pagina.quemE.premio.nome,
   url: site.url,

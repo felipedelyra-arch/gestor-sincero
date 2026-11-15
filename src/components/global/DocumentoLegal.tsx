@@ -1,6 +1,5 @@
 import Link from "next/link";
-import type { Pagina } from "@content";
-import { site } from "@config/site";
+import { pagina, type Pagina } from "@content";
 
 type Documento = Pagina["legal"]["privacidade"];
 
@@ -13,7 +12,7 @@ export function DocumentoLegal({ documento }: { documento: Documento }) {
           href="/"
           className="inline-flex min-h-12 items-center underline decoration-ouro decoration-1 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-texto"
         >
-          {site.nome}
+          {pagina.rodape.voltarAoInicio}
         </Link>
         <h1 className="mt-12 max-w-[20ch] text-[2rem] leading-[1.1] font-medium tracking-[-0.02em] lg:text-[3rem]">
           {documento.titulo}

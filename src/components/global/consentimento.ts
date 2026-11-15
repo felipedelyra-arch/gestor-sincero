@@ -23,6 +23,16 @@ export function gravarConsentimento(valor: Exclude<Consentimento, null>): void {
   window.dispatchEvent(new CustomEvent<Consentimento>(EVENTO_CONSENTIMENTO, { detail: valor }));
 }
 
+/** Apaga a escolha: o banner volta a aparecer e os eventos param de ser repassados. */
+export function limparConsentimento(): void {
+  try {
+    window.localStorage.removeItem(CHAVE_CONSENTIMENTO);
+  } catch {
+    // sem armazenamento: basta o evento abaixo
+  }
+  window.dispatchEvent(new CustomEvent<Consentimento>(EVENTO_CONSENTIMENTO, { detail: null }));
+}
+
 // Escolha feita sem armazenamento disponível: mantida em memória até recarregar.
 let emMemoria: Consentimento = null;
 
