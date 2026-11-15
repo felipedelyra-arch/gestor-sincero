@@ -22,3 +22,4 @@ Em ordem de prioridade. Cada terminal acrescenta as suas no fim da lista "Novas"
 - Anos de carreira: o briefing diz 40; o certificado do Prêmio Tupaenses Excelentes (jul/2025) diz 35 anos de experiência. Qual número usar?
 - Número de temas da Ressonância: o formulário revisado fala em 52 temas; o índice de entregas lista 45. A página usa 52. Confirma?
 - Para onde enviar os cadastros: endereço do webhook da automação de e-mail e WhatsApp da S4.
+- Plataforma de checkout da mentoria e nome do parâmetro de afiliado que ela aceita (hoje a página repassa `afiliado`).
