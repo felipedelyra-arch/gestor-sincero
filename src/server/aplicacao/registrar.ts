@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import type { z } from "zod";
 import {
   cadastroJornadaSchema,
@@ -9,7 +9,9 @@ import {
 import type { Consentimento, ContatoProtegido, EventoAuditoria, Formulario } from "../dominio/entidades";
 import type {
   ArmazenamentoManual,
+  AuditoriaRegistro,
   Cifra,
+  ConsentimentoNovo,
   ConversoesMeta,
   LimitadorDeTaxa,
   Notificador,
@@ -55,7 +57,12 @@ async function registrar<T extends Comum>(
   entrada: unknown,
   ctx: Contexto,
   p: Portas,
-  gravar: (dados: T, contato: ContatoProtegido) => Promise<ResultadoGravacao>,
+  gravar: (
+    dados: T,
+    contato: ContatoProtegido,
+    consentimentos: ConsentimentoNovo[],
+    auditoria: AuditoriaRegistro,
+  ) => Promise<ResultadoGravacao>,
   notificar: (dados: T, gravacao: ResultadoGravacao) => Promise<void>,
 ): Promise<RespostaFormulario> {
   const validado = schema.safeParse(entrada);
@@ -66,8 +73,11 @@ async function registrar<T extends Comum>(
   }
   const dados = validado.data;
 
-  // Armadilha: sucesso falso, nada é gravado.
-  if (dados.website) return { ok: true };
+  // Aleatório (não é o id do registro): vai à Meta e ao navegador, que o repassa ao Pixel.
+  const idEvento = randomUUID();
+
+  // Armadilha: sucesso falso com a mesma forma do verdadeiro, nada é gravado.
+  if (dados.website) return { ok: true, idEvento };
 
   const ipHash = ctx.ip ? p.cifra.hashBusca(ctx.ip) : null;
   // Sem IP, todos dividem a mesma cota (mais restritivo, nunca mais frouxo).
@@ -87,19 +97,18 @@ async function registrar<T extends Comum>(
     return { ok: false, erro: "antirrobo" };
   }
 
-  const gravacao = await gravar(dados, {
-    emailCifrado: p.cifra.cifrar(dados.email),
-    emailHash: p.cifra.hashBusca(dados.email),
-    whatsappCifrado: p.cifra.cifrar(dados.whatsapp),
-    whatsappHash: p.cifra.hashBusca(dados.whatsapp),
-  });
-  const { id } = gravacao;
-
   const aceites = { whatsapp: dados.consentimentoWhatsapp, email: dados.consentimentoEmail, privacidade: true };
-  await p.repositorio.registrarConsentimentos(
+  // Registro, consentimentos e auditoria numa gravação só (atômica no repositório).
+  const gravacao = await gravar(
+    dados,
+    {
+      emailCifrado: p.cifra.cifrar(dados.email),
+      emailHash: p.cifra.hashBusca(dados.email),
+      whatsappCifrado: p.cifra.cifrar(dados.whatsapp),
+      whatsappHash: p.cifra.hashBusca(dados.whatsapp),
+    },
     (["whatsapp", "email", "privacidade"] as const).map((canal) => ({
       formulario,
-      referenciaId: id,
       canal,
       aceito: aceites[canal],
       texto: ctx.textosConsentimento[canal],
@@ -107,8 +116,9 @@ async function registrar<T extends Comum>(
       data,
       ipHash,
     })),
+    { formulario, ipHash, data },
   );
-  await auditar(gravacao.novo ? "registro_criado" : "registro_atualizado", id);
+  const { id } = gravacao;
 
   let manualUrl: string | null = null;
   if (formulario === "cadastro-jornada") {
@@ -124,7 +134,7 @@ async function registrar<T extends Comum>(
     await p.meta
       .enviarLead({
         formulario,
-        idEvento: id,
+        idEvento,
         emailSha256: sha256(dados.email),
         telefoneSha256: sha256(dados.whatsapp),
         momento: Math.floor(Date.now() / 1000),
@@ -132,7 +142,7 @@ async function registrar<T extends Comum>(
       .catch(() => auditarFalha("falha_meta", id));
   });
 
-  return manualUrl ? { ok: true, manualUrl } : { ok: true };
+  return manualUrl ? { ok: true, manualUrl, idEvento } : { ok: true, idEvento };
 }
 
 export function registrarCadastroJornada(entrada: unknown, ctx: Contexto, p: Portas): Promise<RespostaFormulario> {
@@ -142,15 +152,19 @@ export function registrarCadastroJornada(entrada: unknown, ctx: Contexto, p: Por
     entrada,
     ctx,
     p,
-    (d, contato) =>
-      p.repositorio.salvarCadastro({
-        ...contato,
-        nome: d.nome,
-        empresa: d.empresa,
-        cargo: d.cargo,
-        variacao: d.variacao,
-        utm: d.utm,
-        afiliado: d.afiliado,
+    (d, contato, consentimentos, auditoria) =>
+      p.repositorio.registrarCadastro({
+        cadastro: {
+          ...contato,
+          nome: d.nome,
+          empresa: d.empresa,
+          cargo: d.cargo,
+          variacao: d.variacao,
+          utm: d.utm,
+          afiliado: d.afiliado,
+        },
+        consentimentos,
+        auditoria,
       }),
     (d, gravacao) =>
       p.notificador.cadastroCriado({
@@ -176,17 +190,21 @@ export function registrarPedidoRessonancia(entrada: unknown, ctx: Contexto, p: P
     entrada,
     ctx,
     p,
-    (d, contato) =>
-      p.repositorio.salvarPedidoRessonancia({
-        ...contato,
-        nome: d.nome,
-        empresa: d.empresa,
-        segmento: d.segmento,
-        faixaFaturamento: d.faixaFaturamento,
-        numeroFuncionarios: d.numeroFuncionarios,
-        principalDesafio: d.principalDesafio,
-        utm: d.utm,
-        afiliado: d.afiliado,
+    (d, contato, consentimentos, auditoria) =>
+      p.repositorio.registrarPedidoRessonancia({
+        pedido: {
+          ...contato,
+          nome: d.nome,
+          empresa: d.empresa,
+          segmento: d.segmento,
+          faixaFaturamento: d.faixaFaturamento,
+          numeroFuncionarios: d.numeroFuncionarios,
+          principalDesafio: d.principalDesafio,
+          utm: d.utm,
+          afiliado: d.afiliado,
+        },
+        consentimentos,
+        auditoria,
       }),
     (d, gravacao) =>
       p.notificador.pedidoRessonanciaCriado({

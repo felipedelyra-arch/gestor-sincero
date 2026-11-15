@@ -74,7 +74,11 @@ export async function responderFormulario(
     const resposta = await caso(
       entrada,
       {
-        ip: req.headers.get("x-forwarded-for")?.split(",")[0].trim() || null,
+        // Fora da Vercel estes cabeçalhos são forjáveis pelo cliente (só a plataforma os sobrescreve).
+        ip:
+          ["x-vercel-forwarded-for", "x-real-ip", "x-forwarded-for"]
+            .map((nome) => req.headers.get(nome)?.split(",")[0].trim())
+            .find(Boolean) ?? null,
         consentiuCookies: req.headers.get("x-gs-consentimento") === "aceito",
         textosConsentimento: textos(),
         agendar,

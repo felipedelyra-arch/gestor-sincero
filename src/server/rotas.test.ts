@@ -73,7 +73,7 @@ test("cadastro: caminho feliz grava, registra consentimentos e devolve o link do
 
   expect(res.status).toBe(200);
   expect(res.headers.get("cache-control")).toBe("no-store");
-  expect(json).toEqual({ ok: true, manualUrl: "https://arquivos.exemplo/manual?assinatura=1" });
+  expect(json).toEqual({ ok: true, manualUrl: "https://arquivos.exemplo/manual?assinatura=1", idEvento: expect.stringMatching(/^[0-9a-f-]{36}$/) });
   expect(link).toHaveBeenCalledWith(86400);
 
   expect(memoria.dados.cadastros).toHaveLength(1);
@@ -93,7 +93,7 @@ test("cadastro: caminho feliz grava, registra consentimentos e devolve o link do
 
 test("cadastro: sem manual no armazenamento responde ok sem manualUrl", async () => {
   const { json } = await enviar(postCadastro, cadastro);
-  expect(json).toEqual({ ok: true });
+  expect(json).toEqual({ ok: true, idEvento: expect.stringMatching(/^[0-9a-f-]{36}$/) });
   expect(memoria.dados.cadastros).toHaveLength(1);
 });
 
@@ -103,7 +103,7 @@ test("ressonância: caminho feliz grava o pedido e nunca devolve manualUrl", asy
   const { res, json } = await enviar(postRessonancia, pedido);
 
   expect(res.status).toBe(200);
-  expect(json).toEqual({ ok: true });
+  expect(json).toEqual({ ok: true, idEvento: expect.stringMatching(/^[0-9a-f-]{36}$/) });
   expect(memoria.dados.pedidos).toHaveLength(1);
   expect(memoria.dados.pedidos[0]).toMatchObject({ empresa: "Souza Ltda", faixaFaturamento: "360-mil-a-4-8-milhoes" });
   expect(memoria.dados.cadastros).toHaveLength(0);
@@ -128,7 +128,7 @@ test("armadilha preenchida devolve sucesso falso sem gravar nem verificar", asyn
   const turnstile = vi.spyOn(memoria.antirrobo, "verificar");
   const { res, json } = await enviar(postCadastro, { ...cadastro, website: "https://spam.example" });
   expect(res.status).toBe(200);
-  expect(json).toEqual({ ok: true });
+  expect(json).toEqual({ ok: true, idEvento: expect.stringMatching(/^[0-9a-f-]{36}$/) });
   expect(turnstile).not.toHaveBeenCalled();
   expect(memoria.dados).toMatchObject({ cadastros: [], consentimentos: [], auditoria: [] });
 });
@@ -205,19 +205,53 @@ test("script injetado é gravado como texto e nunca refletido", async () => {
   expect(erro.texto).not.toContain("script");
 });
 
-test("cadastro repetido atualiza o registro e responde igual ao primeiro", async () => {
-  const primeiro = await enviar(postCadastro, cadastro);
-  const segundo = await enviar(postCadastro, { ...cadastro, nome: "Ana S. Souza", whatsapp: "+55 14 99999-8888" });
-  expect(segundo.res.status).toBe(primeiro.res.status);
-  expect(segundo.json).toEqual(primeiro.json);
-  expect(memoria.dados.cadastros).toHaveLength(1);
-  expect(memoria.dados.cadastros[0].nome).toBe("Ana S. Souza");
-  expect(memoria.dados.auditoria.map((e) => e.tipo)).toEqual(["registro_criado", "registro_atualizado"]);
-  expect(memoria.dados.consentimentos).toHaveLength(6); // histórico de aceites é mantido
+test("cadastro repetido não sobrescreve o primeiro registro e responde igual a um novo", async () => {
+  const primeiro = await enviar(postCadastro, { ...cadastro, empresa: "Souza Ltda" });
+  const original = structuredClone(memoria.dados.cadastros[0]);
 
-  // Mesmo WhatsApp com outro e-mail também é o mesmo cadastro.
-  await enviar(postCadastro, { ...cadastro, email: "outra@exemplo.com.br" });
+  // Mesmo e-mail com outro nome, outra empresa e outro telefone.
+  const segundo = await enviar(postCadastro, { ...cadastro, nome: "Invasor", empresa: "Outra", cargo: "x", whatsapp: "11988887777", consentimentoEmail: true });
+  // Mesmo WhatsApp com outro e-mail.
+  const terceiro = await enviar(postCadastro, { ...cadastro, nome: "Invasor", email: "outra@exemplo.com.br" });
+
+  for (const repetido of [segundo, terceiro]) {
+    expect(repetido.res.status).toBe(primeiro.res.status);
+    expect(Object.keys(repetido.json)).toEqual(Object.keys(primeiro.json));
+  }
   expect(memoria.dados.cadastros).toHaveLength(1);
+  const { atualizadoEm, ...mantido } = memoria.dados.cadastros[0];
+  expect({ ...mantido, atualizadoEm: original.atualizadoEm }).toEqual(original);
+  expect(atualizadoEm >= original.atualizadoEm).toBe(true);
+  expect(memoria.cifra.decifrar(mantido.emailCifrado)).toBe(EMAIL);
+  expect(memoria.cifra.decifrar(mantido.whatsappCifrado)).toBe(WHATSAPP);
+
+  // Histórico: consentimentos novos e auditoria são acrescentados ao mesmo registro.
+  expect(memoria.dados.auditoria.map((e) => e.tipo)).toEqual(["registro_criado", "registro_atualizado", "registro_atualizado"]);
+  expect(memoria.dados.consentimentos).toHaveLength(9);
+  expect(new Set(memoria.dados.consentimentos.map((c) => c.referenciaId))).toEqual(new Set([original.id]));
+  expect(memoria.dados.consentimentos.filter((c) => c.canal === "email").map((c) => c.aceito)).toEqual([false, true, false]);
+});
+
+test("pedido de Ressonância repetido também não sobrescreve", async () => {
+  await enviar(postRessonancia, pedido);
+  await enviar(postRessonancia, { ...pedido, empresa: "Outra", principalDesafio: "Outro" });
+  expect(memoria.dados.pedidos).toHaveLength(1);
+  expect(memoria.dados.pedidos[0]).toMatchObject({ empresa: "Souza Ltda", principalDesafio: "Vendas em queda" });
+});
+
+test("IP vem de x-vercel-forwarded-for, depois x-real-ip, depois x-forwarded-for", async () => {
+  const limite = vi.spyOn(memoria.limitador, "consumir");
+  const chave = (ip: string) => `cadastro-jornada:${memoria.cifra.hashBusca(ip)}`;
+  const casos: [Record<string, string>, string][] = [
+    [{ "x-vercel-forwarded-for": "192.0.2.1", "x-real-ip": "192.0.2.2", "x-forwarded-for": "192.0.2.3" }, chave("192.0.2.1")],
+    [{ "x-real-ip": "192.0.2.2", "x-forwarded-for": "192.0.2.3" }, chave("192.0.2.2")],
+    [{ "x-forwarded-for": " 192.0.2.3 , 10.0.0.1" }, chave("192.0.2.3")],
+    [{ "x-forwarded-for": "" }, "cadastro-jornada:sem-ip"],
+  ];
+  for (const [headers, esperado] of casos) {
+    await enviar(postCadastro, cadastro, { headers });
+    expect(limite).toHaveBeenLastCalledWith(esperado, 5, 600);
+  }
 });
 
 test("falha do notificador e da Meta não derruba a resposta nem perde o cadastro", async () => {
@@ -236,12 +270,28 @@ test("Meta só recebe o evento com aceite de cookies, e só com dados em hash", 
   await enviar(postCadastro, cadastro, { headers: { "x-gs-consentimento": "recusado" } });
   expect(meta).not.toHaveBeenCalled();
 
-  await enviar(postCadastro, cadastro, { headers: { "x-gs-consentimento": "aceito" } });
+  const { json } = await enviar(postCadastro, cadastro, { headers: { "x-gs-consentimento": "aceito" } });
   expect(meta).toHaveBeenCalledOnce();
-  const enviado = JSON.stringify(meta.mock.calls[0][0]);
+  const [lead] = meta.mock.calls[0];
+  const enviado = JSON.stringify(lead);
   expect(enviado).not.toContain(EMAIL);
   expect(enviado).not.toContain(WHATSAPP);
-  expect(meta.mock.calls[0][0].emailSha256).toMatch(/^[0-9a-f]{64}$/);
+  expect(lead.emailSha256).toMatch(/^[0-9a-f]{64}$/);
+
+  // idEvento: o mesmo na Meta e na resposta, aleatório, nunca o id do registro.
+  expect(json).toMatchObject({ ok: true, idEvento: lead.idEvento });
+  expect(lead.idEvento).not.toBe(memoria.dados.cadastros[0].id);
+});
+
+test("idEvento muda a cada envio e a armadilha devolve um com a mesma forma", async () => {
+  const ids = new Set<unknown>();
+  for (const corpo of [cadastro, cadastro, { ...cadastro, website: "x" }, { ...cadastro, website: "x" }]) {
+    const { json } = await enviar(postCadastro, corpo);
+    expect(json).toEqual({ ok: true, idEvento: expect.stringMatching(/^[0-9a-f-]{36}$/) });
+    ids.add(json.ok && json.idEvento);
+  }
+  expect(ids.size).toBe(4);
+  expect(memoria.dados.cadastros).toHaveLength(1);
 });
 
 test("e-mail, telefone e IP nunca ficam em claro no repositório", async () => {
@@ -260,7 +310,7 @@ test("e-mail, telefone e IP nunca ficam em claro no repositório", async () => {
 
 test("falha interna vira 503 sem detalhe e sem dado pessoal no log", async () => {
   const log = vi.spyOn(console, "error").mockImplementation(() => {});
-  vi.spyOn(memoria.repositorio, "salvarCadastro").mockRejectedValue(new Error(`duplicate key ${EMAIL}`));
+  vi.spyOn(memoria.repositorio, "registrarCadastro").mockRejectedValue(new Error(`duplicate key ${EMAIL}`));
   const { res, texto } = await enviar(postCadastro, cadastro);
   expect(res.status).toBe(503);
   expect(JSON.parse(texto)).toEqual({ ok: false, erro: "indisponivel" });

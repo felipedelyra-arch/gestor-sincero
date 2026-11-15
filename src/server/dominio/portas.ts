@@ -13,13 +13,29 @@ export interface Cifra {
 
 export type ResultadoGravacao = { id: string; novo: boolean };
 
+// O id só existe depois da gravação: o repositório preenche referenciaId e o tipo da auditoria
+// ("registro_criado" se novo, "registro_atualizado" se repetido).
+export type ConsentimentoNovo = Omit<Consentimento, "referenciaId">;
+export type AuditoriaRegistro = Omit<EventoAuditoria, "tipo" | "referenciaId">;
+
 export interface RepositorioCadastros {
-  /** Deduplica por emailHash ou whatsappHash: se existir, atualiza e devolve novo = false. */
-  salvarCadastro(cadastro: Cadastro): Promise<ResultadoGravacao>;
-  /** Mesma regra de deduplicação de salvarCadastro. */
-  salvarPedidoRessonancia(pedido: PedidoRessonancia): Promise<ResultadoGravacao>;
-  /** Só acrescenta (histórico); nunca atualiza registros anteriores. */
-  registrarConsentimentos(consentimentos: Consentimento[]): Promise<void>;
+  /**
+   * Atômico (uma transação): registro + consentimentos + auditoria.
+   * Repetido (mesmo emailHash ou whatsappHash): não sobrescreve nenhum campo do primeiro registro,
+   * só atualiza atualizado_em, acrescenta os consentimentos e a auditoria, e devolve novo = false.
+   */
+  registrarCadastro(dados: {
+    cadastro: Cadastro;
+    consentimentos: ConsentimentoNovo[];
+    auditoria: AuditoriaRegistro;
+  }): Promise<ResultadoGravacao>;
+  /** Mesmas regras de registrarCadastro. */
+  registrarPedidoRessonancia(dados: {
+    pedido: PedidoRessonancia;
+    consentimentos: ConsentimentoNovo[];
+    auditoria: AuditoriaRegistro;
+  }): Promise<ResultadoGravacao>;
+  /** Eventos avulsos (antirrobô reprovado, falha de notificador, da Meta ou do manual). */
   registrarAuditoria(evento: EventoAuditoria): Promise<void>;
 }
 
@@ -49,7 +65,7 @@ export interface Notificador {
 
 export type LeadMeta = {
   formulario: Formulario;
-  idEvento: string; // id do registro; serve para deduplicar o evento na Meta
+  idEvento: string; // aleatório, o mesmo devolvido ao navegador: a Meta deduplica com o Pixel
   emailSha256: string; // hex, e-mail já normalizado em minúsculas
   telefoneSha256: string; // hex, só dígitos com DDI
   momento: number; // segundos desde 1970

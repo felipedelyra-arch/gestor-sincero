@@ -2,7 +2,9 @@ import { createCipheriv, createDecipheriv, createHmac, randomBytes, randomUUID }
 import type { Cadastro, Consentimento, ContatoProtegido, EventoAuditoria, PedidoRessonancia } from "../../dominio/entidades";
 import type {
   ArmazenamentoManual,
+  AuditoriaRegistro,
   Cifra,
+  ConsentimentoNovo,
   ConversoesMeta,
   LimitadorDeTaxa,
   Notificador,
@@ -32,17 +34,23 @@ const cifra: Cifra = {
   hashBusca: (texto) => createHmac("sha256", pimenta).update(texto).digest("hex"),
 };
 
-type Gravado<T> = T & { id: string };
+type Gravado<T> = T & { id: string; atualizadoEm: string };
 
-function salvar<T extends ContatoProtegido>(lista: Gravado<T>[], registro: T): ResultadoGravacao {
-  const existente = lista.find((r) => r.emailHash === registro.emailHash || r.whatsappHash === registro.whatsappHash);
-  if (existente) {
-    Object.assign(existente, registro);
-    return { id: existente.id, novo: false };
-  }
-  const id = randomUUID();
-  lista.push({ ...registro, id });
-  return { id, novo: true };
+function registrar<T extends ContatoProtegido>(
+  lista: Gravado<T>[],
+  registro: T,
+  consentimentos: ConsentimentoNovo[],
+  auditoria: AuditoriaRegistro,
+): ResultadoGravacao {
+  let gravado = lista.find((r) => r.emailHash === registro.emailHash || r.whatsappHash === registro.whatsappHash);
+  const novo = !gravado;
+  // Repetido não sobrescreve nada do primeiro registro: só marca a data.
+  if (gravado) gravado.atualizadoEm = auditoria.data;
+  else lista.push((gravado = { ...registro, id: randomUUID(), atualizadoEm: auditoria.data }));
+  const { id } = gravado;
+  dados.consentimentos.push(...consentimentos.map((c) => ({ ...c, referenciaId: id })));
+  dados.auditoria.push({ ...auditoria, tipo: novo ? "registro_criado" : "registro_atualizado", referenciaId: id });
+  return { id, novo };
 }
 
 const dados = {
@@ -54,9 +62,8 @@ const dados = {
 };
 
 const repositorio: RepositorioCadastros = {
-  salvarCadastro: async (cadastro) => salvar(dados.cadastros, cadastro),
-  salvarPedidoRessonancia: async (pedido) => salvar(dados.pedidos, pedido),
-  registrarConsentimentos: async (lista) => void dados.consentimentos.push(...lista),
+  registrarCadastro: async (d) => registrar(dados.cadastros, d.cadastro, d.consentimentos, d.auditoria),
+  registrarPedidoRessonancia: async (d) => registrar(dados.pedidos, d.pedido, d.consentimentos, d.auditoria),
   registrarAuditoria: async (evento) => void dados.auditoria.push(evento),
 };
 
