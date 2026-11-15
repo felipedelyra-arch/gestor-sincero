@@ -184,13 +184,16 @@ export const paginaSchema = z.object({
     rotuloPrivacidade: t,
     rotuloTermos: t,
     direitos: t,
+    // nome da pessoa (JSON-LD) e link de volta das páginas legais
+    pessoa: t.default("Sidney Ferrér"),
+    voltarAoInicio: t.default("Voltar para a página inicial"),
   }),
 
   // páginas /privacidade e /termos
   legal: z.object({ privacidade: documento, termos: documento }),
 
   whatsapp: z.object({ rotuloBotao: t, mensagem: t }),
-  cookies: z.object({ texto: t, aceitar: t, recusar: t, rotuloPolitica: t }),
+  cookies: z.object({ texto: t, aceitar: t, recusar: t, rotuloPolitica: t, rever: t.default("Rever escolha de cookies") }),
 });
 
 export type Pagina = z.infer<typeof paginaSchema>;
