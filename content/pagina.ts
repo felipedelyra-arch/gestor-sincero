@@ -331,6 +331,11 @@ export const paginaBruta: PaginaEntrada = {
     direitos: "Todos os direitos reservados",
   },
 
+  legal: {
+    privacidade: { titulo: "Política de privacidade", atualizadoEm: "[PENDENTE FERRÉR]", secoes: [{ titulo: "Quem trata os seus dados", paragrafos: ["[PENDENTE FERRÉR]"] }] },
+    termos: { titulo: "Termos de uso", atualizadoEm: "[PENDENTE FERRÉR]", secoes: [{ titulo: "Sobre esta página", paragrafos: [P] }] },
+  },
+
   whatsapp: { rotuloBotao: "Falar pelo WhatsApp", mensagem: `${P} Olá, vim pela página do Gestor Sincero e quero saber mais.` },
   cookies: {
     texto: `${P} Usamos cookies de medição só com o seu aceite.`,

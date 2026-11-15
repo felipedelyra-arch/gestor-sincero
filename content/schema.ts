@@ -27,6 +27,12 @@ const formulario = z.object({
 
 const item = z.object({ nome: t, descricao: t });
 
+const documento = z.object({
+  titulo: t,
+  atualizadoEm: t,
+  secoes: z.array(z.object({ titulo: t, paragrafos: lista() })).min(1),
+});
+
 export const paginaSchema = z.object({
   seo: z.object({ titulo: t.max(60), descricao: t.max(160) }),
 
@@ -179,6 +185,9 @@ export const paginaSchema = z.object({
     rotuloTermos: t,
     direitos: t,
   }),
+
+  // páginas /privacidade e /termos
+  legal: z.object({ privacidade: documento, termos: documento }),
 
   whatsapp: z.object({ rotuloBotao: t, mensagem: t }),
   cookies: z.object({ texto: t, aceitar: t, recusar: t, rotuloPolitica: t }),
