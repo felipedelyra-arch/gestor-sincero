@@ -1,0 +1,61 @@
+"use client";
+
+import { useEffect } from "react";
+
+/**
+ * Rolagem amortecida (Lenis) + fio que cresce e parallax leve (GSAP ScrollTrigger).
+ * As bibliotecas só são baixadas depois da primeira pintura; com movimento reduzido, nada carrega.
+ * Parallax: qualquer elemento com `data-parallax` sobe no máximo 4% da própria altura.
+ */
+export function RolagemSuave() {
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let cancelado = false;
+    let desligar = () => {};
+
+    const iniciar = async () => {
+      const [{ default: Lenis }, { gsap }, { ScrollTrigger }] = await Promise.all([
+        import("lenis"),
+        import("gsap"),
+        import("gsap/ScrollTrigger"),
+      ]);
+      if (cancelado) return;
+
+      gsap.registerPlugin(ScrollTrigger);
+      const lenis = new Lenis({ lerp: 0.1, anchors: true });
+      lenis.on("scroll", ScrollTrigger.update);
+      const quadro = (tempo: number) => lenis.raf(tempo * 1000);
+      gsap.ticker.add(quadro);
+      gsap.ticker.lagSmoothing(0);
+
+      const contexto = gsap.context(() => {
+        gsap.to("[data-fio]", { scaleY: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: true } });
+        gsap.utils.toArray<HTMLElement>("[data-parallax]").forEach((el) => {
+          gsap.to(el, {
+            yPercent: -4,
+            ease: "none",
+            scrollTrigger: { trigger: el, start: "clamp(top bottom)", end: "bottom top", scrub: true },
+          });
+        });
+      });
+
+      desligar = () => {
+        contexto.revert();
+        gsap.ticker.remove(quadro);
+        lenis.destroy();
+      };
+    };
+
+    // Dois passos (quadro + tarefa) garantem que a primeira pintura já aconteceu.
+    const quadroInicial = requestAnimationFrame(() => setTimeout(iniciar, 0));
+
+    return () => {
+      cancelado = true;
+      cancelAnimationFrame(quadroInicial);
+      desligar();
+    };
+  }, []);
+
+  return null;
+}

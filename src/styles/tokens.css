@@ -1,0 +1,69 @@
+/* Tokens de docs/DESIGN.md. Componentes usam só estes nomes. */
+
+@theme {
+  --color-*: initial;
+  --color-preto: #070809;
+  --color-preto-2: #0b0c0e;
+  --color-marinho: #0c1422;
+  --color-chumbo: #2a2c30;
+  --color-ouro: #cea33d;
+  --color-ouro-claro: #dfb858;
+  --color-ouro-escuro: #927027;
+  --color-texto: #f2f0ea;
+  --color-texto-2: #b9b5aa;
+  --color-erro: #e8a08c;
+
+  --font-*: initial;
+  --font-titulo: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-corpo: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* escala de 4px: h-14 = 56px, h-12 = 48px */
+  --spacing: 4px;
+
+  --text-*: initial;
+  --text-manifesto: clamp(2.5rem, 9vw, 3.5rem);
+  --text-manifesto--line-height: 1.08;
+  --text-manifesto--letter-spacing: -0.02em;
+  --text-h2: 2rem;
+  --text-h2--line-height: 1.12;
+  --text-h2--letter-spacing: var(--aperto-h2);
+  --text-h3: 1.375rem;
+  --text-h3--line-height: 1.15;
+  --text-corpo: 1rem;
+  --text-corpo--line-height: 1.6;
+  --text-apoio: 0.889rem;
+  --text-apoio--line-height: 1.5;
+
+  --radius-*: initial;
+  --radius-base: 2px;
+
+  --shadow-*: initial;
+  --shadow-livro: 0 24px 48px rgb(0 0 0 / 0.6);
+
+  --container-texto: 62ch;
+}
+
+:root {
+  --margem: 20px; /* o fio dourado corre no meio desta margem */
+  --espaco-secao: 96px;
+  --respiro-topo: 48px; /* distância da tarja ao título; o fio nasce aqui */
+  --aperto-h2: 0;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --margem: 48px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --text-manifesto: clamp(4rem, 6.5vw, 6rem);
+    --text-h2: 3rem;
+    --text-h3: 1.75rem;
+    --text-apoio: 0.85rem;
+    --espaco-secao: 144px;
+    --respiro-topo: 96px;
+    --aperto-h2: -0.02em;
+  }
+}
