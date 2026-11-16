@@ -4,14 +4,14 @@ Landing page do Gestor Sincero. Briefing completo em `docs/BRIEFING.md`; vocabul
 
 ## Propriedade de pastas
 
-| Terminal | Agentes | Pastas |
+| Terminal | Modelo | Pastas |
 |---|---|---|
-| Orquestrador | Yan | raiz (`package.json`, `tsconfig.json`, `.env.example`, `AGENTS.md`), `config/`, `content/schema.ts`, `content/index.ts`, `src/shared/`, `docs/PLAN.md`, `docs/DESIGN.md`, `docs/adr/` |
-| Conteúdo | Lia | `content/**` (menos `schema.ts` e `index.ts`), `docs/COPY.md` |
-| Front-end | Pia, Sky | `src/app/**` (menos `api/`), `src/components/**`, `src/styles/**` |
-| Back-end | Ada, Quin | `src/server/**`, `src/app/api/**`, `supabase/**`, `next.config.ts` (headers e CSP), `src/proxy.ts` se precisar |
-| Assets e QA | Kai, Hal | `public/**`, `scripts/**`, `tests/**`, `docs/QA.md` |
-| Revisão | Kit | só leitura; achados em `docs/QA.md` |
+| Orquestrador | Fable | o restante: raiz (`package.json`, configs, `.env.example`, `AGENTS.md`), `config/`, `content/schema.ts`, `content/index.ts`, `src/shared/`, `scripts/pesado.sh`, `scripts/servidor.sh`, `docs/` (menos COPY e QA) |
+| Conteúdo | Opus | `content/**` (menos `schema.ts` e `index.ts`), `docs/COPY.md` |
+| Assets | Haiku | `public/**`, `scripts/assets/**` |
+| Front-end | Sonnet | `src/app/**` (menos `api/`), `src/components/**`, `src/styles/**` |
+| Back-end | Sonnet | `src/server/**`, `src/app/api/**`, `supabase/**`, `next.config.ts` (headers e CSP) |
+| Tester | Haiku | `tests/**`, `docs/QA.md` |
 
 Todos acrescentam linhas em `docs/STATUS.md` e `docs/PERGUNTAS_FERRER.md`.
 
@@ -65,12 +65,16 @@ sequenceDiagram
 6. CSP estática com hashes/SRI se o Next 16 permitir em página estática; senão, registrar o limite em `docs/adr/`. Ver ADR 0001 para a ofuscação.
 7. Sem banco provisionado: o Back-end testa com adaptadores em memória atrás das portas; a migração SQL fica pronta em `supabase/migrations/`.
 
-## Ordem
+## Ondas (uma por vez; no máximo 2 executores vivos; regras R1 a R8 no `AGENTS.md`)
 
-1. Assets A (Kai) e Conteúdo (Lia), em paralelo.
-2. Front-end (Pia: base, seções 00 a 08; Sky: seções 09 a 16, SEO, cookies e rastreamento) e Back-end (Ada: domínio, aplicação, rotas, cripto; Quin: Supabase, infra externa, CSV, headers), em paralelo.
-3. QA (Hal: Playwright, axe, Lighthouse, varredura de copy e de segredos).
-4. Revisão (Kit) e revisão final do orquestrador; correções; prévia na Vercel.
+| Onda | Terminal A | Terminal B | Servidor | Estado em 15/11 |
+|---|---|---|---|---|
+| 1 | Conteúdo: copy completo em `content/` + `docs/COPY.md` | Assets: recorte do retrato, slides 4/6/17/20 com selo, imagem de compartilhamento, favicon | nenhum | parcial: `content/pagina.ts` existe sem `docs/COPY.md`; `public/img` só com retrato e prêmio |
+| 2 | Front-end (dono do servidor): seções 03 a 16, globais no layout | Back-end: adaptadores reais, CSV admin, ligação na composição | dev, um só | parcial: seções 00 a 02 e globais prontos; núcleo, cripto, migração e CSP prontos |
+| 3 | Tester: Playwright, axe, Lighthouse, varreduras, prints | (vazio) | prod (build + start, pelo orquestrador) | não iniciada |
+| 4 | Correções, um executor por vez | (vazio) | conforme o reteste | não iniciada |
+
+Fim de cada onda: relatórios, commits, `scripts/servidor.sh parar`, sessões encerradas, conferência de sobras (R5) e `free -m` (R6) antes da próxima.
 
 ## Pendências de ambiente (Felipe)
 
