@@ -58,12 +58,21 @@
 
 @media (min-width: 1024px) {
   :root {
-    --text-manifesto: clamp(4rem, 6.5vw, 6rem);
+    --text-manifesto: clamp(4rem, 6.5vw, 4.16rem); /* teto = o valor em 1280px (83px) */
     --text-h2: 3rem;
     --text-h3: 1.75rem;
     --text-apoio: 0.85rem;
     --espaco-secao: 144px;
     --respiro-topo: 96px;
     --aperto-h2: -0.02em;
+  }
+}
+
+/* Telas grandes: a grade para em 1200px, então o título também para de crescer. Com 72px e respiro menor, */
+/* título, subtítulo e as duas chamadas cabem na primeira tela (1440x900 e 1920x943) com tarja e banner. */
+@media (min-width: 1440px) {
+  :root {
+    --text-manifesto: 3.6rem;
+    --respiro-topo: 56px;
   }
 }
