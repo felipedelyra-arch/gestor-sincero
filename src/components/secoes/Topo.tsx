@@ -33,7 +33,7 @@ export function Topo() {
           />
         ) : (
           <>
-            <div data-parallax>
+            <div data-parallax suppressHydrationWarning>
               <Imagem
                 nome="ferrer-retrato"
                 alt={topo.altFoto}

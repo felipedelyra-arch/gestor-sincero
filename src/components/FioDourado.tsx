@@ -9,7 +9,7 @@ export function FioDourado() {
       <div className="conteiner relative h-full">
         <div className="absolute inset-y-0 left-[calc(var(--margem)/2)] w-px">
           <div className="fio-nascente h-30 bg-ouro" />
-          <div data-fio className="fio-resto absolute inset-x-0 top-30 bottom-0 origin-top bg-ouro" />
+          <div data-fio suppressHydrationWarning className="fio-resto absolute inset-x-0 top-30 bottom-0 origin-top bg-ouro" />
         </div>
       </div>
     </div>

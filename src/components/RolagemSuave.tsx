@@ -48,9 +48,36 @@ export function RolagemSuave() {
             scrollTrigger: { trigger: el, start: "top 85%", once: true },
           });
         });
+        // Varredura do exame: o fio atravessa a prévia da Ressonância uma única vez.
+        gsap.utils.toArray<HTMLElement>("[data-varredura]").forEach((el) => {
+          const area = el.parentElement;
+          if (!area) return;
+          gsap.fromTo(
+            el,
+            { y: 0, opacity: 0.9 },
+            {
+              y: () => area.offsetHeight,
+              duration: 1.8,
+              ease: "none",
+              immediateRender: false,
+              scrollTrigger: { trigger: area, start: "top 70%", once: true },
+              onComplete: () => gsap.set(el, { opacity: 0 }),
+            },
+          );
+        });
       });
 
+      // Pergunta aberta ou formulário enviado mudam a altura da página: o fio e o parallax recalculam.
+      let altura = document.body.offsetHeight;
+      const observador = new ResizeObserver(() => {
+        if (document.body.offsetHeight === altura) return;
+        altura = document.body.offsetHeight;
+        ScrollTrigger.refresh();
+      });
+      observador.observe(document.body);
+
       desligar = () => {
+        observador.disconnect();
         contexto.revert();
         gsap.ticker.remove(quadro);
         lenis.destroy();
