@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { pagina, type Pagina } from "@content";
+import { Rodape } from "../secoes/Rodape";
 import { Cabecalho } from "./Cabecalho";
 
 type Documento = Pagina["legal"]["privacidade"];
@@ -9,7 +10,7 @@ export function DocumentoLegal({ documento }: { documento: Documento }) {
   return (
     <>
       <Cabecalho base="/" />
-      <main id="conteudo" tabIndex={-1} className="min-h-screen bg-preto py-(--espaco-secao) text-texto outline-none">
+      <main id="conteudo" tabIndex={-1} className="bg-preto py-(--espaco-secao) text-texto outline-none">
         <article className="conteiner">
           <div className="mx-auto max-w-[72ch]">
             <Link
@@ -34,6 +35,7 @@ export function DocumentoLegal({ documento }: { documento: Documento }) {
           </div>
         </article>
       </main>
+      <Rodape />
     </>
   );
 }
