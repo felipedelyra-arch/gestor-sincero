@@ -42,7 +42,7 @@ axe 4.x (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`
 
 O axe deixou o contraste de cerca de 355 elementos de `/` como indeterminado (325 por "fundo sobreposto por outro elemento", efeito do fio dourado e das camadas). Medição própria de todo texto visível contra o fundo sólido mais próximo: menor razão 8,52:1 (ouro `rgb(206,163,61)` sobre preto), texto secundário 9,0:1 a 9,8:1, texto principal 16:1 a 17,6:1. Tudo acima de AA (4,5:1). A cor de erro (`--color-erro`, `src/styles/tokens.css:14`) não foi medida em tela.
 
-Testes e2e (`tests/e2e/`): 38 testes; 25 passam, 3 falham (A3), 4 são pulados por pendência de ambiente (2 por P1, 1 por M3, 1 por M4) e 6 são os prints (só com `PRINTS=1`).
+Testes e2e (`tests/e2e/`): 38 testes; 25 passam, 3 falhavam em prod (A3), 4 eram pulados em prod por pendência de ambiente (2 por P1, que passam em dev; 1 por M3; 1 por M4) e 6 são os prints (só com `PRINTS=1`).
 
 ## Achados por gravidade
 
@@ -56,7 +56,7 @@ Testes e2e (`tests/e2e/`): 38 testes; 25 passam, 3 falham (A3), 4 são pulados p
 
 - A1. LCP do celular reprovado porque o maior elemento da primeira tela é o texto do banner de cookies (`p#gs-cookies-texto`), que só existe depois da hidratação: `src/components/global/BannerCookies.tsx:29` devolve `null` até hidratar. Atraso de renderização do elemento medido pelo Lighthouse: 628 ms sem limitação e LCP final de 3,5 s com a limitação de celular. Repetir: `CHROME_PATH=<chromium do playwright> scripts/pesado.sh npx lighthouse http://localhost:3000/ --output=json` e ler `lcp-breakdown-insight`.
 - A2. Thread principal ocupada no celular: TBT 820 a 950 ms, 1,97 s de execução de script. Tarefas longas: 551 ms e 280 ms em `01t2i9pe5vz2-.js` (229 KB, React DOM e hidratação) e 208 ms em `2a3iml0rheide.js` (71 KB, GSAP). JavaScript não usado na carga: 27 KB de 72 KB e 22 KB de 47 KB (transferidos) em dois chunks. O chunk com o Zod (`42j_jl3p2yilg.js`, 153 KB) é carregado também em `/privacidade` e `/termos`, puxado por `src/components/global/origem.ts:1` no layout.
-- A3. A CSP bloqueia um `eval` em todas as rotas: `script-src bloqueou eval (/_next/static/chunks/42j_jl3p2yilg.js:1)`. É o chunk que contém o Zod; a origem provável é a sondagem de `eval` do Zod 4 (não rastreei a linha no código-fonte). A página funciona, mas a violação é registrada a cada carga e derruba Boas Práticas para 96 (`inspector-issues`). Repetir: `scripts/pesado.sh npx playwright test tests/e2e/saude.spec.ts` (3 testes falham com essa mensagem).
+- A3. A CSP bloqueava um `eval` em todas as rotas no build de prod: `script-src bloqueou eval (/_next/static/chunks/42j_jl3p2yilg.js:1)`, no chunk que contém o Zod, derrubando Boas Práticas para 96 (`inspector-issues`) e fazendo falhar 3 testes de `tests/e2e/saude.spec.ts`. Correção aplicada pelo orquestrador (`z.config({ jitless: true })`, commit 088ecf9). Reteste em dev: os 7 testes de `saude.spec.ts` passam, mas não é conclusivo, porque a CSP de dev inclui `'unsafe-eval'` (`next.config.ts:13`) e não bloquearia o `eval` de qualquer forma. Falta repetir em prod.
 - A4. Sem `NEXT_PUBLIC_SITE_URL` no build, o site assume `http://localhost:3000` (`config/site.ts:53`) sem avisar. Efeitos vistos neste build: `canonical`, `og:url` e `og:image` apontam para localhost, e o valor fica gravado no bundle. Efeito previsto em produção (lido no código, não exercitado): `src/server/aplicacao/http.ts:64` compara o `Origin` com `site.url`, então todo envio de formulário responderia 403 `antirrobo`.
 
 ### Médio
@@ -95,7 +95,7 @@ Testes e2e (`tests/e2e/`): 38 testes; 25 passam, 3 falham (A3), 4 são pulados p
 
 ## Pendências de ambiente
 
-- P1. Caminho feliz dos formulários (tela de sucesso, foco no título, link do manual): ainda não verificado; roda no fim, com o servidor em modo dev (adaptadores em memória), trocado pelo orquestrador.
+- P1 (antigo A5). Caminho feliz dos formulários, conferido em modo dev com adaptadores em memória: os dois envios respondem 200, o formulário some, o título de confirmação aparece e recebe o foco ("Inscrição confirmada" e "Pedido recebido"); `cadastro-jornada.spec.ts` 3 de 3 e `ressonancia.spec.ts` 2 de 2. Não verificado: o link do manual. O adaptador em memória devolve `null` (`src/server/infra/memoria/index.ts:84`), a resposta vem sem `manualUrl` e o botão "Baixar o manual agora" não é exibido (o teste afirma essa ausência e anota a pendência). Precisa de Supabase com o arquivo no bucket. Também não exercitados: deduplicação e limite por IP no navegador.
 - P2. IDs de teste de Pixel e GA4 no build (M3).
 - P3. URL de checkout em `config/site.ts` (M4); nenhum valor foi inventado.
 - P4. Medição de celular em máquina calibrada ou no PageSpeed depois do deploy de prévia.

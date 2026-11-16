@@ -44,7 +44,7 @@ test.describe("Cadastro da Jornada", () => {
     await form.getByText(f.consentimentos.privacidade).click();
     await esperarTurnstile(form);
 
-    const { req, status } = await enviar(page, form, ROTA);
+    const { req, status, corpoResposta } = await enviar(page, form, ROTA);
     const corpo = req.postDataJSON();
     expect(corpo).toMatchObject({
       nome: contato.nome,
@@ -72,5 +72,15 @@ test.describe("Cadastro da Jornada", () => {
     await expect(titulo).toBeVisible();
     await expect(titulo).toBeFocused();
     await expect(form).toHaveCount(0);
+    // Link do manual: só aparece quando o servidor devolve um link assinado (o adaptador em memória não devolve).
+    const manual = page.locator("#jornada").getByRole("link", { name: f.sucesso.baixarManual });
+    if (!corpoResposta.manualUrl) {
+      await expect(manual).toHaveCount(0);
+      test.info().annotations.push({ type: "pendência de ambiente", description: "sem manualUrl na resposta: link do manual não verificado" });
+      return;
+    }
+    expect(corpoResposta.manualUrl).toMatch(/^(\/(?!\/)|https:\/\/)/);
+    await expect(manual).toBeVisible();
+    await expect(manual).toHaveAttribute("href", corpoResposta.manualUrl);
   });
 });

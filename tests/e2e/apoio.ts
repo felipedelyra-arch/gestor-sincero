@@ -30,10 +30,14 @@ export async function esperarTurnstile(form: Locator): Promise<void> {
 }
 
 /** Clica em enviar e devolve a requisição feita à rota e o status da resposta. */
-export async function enviar(page: Page, form: Locator, rota: string): Promise<{ req: Request; status: number }> {
+export async function enviar(
+  page: Page,
+  form: Locator,
+  rota: string,
+): Promise<{ req: Request; status: number; corpoResposta: { ok?: boolean; manualUrl?: string } }> {
   const [resposta] = await Promise.all([
     page.waitForResponse((r) => r.url().endsWith(rota) && r.request().method() === "POST"),
     form.locator('button[type="submit"]').click(),
   ]);
-  return { req: resposta.request(), status: resposta.status() };
+  return { req: resposta.request(), status: resposta.status(), corpoResposta: await resposta.json().catch(() => ({})) };
 }
