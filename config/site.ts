@@ -56,7 +56,11 @@ export const site: Site = siteSchema.parse({
   // PENDENTE: domínio. Sem a variável, a prévia da Vercel usa o endereço do próprio deploy.
   url:
     process.env.NEXT_PUBLIC_SITE_URL ??
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"),
+    (process.env.VERCEL_ENV === "production" && process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "http://localhost:3000"),
   indexar: false,
   video: { url: null },
   jornada: { horario: "20h30", datas: [null, null, null] },
