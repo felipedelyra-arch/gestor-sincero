@@ -28,3 +28,5 @@ Em ordem de prioridade. Cada terminal acrescenta as suas no fim da lista "Novas"
 - Validar a linha de cada uma das 10 etapas do método, das 9 fases e das 5 entregas da Ressonância (redigidas a partir do nome) e informar o que significa a sigla B.A.S.I.C.O.
 - O bônus "masterclass" entrou como "Aula magna" para evitar inglês. Confirma o nome e qual é o tema?
 - Como termina a frase "Assim como uma ressonância médica revela estruturas que os olhos não enxergam…"? Hoje ela segue com reticências e o parágrafo seguinte completa a ideia.
+- Papo reto com o Gestor Sincero: autorização ESCRITA do Ferrér para usar a imagem dele (vídeos do personagem) num assistente de inteligência artificial que fala em nome da marca. Sem ela, a conversa não vai ao ar nem os vídeos são publicados.
+- Papo reto: o personagem trata o empresário por "você" (como o resto da página) ou por "o senhor"?

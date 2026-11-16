@@ -216,6 +216,28 @@ export const paginaSchema = z.object({
   cookies: z.object({ texto: t, aceitar: t, recusar: t, rotuloPolitica: t, rever: t.default("Rever escolha de cookies") }),
 });
 
+// "Papo reto com o Gestor Sincero": conversa com o personagem (ADR 0003). Texto em content/papo-reto.ts.
+const recomendacao = z.object({ texto: t, rotuloBotao: t });
+export const papoRetoSchema = z.object({
+  rotuloBotao: t,
+  titulo: t,
+  avisoIA: t, // aparece antes de tudo
+  consentimento: z.object({ texto: t, aceitar: t, recusar: t }), // guardar ou não a conversa
+  comecar: t,
+  abertura: t, // primeira fala do personagem
+  perguntas: z.array(z.object({ numero: z.number().int().min(1).max(8), tema: t, texto: t })).min(6).max(8),
+  campo: z.object({ rotulo: t, enviar: t, enviando: t }),
+  encerrar: t,
+  encerrada: t,
+  falaPadrao: t, // usada quando a resposta do modelo sai do contrato
+  erros: z.object({ limite: t, antirrobo: t, indisponivel: t }),
+  fechamento: z.object({ titulo: t }), // título do "papo reto" de 3 pontos
+  recomendacoes: z.object({ jornada: recomendacao, ressonancia: recomendacao, mentoria: recomendacao }),
+  altVideo: t,
+});
+export type PapoReto = z.infer<typeof papoRetoSchema>;
+export type PapoRetoEntrada = z.input<typeof papoRetoSchema>;
+
 export type Pagina = z.infer<typeof paginaSchema>;
 export type PaginaEntrada = z.input<typeof paginaSchema>;
 export type Formulario = z.infer<typeof formulario>;

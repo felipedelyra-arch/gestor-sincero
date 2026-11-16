@@ -55,6 +55,8 @@ const siteSchema = z.object({
     ga4Id: pendente(z.string().regex(/^G-[A-Z0-9]+$/)),
   }),
   turnstileSiteKey: z.string().min(1),
+  // Papo reto (ADR 0003): desligado em produção até haver chaves e a autorização de imagem do Ferrér.
+  papoReto: z.object({ ativo: z.boolean(), videos: z.string().min(1) }),
 });
 
 export type Site = z.infer<typeof siteSchema>;
@@ -100,4 +102,8 @@ export const site: Site = siteSchema.parse({
   },
   // Chave de teste pública da Cloudflare (sempre aprova); trocar pela real via env.
   turnstileSiteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA",
+  papoReto: {
+    ativo: process.env.NEXT_PUBLIC_PAPO_RETO === "1" || process.env.NODE_ENV !== "production",
+    videos: "/ferrer-avatar", // ferrer-{ouvindo,falando,cetico}-{16x9,1x1}.{mp4,webm} e ferrer-poster-*.jpg
+  },
 });
