@@ -10,9 +10,9 @@ export function Inimigo() {
     <Secao id="inimigo" titulo={titulo} apoio={introducao} fundo="marinho">
       <ul className="flex flex-wrap justify-center gap-3 lg:gap-4">
         {frases.map((frase) => (
-          <li key={frase} className="w-full sm:w-[calc(50%-8px)] lg:w-[calc(20%-13px)]">
+          <li key={frase} className="w-[calc(50%-6px)] sm:w-[calc(33.333%-8px)] lg:w-[calc(20%-13px)]">
             {/* filete dourado de 1px: marca a citação */}
-            <Cartao fundo="preto" respiro="p-5" className="h-full border-l-ouro font-titulo text-h3">
+            <Cartao fundo="preto" respiro="p-4 lg:p-5" className="h-full border-l-ouro font-titulo text-h3">
               <q>{frase}</q>
             </Cartao>
           </li>

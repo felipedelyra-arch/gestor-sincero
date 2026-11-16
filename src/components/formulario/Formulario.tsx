@@ -202,7 +202,7 @@ export function Formulario({ formulario, campos, rota, turnstileSiteKey }: Props
           onSubmit={enviar}
           onFocus={aoFocar}
           onChange={(e) => e.target instanceof HTMLElement && limparErro(e.target.getAttribute("name") ?? "")}
-          className="grid gap-x-4 gap-y-5 sm:grid-cols-2"
+          className="grid gap-x-4 gap-y-4 sm:grid-cols-2"
         >
           <h3 id={idTitulo} className="font-titulo text-h3 font-medium sm:col-span-2">
             {formulario.titulo}

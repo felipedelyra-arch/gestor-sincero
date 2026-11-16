@@ -13,6 +13,7 @@ const formato = new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "numeri
 export function Jornada() {
   const j = pagina.jornada;
   const { horario, datas } = site.jornada;
+  const semDatas = datas.every((d) => d === null);
   return (
     <Secao id="jornada" titulo={j.titulo} apoio={j.introducao} fundo="marinho">
       <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
@@ -25,10 +26,12 @@ export function Jornada() {
               return (
                 <li key={pauta.titulo} className={`${trilhoItem} lg:w-auto`}>
                   <Cartao fundo="preto" respiro="p-5" className="h-full">
-                    <p className="text-apoio text-ouro-claro">
-                      {data ? <time dateTime={data}>{formato.format(new Date(data))}</time> : j.datasPendentes}
-                    </p>
-                    <h3 className="mt-1 font-titulo text-h3 font-medium text-balance">{pauta.titulo}</h3>
+                    {!semDatas && (
+                      <p className="text-apoio text-ouro-claro">
+                        {data ? <time dateTime={data}>{formato.format(new Date(data))}</time> : j.datasPendentes}
+                      </p>
+                    )}
+                    <h3 className="font-titulo text-h3 font-medium">{pauta.titulo}</h3>
                     <p className="mt-1 text-apoio text-texto-2">{pauta.descricao}</p>
                   </Cartao>
                 </li>
@@ -38,6 +41,8 @@ export function Jornada() {
           <p className="mt-4 text-texto-2">
             {j.rotuloHorario} {horario}
           </p>
+          {/* enquanto as três datas estão pendentes, o aviso vale para todas e aparece uma vez */}
+          {semDatas && <p className="mt-1 text-apoio text-ouro-claro">{j.datasPendentes}</p>}
           <div className="mt-6 border-l border-ouro pl-5">
             <p className="font-titulo text-h3 font-medium">{j.manual.nome}</p>
             <p className="mt-1 text-apoio text-texto-2">{j.manual.descricao}</p>

@@ -27,7 +27,7 @@ export function Secao({ id, titulo, rotulo, apoio, fundo = "preto", estreito = f
           <h2 id={idTitulo} className="font-titulo text-h2 font-medium text-balance">
             {titulo}
           </h2>
-          {apoio && <p className="mx-auto mt-3 max-w-texto text-pretty text-texto-2">{apoio}</p>}
+          {apoio && <p className="mx-auto mt-3 max-w-texto text-texto-2">{apoio}</p>}
         </header>
         {children && <div className={`mt-8 lg:mt-9 ${estreito ? "mx-auto max-w-[800px]" : ""}`}>{children}</div>}
       </div>

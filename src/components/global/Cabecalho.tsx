@@ -6,8 +6,10 @@ import { Imagem } from "../ui/Imagem";
 import { MenuCelular } from "./MenuCelular";
 
 /** Cabeçalho fixo: logo, âncoras das seções e a chamada de captação. No celular as âncoras vão para o menu. */
-export function Cabecalho() {
-  const { rotuloMenu, itens, chamada } = pagina.navegacao;
+export function Cabecalho({ base = "" }: { base?: string }) {
+  const { rotuloMenu, chamada } = pagina.navegacao;
+  // fora da página inicial as âncoras levam de volta a ela ("/#metodo")
+  const itens = pagina.navegacao.itens.map((i) => ({ ...i, ancora: base + i.ancora }));
   return (
     <header className="sticky top-0 z-40 border-b border-chumbo bg-preto">
       <div className="conteiner flex h-(--altura-cabecalho) items-center justify-between gap-3">
@@ -36,7 +38,7 @@ export function Cabecalho() {
           </ul>
         </nav>
         <div className="flex items-center gap-1">
-          <Botao chamada={chamada} variante="compacto" />
+          <Botao chamada={chamada} variante="compacto" base={base} />
           <MenuCelular rotulo={rotuloMenu} itens={itens} />
         </div>
       </div>

@@ -38,6 +38,28 @@
   }
 }
 
+/* Retrato do topo no celular: fantasma à direita, atrás do texto. A opacidade baixa (0,26: pior contraste medido do subtítulo, 4,8:1) mantém o AA do texto
+   por cima; a máscara esmaece a esquerda e a base. No desktop volta a ser a foto inteira. */
+@media (max-width: 1023px) {
+  .retrato-celular {
+    opacity: 0.26;
+    mask-image: linear-gradient(to right, transparent 0%, #000 55%), linear-gradient(to bottom, #000 55%, transparent 100%);
+    mask-composite: intersect;
+  }
+}
+
+/* Bloco que abre no celular e fica sempre à vista no desktop: o conteúdo do details é forçado a aparecer. */
+@media (min-width: 1024px) {
+  details.aberto-no-desktop::details-content {
+    content-visibility: visible;
+    display: block;
+  }
+
+  details.aberto-no-desktop > summary {
+    pointer-events: none;
+  }
+}
+
 /* Largura da grade: 1200px mais a margem lateral. */
 @utility conteiner {
   width: 100%;

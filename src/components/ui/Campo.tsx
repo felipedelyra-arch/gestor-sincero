@@ -45,7 +45,7 @@ export function Campo({ id, nome, rotulo, ajuda, erro, tipo = "text", opcoes, ob
         {rotulo}
       </label>
       {tipo === "textarea" ? (
-        <textarea {...comum} rows={4} className={`${caixa} py-3`} />
+        <textarea {...comum} rows={3} className={`${caixa} py-3`} />
       ) : tipo === "select" ? (
         <select {...comum} defaultValue="" className={`${caixa} h-14`}>
           <option value="" />

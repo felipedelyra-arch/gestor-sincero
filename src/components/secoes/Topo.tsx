@@ -8,9 +8,9 @@ import { TopoTitulo } from "./TopoTitulo";
 export function Topo() {
   const { topo } = pagina;
   return (
-    <section className="overflow-hidden">
+    <section className="relative overflow-hidden">
       <div className="conteiner grid items-end lg:grid-cols-12 lg:gap-x-8">
-        <div className="py-8 lg:col-span-7 lg:py-20">
+        <div className="relative z-1 py-8 lg:col-span-7 lg:py-20">
           <TopoTitulo variacoes={topo.variacoes} />
           <div className="entra mt-6 flex flex-col items-start gap-x-6 gap-y-1 sm:flex-row sm:items-center lg:mt-8">
             <Botao chamada={topo.chamadaPrincipal} />
@@ -18,7 +18,9 @@ export function Topo() {
           </div>
         </div>
 
-        <div className="entra relative lg:col-span-5">
+        {/* Celular: retrato por trás do texto, à direita, esmaecido (só a fileira de cima da página, sem tomar altura). */}
+        {/* Desktop: coluna à direita, apoiado na base do bloco de texto. */}
+        <div className="entra retrato-celular pointer-events-none absolute top-8 right-0 w-[58%] max-w-[280px] lg:pointer-events-auto lg:relative lg:top-auto lg:col-span-5 lg:w-auto lg:max-w-none">
           {site.video.url ? (
             // shortcut: iframe direto serve para link de incorporação; quando o vídeo existir, trocar por
             // fachada (foto + botão de tocar) se o player pesar na carga.
@@ -34,14 +36,14 @@ export function Topo() {
               <Imagem
                 nome="ferrer-retrato"
                 alt={topo.altFoto}
-                tamanhos="(min-width: 1024px) 40vw, 100vw"
+                tamanhos="(min-width: 1024px) 40vw, 58vw"
                 largura={1080}
                 altura={1080}
                 prioridade
-                className="w-full"
+                className="h-[340px] w-full object-cover object-[58%_top] lg:h-auto lg:object-fill"
               />
               {/* O único esmaecimento da página: a base da foto some no preto. */}
-              <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/4 bg-linear-to-t from-preto to-transparent" />
+              <div aria-hidden="true" className="absolute inset-x-0 bottom-0 hidden h-1/4 bg-linear-to-t from-preto to-transparent lg:block" />
             </>
           )}
         </div>

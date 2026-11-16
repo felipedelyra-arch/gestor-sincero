@@ -3,9 +3,9 @@ import { site } from "@config/site";
 import { Botao } from "../ui/Botao";
 import { Cartao } from "../ui/Cartao";
 import { ListaConferencia } from "../ui/ListaConferencia";
+import { Recolhivel } from "../ui/Recolhivel";
 import { Secao } from "../ui/Secao";
 
-const subtitulo = "font-titulo text-h3 font-medium";
 const reais = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
 /** 11. Esquerda: o que inclui, bônus e plano em listas de conferência. Direita: cartão de preço, garantia e botão. */
@@ -15,18 +15,17 @@ export function OfertaMentoria() {
   return (
     <Secao id="mentoria" titulo={o.titulo} apoio={o.introducao}>
       <div className="grid items-start gap-8 lg:grid-cols-12">
-        <div className="grid gap-8 sm:grid-cols-2 lg:col-span-7">
-          <div className="grid content-start gap-8">
+        {/* Celular: bônus e plano recolhidos (o cartão de preço vem logo depois). Desktop: tudo à vista. */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:col-span-7 lg:gap-8">
+          <div className="grid content-start gap-6 lg:gap-8">
             <ListaConferencia itens={o.inclui} />
-            <div>
-              <h3 className={subtitulo}>{o.tituloPlano}</h3>
-              <ListaConferencia itens={o.planoDeSucesso} className="mt-3 text-texto-2" />
-            </div>
+            <Recolhivel titulo={o.tituloPlano}>
+              <ListaConferencia itens={o.planoDeSucesso} className="text-texto-2" />
+            </Recolhivel>
           </div>
-          <div>
-            <h3 className={subtitulo}>{o.tituloBonus}</h3>
-            <ListaConferencia itens={o.bonus} className="mt-3 text-texto-2" />
-          </div>
+          <Recolhivel titulo={o.tituloBonus} className="self-start">
+            <ListaConferencia itens={o.bonus} className="text-texto-2" />
+          </Recolhivel>
         </div>
 
         {/* filete dourado de 1px no topo: o cartão que decide a seção */}

@@ -7,7 +7,7 @@ import { SinalAbrir } from "../ui/SinalAbrir";
 
 const subtitulo = "font-titulo text-h3 font-medium";
 // Quantas credenciais aparecem antes de "ver todos".
-const VISIVEIS = 5;
+const VISIVEIS = 4;
 
 /** 06. Foto do prêmio e biografia; "é / não é" em dois cartões; credenciais e empresas em etiquetas. */
 export function QuemE() {
@@ -63,18 +63,21 @@ export function QuemE() {
 
       {/* Credenciais: as primeiras à vista, o resto abre com "ver todos". */}
       <details className="group mt-6">
-        <summary className="flex cursor-pointer list-none flex-wrap items-center gap-2">
+        <summary className="flex cursor-pointer list-none flex-wrap items-center gap-x-2">
           {q.credenciais.slice(0, VISIVEIS).map((c) => (
             <span key={c} className={etiqueta}>
               {c}
             </span>
           ))}
-          <span className="inline-flex min-h-12 items-center px-2 text-apoio font-medium text-ouro-claro">
-            <span className="group-open:hidden">{verTodos}</span>
-            <span className="hidden group-open:inline">{verMenos}</span>
+          {/* mesma etiqueta das outras, com a área de toque de 48px em volta */}
+          <span className="inline-flex min-h-12 items-center">
+            <span className={`${etiqueta} border-ouro-escuro font-medium text-ouro-claro`}>
+              <span className="group-open:hidden">{verTodos}</span>
+              <span className="hidden group-open:inline">{verMenos}</span>
+            </span>
           </span>
         </summary>
-        <ul className="mt-2 flex flex-wrap gap-2">
+        <ul className="flex flex-wrap gap-2">
           {q.credenciais.slice(VISIVEIS).map((c) => (
             <li key={c} className={etiqueta}>
               {c}

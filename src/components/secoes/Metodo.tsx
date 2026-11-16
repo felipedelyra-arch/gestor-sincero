@@ -8,7 +8,7 @@ export function Metodo() {
   const { titulo, introducao, pilares } = pagina.metodo;
   return (
     <Secao id="metodo" titulo={titulo} apoio={introducao}>
-      <div className="grid items-start gap-4 lg:grid-cols-2 lg:gap-6">
+      <div className="grid gap-4 lg:grid-cols-2 lg:gap-6">
         {pilares.map((pilar) => (
           <Cartao key={pilar.nome}>
             <h3 className="font-titulo text-h3 font-medium">{pilar.nome}</h3>

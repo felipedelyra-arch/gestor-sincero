@@ -28,11 +28,18 @@ function resolver(destino: Chamada["destino"]): Destino | null {
   }
 }
 
-type Props = { chamada: Chamada; variante?: VarianteBotao; className?: string };
+type Props = {
+  chamada: Chamada;
+  variante?: VarianteBotao;
+  className?: string;
+  /** Prefixo das âncoras internas, para uso fora da página inicial (ex.: "/" nas páginas legais). */
+  base?: string;
+};
 
-export function Botao({ chamada, variante = "principal", className = "" }: Props) {
-  const destino = resolver(chamada.destino);
-  if (!destino) return null;
+export function Botao({ chamada, variante = "principal", className = "", base = "" }: Props) {
+  const resolvido = resolver(chamada.destino);
+  if (!resolvido) return null;
+  const destino = resolvido.href.startsWith("#") ? { ...resolvido, href: base + resolvido.href } : resolvido;
   const classes = `${estilosBotao[variante]} ${className}`;
 
   if (destino.evento) {
