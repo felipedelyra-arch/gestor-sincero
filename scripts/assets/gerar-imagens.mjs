@@ -1,16 +1,16 @@
-// Gera todas as imagens de public/ a partir de docs/fonte/. Uso: node scripts/gerar-imagens.mjs  (precisa de uvx, soffice e pdftoppm; intermediários lentos ficam em node_modules/.cache/gerar-imagens, apague a pasta para refazer do zero)
+// Gera todas as imagens de public/ a partir de docs/fonte/. Uso: scripts/pesado.sh node scripts/assets/gerar-imagens.mjs  (precisa de uvx, soffice e pdftoppm; intermediários lentos ficam em node_modules/.cache/gerar-imagens, apague a pasta para refazer do zero)
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 
-const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const fonte = path.join(raiz, "docs/fonte");
 const pub = path.join(raiz, "public");
 const img = path.join(pub, "img");
 const cache = path.join(raiz, "node_modules/.cache/gerar-imagens");
-const outfit = path.join(raiz, "scripts/fonts/Outfit.ttf");
+const outfit = path.join(raiz, "scripts/assets/fonts/Outfit.ttf");
 const PRETO = "#070809";
 const TEXTO = "#F2F0EA";
 const OURO = "#CEA33D";
@@ -35,7 +35,8 @@ async function variantes(nome, origem, larguras, formatos, q = {}) {
       maior = [info.width, info.height];
     }
   }
-  manifest[nome] = { larguras, proporcao: maior, formatos };
+  // contrato lido por src/components/ui/Imagem.tsx: largura e altura são do maior arquivo
+  manifest[nome] = { larguras, formatos, largura: maior[0], altura: maior[1] };
 }
 
 /** Texto em Outfit 500 como PNG transparente. */
@@ -53,16 +54,46 @@ function texto(conteudo, px, { cor = TEXTO, largura, entrelinha = 0 } = {}) {
   }).png().toBuffer();
 }
 
-// 1. Retrato: recorte com rembg (modelo leve) e contração da borda para tirar o contorno claro do fundo original.
+// 1. Retrato: a foto vem em fundo quase branco. O rembg (modelo leve) dá a silhueta, mas folgada: sobra um contorno claro.
+// Por isso o fundo final é o branco ligado à borda da imagem, sem passar de 10px para dentro da silhueta do rembg
+// (o limite protege a barba branca, que encosta no fundo).
 const recorte = path.join(cache, "retrato-recortado.png");
 if (!existsSync(recorte)) {
   execFileSync("uvx", ["--from", "rembg[cpu,cli]", "rembg", "i", "-m", "u2net_human_seg", path.join(fonte, "ferrer-retrato.jpg"), recorte], { stdio: "inherit" });
 }
 const retrato = await (async () => {
-  const { width, height } = await sharp(recorte).metadata();
-  // desfoca o alfa e corta abaixo de ~60%: a borda recua cerca de 2px e continua suave
-  const alfa = await sharp(recorte).extractChannel(3).blur(2).linear(2.5, -255 * 1.5).raw().toBuffer();
-  return sharp(recorte).removeAlpha().joinChannel(alfa, { raw: { width, height, channels: 1 } }).png().toBuffer();
+  const { data: rgb, info } = await sharp(path.join(fonte, "ferrer-retrato.jpg")).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const { width, height } = info;
+  // toColourspace("b-w"): sem ele o sharp devolve 3 canais e a máscara sai errada
+  // atenção: no sharp 0.35, em máscara de 1 canal, dilate() ENCOLHE o branco e erode() aumenta (conferido abaixo)
+  const mascara = await sharp(recorte).extractChannel(3).toColourspace("b-w").raw().toBuffer();
+  const miolo = await sharp(recorte).extractChannel(3).dilate(10).toColourspace("b-w").raw().toBuffer();
+  const brancos = (b) => b.reduce((s, v) => s + (v >= 128 ? 1 : 0), 0);
+  if (brancos(miolo) >= brancos(mascara)) throw new Error("dilate() não encolheu a máscara: o sharp mudou de comportamento, troque por erode()");
+  if (miolo.length !== width * height) throw new Error("máscara do rembg com tamanho diferente da foto; apague o cache");
+  const fundo = new Uint8Array(width * height);
+  const fila = [];
+  const semear = (i) => {
+    if (fundo[i] || miolo[i] >= 128 || Math.min(rgb[i * 3], rgb[i * 3 + 1], rgb[i * 3 + 2]) <= 225) return;
+    fundo[i] = 1;
+    fila.push(i);
+  };
+  for (let x = 0; x < width; x++) { semear(x); semear((height - 1) * width + x); }
+  for (let y = 0; y < height; y++) { semear(y * width); semear(y * width + width - 1); }
+  while (fila.length) {
+    const i = fila.pop();
+    const x = i % width;
+    if (x > 0) semear(i - 1);
+    if (x < width - 1) semear(i + 1);
+    if (i >= width) semear(i - width);
+    if (i < fundo.length - width) semear(i + width);
+  }
+  const parte = fundo.reduce((s, f) => s + f, 0) / fundo.length;
+  if (parte < 0.3 || parte > 0.7) throw new Error(`recorte do retrato suspeito: fundo = ${Math.round(parte * 100)}% da imagem`);
+  // a borda recua 2px para tirar a franja clara da compressão e é suavizada
+  const cru = Buffer.from(fundo.map((f) => (f ? 0 : 255)));
+  const alfa = await sharp(cru, { raw: { width, height, channels: 1 } }).dilate(2).blur(1).toColourspace("b-w").raw().toBuffer();
+  return sharp(rgb, { raw: info }).joinChannel(alfa, { raw: { width, height, channels: 1 } }).png().toBuffer();
 })();
 await variantes("ferrer-retrato", () => sharp(retrato), [480, 768, 1080], ["avif", "webp"]);
 
@@ -78,10 +109,10 @@ const logo = await (async () => {
   for (let i = 0; i < alfa.length; i++) {
     const r = data[i * 3], g = data[i * 3 + 1], b = data[i * 3 + 2];
     const croma = Math.max(r, g, b) - Math.min(r, g, b);
-    alfa[i] = Math.max(0, Math.min(255, (croma - 14) * 6));
+    alfa[i] = Math.max(0, Math.min(255, (croma - 10) * 16)); // sombra cinza: croma até ~8; brilho do dourado: a partir de ~35
   }
   // recua a borda ~1px para não sobrar pixel claro de transição
-  const alfaFino = await sharp(alfa, { raw: { width, height, channels: 1 } }).blur(1).linear(2.4, -255 * 1.4).raw().toBuffer();
+  const alfaFino = await sharp(alfa, { raw: { width, height, channels: 1 } }).blur(1).linear(2.4, -255 * 1.4).toColourspace("b-w").raw().toBuffer();
   const rgba = await sharp(data, { raw: info }).joinChannel(alfaFino, { raw: { width, height, channels: 1 } }).png().toBuffer();
   return sharp(rgba).trim({ threshold: 1 }).png().toBuffer();
 })();
@@ -115,12 +146,12 @@ for (const n of [4, 6, 17, 20]) {
       .png()
       .toBuffer();
   }
-  const nome = `ressonancia/slide-${nn}`;
+  const nome = `slide-${nn}`;
   for (const l of larguras) {
-    await sharp(prontos[l]).avif({ quality: 60, effort: 5 }).toFile(path.join(img, `${nome}-${l}.avif`));
-    await sharp(prontos[l]).webp({ quality: 82, effort: 6 }).toFile(path.join(img, `${nome}-${l}.webp`));
+    await sharp(prontos[l]).avif({ quality: 60, effort: 5 }).toFile(path.join(img, "ressonancia", `${nome}-${l}.avif`));
+    await sharp(prontos[l]).webp({ quality: 82, effort: 6 }).toFile(path.join(img, "ressonancia", `${nome}-${l}.webp`));
   }
-  manifest[nome] = { larguras, proporcao: [1280, 720], formatos: ["avif", "webp"] };
+  manifest[nome] = { larguras, formatos: ["avif", "webp"], largura: 1280, altura: 720, pasta: "ressonancia" };
 }
 
 // 6. Imagem de compartilhamento: fundo preto, fio dourado de 1px, logo e a frase do topo B.
@@ -181,11 +212,12 @@ for (const n of [4, 6, 17, 20]) {
 writeFileSync(path.join(img, "manifest.json"), JSON.stringify(manifest, null, 2) + "\n");
 
 // Conferência: todo arquivo do manifest existe com a largura declarada e ninguém passa de 250 KB (exceto png do logo e ícones).
-for (const [nome, { larguras, proporcao, formatos }] of Object.entries(manifest)) {
+for (const [nome, { larguras, formatos, largura, altura, pasta = "" }] of Object.entries(manifest)) {
   for (const l of larguras) for (const f of formatos) {
-    const arq = path.join(img, `${nome}-${l}.${f}`);
+    const arq = path.join(img, pasta, `${nome}-${l}.${f}`);
     const m = await sharp(arq).metadata();
-    const altEsperada = (l * proporcao[1]) / proporcao[0];
+    const altEsperada = (l * altura) / largura;
+    if (nome === "ferrer-retrato" && !m.hasAlpha) throw new Error(`${arq}: retrato saiu sem transparência`);
     if (m.width !== l || Math.abs(m.height - altEsperada) > 1) throw new Error(`${arq}: ${m.width}x${m.height} não bate com o manifest`);
     if (f !== "png" && statSync(arq).size > LIMITE) throw new Error(`${arq} passa de 250 KB`);
   }

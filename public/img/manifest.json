@@ -1,0 +1,105 @@
+{
+  "ferrer-retrato": {
+    "larguras": [
+      480,
+      768,
+      1080
+    ],
+    "formatos": [
+      "avif",
+      "webp"
+    ],
+    "largura": 1080,
+    "altura": 1080
+  },
+  "ferrer-premio": {
+    "larguras": [
+      480,
+      768,
+      1080
+    ],
+    "formatos": [
+      "avif",
+      "webp"
+    ],
+    "largura": 1080,
+    "altura": 1440
+  },
+  "capa-ressonancia": {
+    "larguras": [
+      768,
+      1280,
+      1600
+    ],
+    "formatos": [
+      "avif",
+      "webp"
+    ],
+    "largura": 1600,
+    "altura": 1131
+  },
+  "logo-gestor-sincero": {
+    "larguras": [
+      320,
+      640
+    ],
+    "formatos": [
+      "webp",
+      "png"
+    ],
+    "largura": 640,
+    "altura": 196
+  },
+  "slide-04": {
+    "larguras": [
+      768,
+      1280
+    ],
+    "formatos": [
+      "avif",
+      "webp"
+    ],
+    "largura": 1280,
+    "altura": 720,
+    "pasta": "ressonancia"
+  },
+  "slide-06": {
+    "larguras": [
+      768,
+      1280
+    ],
+    "formatos": [
+      "avif",
+      "webp"
+    ],
+    "largura": 1280,
+    "altura": 720,
+    "pasta": "ressonancia"
+  },
+  "slide-17": {
+    "larguras": [
+      768,
+      1280
+    ],
+    "formatos": [
+      "avif",
+      "webp"
+    ],
+    "largura": 1280,
+    "altura": 720,
+    "pasta": "ressonancia"
+  },
+  "slide-20": {
+    "larguras": [
+      768,
+      1280
+    ],
+    "formatos": [
+      "avif",
+      "webp"
+    ],
+    "largura": 1280,
+    "altura": 720,
+    "pasta": "ressonancia"
+  }
+}
