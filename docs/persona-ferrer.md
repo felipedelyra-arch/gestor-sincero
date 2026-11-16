@@ -98,7 +98,7 @@ Pela ordem; a primeira que bater vale:
 
 ## Tabela opção → regra (para o Back-end)
 
-Ids valem dentro do `tema` (o mesmo id pode existir em duas perguntas, como `nao-sei` em `vendas` e `custo-cliente`). Nos confrontos, `{antes}` e `{agora}` são os rótulos das respostas na ordem da coluna "{antes} → {agora}" da segunda tabela. Resposta por número: `{agora}` = número + sufixo (ex.: "1200 reais").
+Ids valem dentro do `tema` (o mesmo id pode existir em duas perguntas, como `nao-sei` em `vendas` e `custo-cliente`). Nos confrontos, `{antes}` e `{agora}` são os rótulos das respostas na ordem da coluna "{antes} → {agora}" da segunda tabela. `{antes}` é sempre a resposta da pergunta feita primeiro e `{agora}` a da feita depois. Resposta por número: o rótulo é o número formatado, sem plural (ex.: "R$ 1.200" na 5).
 
 | Pergunta (tema) | Opção (id) | O que significa | Regras e recomendação |
 | --- | --- | --- | --- |
@@ -140,10 +140,9 @@ Condições de cada confronto (9 regras). A pergunta 8 não tem opção de suces
 | `vendas-boas-problema-vender` | 3 = `cresceram` e 8 = `vender-mais` | 3 → 8 |
 | `digital-terceirizado-quer-digital` | 4 ∈ {`agencia`, `parente`} e 8 = `digital` | 4 → 8 |
 | `equipe-segue-mas-problema-equipe` | 6 = `segue` e 8 = `equipe` | 6 → 8 |
-| `sucessao-planejada-sem-numeros` | 7 = `planejada` e (3 = `nao-sei` ou 5 = `nao-sei`) | 7 → a de 3 ou 5 (a que for `nao-sei`; se as duas, a 5) |
+| `sucessao-planejada-sem-numeros` | 7 = `planejada` e (3 = `nao-sei` ou 5 = `nao-sei`) | a de 3 ou 5 (a que for `nao-sei`; se as duas, a 5) → 7 |
 | `experiencia-mas-vendas-caindo` | 2 = `experiencia` e 3 = `cairam` | 2 → 3 |
-| `sabe-custo-mas-decide-no-feeling` | 2 = `experiencia` e 5 respondida com número | 2 → 5 (número + "reais") |
+| `sabe-custo-mas-decide-no-feeling` | 2 = `experiencia` e 5 respondida com número | 2 → 5 (ex.: "R$ 1.200") |
 | `sem-sucessao-prioridade-outra` | 7 ∈ {`so-eu`, `nao-pensei`} e 8 ≠ `ja-decidi` | 7 → 8 |
 | `cuida-digital-mas-depende-de-terceiros` | 4 = `eu-mesmo` e 8 = `depender-de-terceiros` | 4 → 8 |
 
-Atenção em `sucessao-planejada-sem-numeros`: a pergunta 7 vem depois da 3 e da 5, então ali `{antes}` é o rótulo da 7 e `{agora}` o da pergunta anterior; a fala foi escrita nessa ordem ("Sobre a sucessão… Sobre os números…").

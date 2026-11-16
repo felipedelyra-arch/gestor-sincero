@@ -32,7 +32,7 @@ export const papoRetoBruto: PapoRetoEntrada = {
         sufixo: "anos",
         min: 1,
         max: 200,
-        fala: "Anotado: {valor} anos de mercado. O que me interessa agora é o que mudou no seu mercado nesse tempo, e se a empresa mudou junto.",
+        fala: "Anos de mercado: {valor}. Anotado. O que me interessa agora é o que mudou no seu mercado nesse tempo, e se a empresa mudou junto.",
       },
     },
     {
@@ -146,7 +146,7 @@ export const papoRetoBruto: PapoRetoEntrada = {
         sufixo: "reais",
         min: 0,
         max: 1000000,
-        fala: "Anotado: {valor} reais para conquistar um cliente novo. Você tem o número, e isso já muda a conversa. A próxima pergunta é se ele cabe na sua margem.",
+        fala: "Custo por cliente novo: R$ {valor}. Anotado. Você tem o número, e isso já muda a conversa. A próxima pergunta é se ele cabe na sua margem.",
       },
     },
     {
@@ -263,7 +263,7 @@ export const papoRetoBruto: PapoRetoEntrada = {
     "equipe-segue-mas-problema-equipe":
       'Sobre a equipe jovem, você disse "{antes}". Agora, como prioridade, disse "{agora}". As duas coisas não andam juntas. Qual delas vale hoje?',
     "sucessao-planejada-sem-numeros":
-      'Sobre a sucessão, você disse "{antes}". Sobre os números da empresa, disse "{agora}". Sucessão planejada pede números que passem de mão em mão. Qual das duas vale hoje?',
+      'Sobre os números da empresa, você disse "{antes}". Agora, sobre a sucessão, disse "{agora}". Sucessão planejada pede números que passem de mão em mão. Qual das duas vale hoje?',
     "experiencia-mas-vendas-caindo":
       'Sobre as decisões, você disse "{antes}". Sobre as vendas, disse "{agora}". Se a experiência decide e as vendas caem, talvez seja ela que precise de atualização. O que mudou no seu mercado?',
     "sabe-custo-mas-decide-no-feeling":
