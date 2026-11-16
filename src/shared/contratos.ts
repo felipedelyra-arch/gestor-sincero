@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+// Sem compilação por eval: a CSP não permite e a sondagem do Zod gera uma violação a cada carga.
+z.config({ jitless: true });
+
 // Contrato único entre formulários (navegador) e rotas BFF (servidor).
 // Dono: orquestrador. Front e Back importam daqui; mudanças passam por ele.
 

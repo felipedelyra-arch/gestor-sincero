@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+// Sem compilação por eval: a CSP não permite e a sondagem do Zod gera uma violação a cada carga.
+z.config({ jitless: true });
+
 // Contrato do conteúdo da página. Dono do formato: orquestrador. Dono do texto: terminal Conteúdo.
 // Preço, datas, links e contatos NÃO entram aqui: ficam em config/site.ts.
 // Texto que depende do Ferrér usa o marcador "[PENDENTE FERRÉR]".
@@ -128,8 +131,12 @@ export const paginaSchema = z.object({
     titulo: t,
     analogia: t,
     paragrafos: lista(),
+    altCapa: t,
+    tituloFases: t,
     fases: z.array(z.object({ letra: z.string().regex(/^[A-I]$/), nome: t, descricao: t })).length(9),
+    tituloEntregas: t,
     entregas: z.array(item).min(3),
+    tituloEtapas: t,
     etapas: z.array(item).min(3),
     prazo: t,
     previa: z.object({
@@ -181,6 +188,7 @@ export const paginaSchema = z.object({
     descricao: t,
     marcas: z.array(item).min(1),
     rotuloContatos: t,
+    rotuloCnpj: t,
     rotuloPrivacidade: t,
     rotuloTermos: t,
     direitos: t,

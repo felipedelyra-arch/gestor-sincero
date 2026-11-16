@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+// Sem compilação por eval: a CSP não permite e a sondagem do Zod gera uma violação a cada carga.
+z.config({ jitless: true });
+
 // Regra: `null` significa PENDENTE (aguardando o Ferrér, ver docs/PERGUNTAS_FERRER.md).
 // Componentes escondem o bloco ou mostram texto neutro quando o valor é null; nunca inventam.
 
@@ -50,7 +53,10 @@ export type Site = z.infer<typeof siteSchema>;
 
 export const site: Site = siteSchema.parse({
   nome: "Gestor Sincero",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000", // PENDENTE: domínio
+  // PENDENTE: domínio. Sem a variável, a prévia da Vercel usa o endereço do próprio deploy.
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"),
   indexar: false,
   video: { url: null },
   jornada: { horario: "20h30", datas: [null, null, null] },

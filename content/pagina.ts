@@ -261,6 +261,8 @@ export const paginaBruta: PaginaEntrada = {
       "A Ressonância Digital mostra o que a rotina esconde dentro da sua empresa. É o diagnóstico de marketing, gestão e vendas da S4, com 52 temas examinados em 9 fases.",
       "Você recebe um retrato com nota, evidências e ordem de prioridade. A decisão continua sendo sua, agora com os exames na mesa.",
     ],
+    altCapa: "Capa do estudo Ressonância Digital, da S4 Marketing Digital",
+    tituloFases: "As 9 fases do exame",
     fases: [
       { letra: "A", nome: "Diagnóstico e visão macro", descricao: "O momento da empresa e o cenário em que ela compete." },
       { letra: "B", nome: "Capacidades e capital humano", descricao: "O que a equipe sabe fazer hoje e o que falta para a próxima fase." },
@@ -272,6 +274,7 @@ export const paginaBruta: PaginaEntrada = {
       { letra: "H", nome: "Saúde financeira", descricao: "Receita, margem e caixa, vistos sem maquiagem." },
       { letra: "I", nome: "Processos, tecnologia e escala", descricao: "O que sustenta a operação e o que impede a empresa de crescer." },
     ],
+    tituloEntregas: "O que você recebe",
     entregas: [
       { nome: "Nota de 0 a 100", descricao: "Uma medida única da maturidade da empresa, para acompanhar a evolução ao longo do tempo." },
       { nome: "Prontuários por tema", descricao: "O que foi encontrado em cada tema examinado, com as evidências." },
@@ -279,6 +282,7 @@ export const paginaBruta: PaginaEntrada = {
       { nome: "Rituais de governança", descricao: "As reuniões e os acompanhamentos que mantêm o plano de pé depois da entrega." },
       { nome: "Diagnóstico de implantação de IA", descricao: "Onde a inteligência artificial cabe na sua operação e onde ainda não cabe." },
     ],
+    tituloEtapas: "Como o estudo acontece",
     etapas: [
       { nome: "Cartas na mesa", descricao: "A conversa inicial, em que você conta onde a empresa está e aonde quer chegar." },
       { nome: "Imersão e busca de dados", descricao: "A S4 levanta os números e as informações de cada área." },
@@ -449,6 +453,7 @@ export const paginaBruta: PaginaEntrada = {
       { nome: "Escola de Inovação Aberta", descricao: "Escola da qual Sidney Ferrér é reitor." },
     ],
     rotuloContatos: "Contatos",
+    rotuloCnpj: "CNPJ",
     rotuloPrivacidade: "Política de privacidade",
     rotuloTermos: "Termos de uso",
     direitos: "Todos os direitos reservados",
