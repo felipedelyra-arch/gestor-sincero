@@ -1,0 +1,59 @@
+import { mkdirSync, writeFileSync } from "node:fs";
+import AxeBuilder from "@axe-core/playwright";
+import { expect, test, type Page } from "@playwright/test";
+
+const REGRAS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"];
+const SAIDA = "test-results/axe"; // fora do git; os números vão para docs/QA.md
+
+async function auditar(page: Page, nome: string) {
+  // As seções entram por opacidade ao rolar: sem passar por todas, o contraste seria medido no meio da transição.
+  await page.evaluate(async () => {
+    for (let y = 0; y < document.body.scrollHeight; y += 500) {
+      window.scrollTo(0, y);
+      await new Promise((r) => setTimeout(r, 80));
+    }
+    window.scrollTo(0, 0);
+  });
+  await page.waitForTimeout(1200);
+  const { violations, incomplete, passes } = await new AxeBuilder({ page }).withTags(REGRAS).analyze();
+  const resumo = violations.map((v) => ({
+    regra: v.id,
+    impacto: v.impact,
+    ajuda: v.help,
+    nos: v.nodes.map((n) => ({ alvo: n.target.join(" "), html: n.html.slice(0, 200), resumo: n.failureSummary })),
+  }));
+  mkdirSync(SAIDA, { recursive: true });
+  writeFileSync(
+    `${SAIDA}/${nome}.json`,
+    JSON.stringify({ aprovadas: passes.length, violacoes: resumo, incompletas: incomplete.map((i) => `${i.id} (${i.nodes.length})`) }, null, 2),
+  );
+  return resumo;
+}
+
+const graves = (r: Awaited<ReturnType<typeof auditar>>) => r.filter((v) => v.impacto === "critical" || v.impacto === "serious");
+
+for (const [largura, altura] of [[390, 844], [1280, 800]] as const) {
+  test.describe(`axe em ${largura}px`, () => {
+    test.use({ viewport: { width: largura, height: altura } });
+
+    for (const rota of ["/", "/privacidade", "/termos"]) {
+      test(`${rota} sem violações graves`, async ({ page }) => {
+        await page.goto(rota);
+        const nome = `${rota === "/" ? "inicio" : rota.slice(1)}-${largura}`;
+        expect(graves(await auditar(page, nome))).toEqual([]);
+      });
+    }
+
+    test("/ com erros de formulário e sem o banner de cookies", async ({ page }) => {
+      await page.goto("/");
+      await page.getByRole("button", { name: /recusar/i }).click();
+      for (const id of ["#jornada", "#ressonancia"]) {
+        const form = page.locator(`${id} form`);
+        await form.scrollIntoViewIfNeeded();
+        await form.locator('button[type="submit"]').click();
+        await expect(form.locator('[name="nome"]')).toHaveAttribute("aria-invalid", "true");
+      }
+      expect(graves(await auditar(page, `inicio-erros-${largura}`))).toEqual([]);
+    });
+  });
+}
