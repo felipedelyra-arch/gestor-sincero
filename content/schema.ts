@@ -242,6 +242,7 @@ export const papoRetoSchema = z.object({
   perguntas: z.array(perguntaPapo).length(8),
   livre: z.object({ rotulo: t, ajuda: t.optional() }), // "quer explicar melhor?"
   responder: t, // botão que envia número ou texto livre
+  naoEntendi: fala, // quando o texto livre não pôde ser lido: pede para escolher uma das opções, sem soar como erro
   enviando: t,
   // fala de confronto por regra: chave = id da regra em regras.ts; {antes} e {agora} viram os rótulos das respostas
   confrontos: z.record(slug, fala).refine((c) => Object.keys(c).length >= 8, "mínimo de 8 confrontos"),
