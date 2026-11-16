@@ -55,5 +55,39 @@ for (const [largura, altura] of [[390, 844], [1280, 800]] as const) {
       }
       expect(graves(await auditar(page, `inicio-erros-${largura}`))).toEqual([]);
     });
+
+    // Só a página inicial tem details e menu; as páginas legais não têm nenhum dos dois.
+    for (const rota of ["/"]) {
+      test(`${rota} com os details abertos`, async ({ page }) => {
+        await page.goto(rota);
+        await page.getByRole("button", { name: /recusar/i }).click();
+        // Abre tudo menos o menu (auditado à parte). Sem o `name`, que só deixa um aberto por grupo.
+        const abertos = await page.evaluate(() => {
+          const todos = [...document.querySelectorAll<HTMLDetailsElement>("details")].filter((d) => !d.closest("body > header"));
+          todos.forEach((d) => {
+            d.removeAttribute("name");
+            d.open = true;
+          });
+          return todos.length;
+        });
+        if (rota === "/") expect(abertos).toBeGreaterThan(10);
+        const nome = `${rota === "/" ? "inicio" : rota.slice(1)}-abertos-${largura}`;
+        expect(graves(await auditar(page, nome))).toEqual([]);
+      });
+    }
+
+    if (largura < 1024)
+      for (const rota of ["/"]) {
+        test(`${rota} com o menu do celular aberto`, async ({ page }) => {
+          await page.goto(rota);
+          await page.getByRole("button", { name: /recusar/i }).click();
+          const menu = page.getByRole("banner").locator("details");
+          await menu.locator("summary").click();
+          await expect(menu.getByRole("link").first()).toBeVisible();
+          const nome = `${rota === "/" ? "inicio" : rota.slice(1)}-menu-${largura}`;
+          expect(graves(await auditar(page, nome))).toEqual([]);
+          await expect(menu).toHaveAttribute("open", "");
+        });
+      }
   });
 }

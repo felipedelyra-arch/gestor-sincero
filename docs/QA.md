@@ -2,6 +2,73 @@
 
 Alvo: `http://localhost:3000` em modo prod (build do orquestrador), sem `.env.local` (sem Supabase, Turnstile real, Pixel ou GA4). Chromium sem interface, 1 worker. Nada de código de produção foi alterado.
 
+## Reteste do redesign v2 (16/11/2026, build de prod com dbcd7fb e a127c22, sem gsap e lenis)
+
+Os 8 specs antigos passaram sem ajuste de seletor. Specs novos: `tests/e2e/cabecalho.spec.ts` e `tests/e2e/design-v2.spec.ts`; `acessibilidade.spec.ts` ganhou os casos com os details abertos e com o menu do celular aberto.
+
+| Critério | Meta | Medido | Situação |
+|---|---|---|---|
+| Lighthouse desempenho, celular | ≥ 95 | 96, 96, 97 (mediana 96) | aprovado |
+| Lighthouse desempenho, desktop | ≥ 95 | 100 | aprovado |
+| Acessibilidade, boas práticas (celular e desktop) | ≥ 95 | 100 e 100 | aprovado |
+| SEO | ≥ 95 | 69 (só `is-crawlable`, `noindex` proposital, B6) | conhecido |
+| LCP celular / desktop | < 2,5 s | 2,3 s nas três / 0,5 s | aprovado, com ressalva (V2-M4) |
+| TBT celular / desktop | | 160, 180, 150 ms / 10 ms | |
+| CLS celular / desktop | < 0,1 | 0 / 0,01 | aprovado |
+| axe, 3 rotas em 390 e 1280 | 0 graves | 0 violações de qualquer gravidade | aprovado |
+| axe com os 23 details abertos (390 e 1280) e com o menu aberto (390) | 0 graves | 0 violações | aprovado |
+| Maior fonte da página | ≤ 56px | 56px (h1) em 1280 e 1920; 36px em 390; igual com os details abertos | aprovado |
+| Rolagem horizontal (390, 1280, 1920; fechado e com tudo aberto) | nenhuma | nenhuma, nenhum elemento fora da largura | aprovado |
+| Altura total em 1280 / 1920 | ≤ 12.000px | 11.968 / 11.958 | aprovado |
+| Altura total em 390 | ≤ 18.000px | 19.778 | reprovado (V2-M2) |
+| Topo inteiro na primeira tela, 1280x800 e 1920x943 | sim | seção termina em 602px | aprovado |
+| Topo inteiro na primeira tela, 390x844 | sim | título e as duas chamadas cabem (até 610px, banner começa em 735px); o retrato termina em 992px | reprovado em parte (V2-M1) |
+| Alvos de toque (botões, links do menu, resumos de details, caixas de marcar) | ≥ 48px | 54 a 59 alvos por largura, todos ≥ 48px, também com os details abertos | aprovado |
+| Âncoras do cabeçalho (1280) e do menu (390) | seção logo abaixo do cabeçalho | as 5 param entre 0 e 40px abaixo dele | aprovado |
+| Menu do celular | abre por toque e teclado, fecha ao escolher | confere; sem JavaScript abre e as âncoras funcionam (só não fecha sozinho) | aprovado |
+| Console, CSP, requisições, links e âncoras (`saude`) | sem erro | 7 de 7 | aprovado |
+| Variações do topo, comparativo, cookies, checkout | | 6 de 6; 2 de 2; 3 + 1 pulado (M3); 1 + 1 pulado (M4) | aprovado |
+| Formulários | | validação e corpo enviado conferem; envio completo pulado nos dois pelo 503 esperado em prod (P1) | pendência de ambiente |
+
+Lighthouse 13.6.0, página de 333 KiB no celular. O índice da máquina ficou em 1673 a 1742 (era ~950 na medição anterior): a máquina estava mais folgada, então a nota não se compara direto com os 87 a 92 de antes. Maior tarefa longa no celular: 258 a 328 ms em `01t2i9pe5vz2-.js` (era 410 a 494 ms). Gravados: `tests/lighthouse/celular.json` (mediana) e `tests/lighthouse/desktop.json`.
+
+Altura por seção em 1280 (alvo do DESIGN v2 entre parênteses): topo 504 (720), espelho 643 (620), dados 632 (520), inimigo 530 (520), virada 807 (760), quem é 926 (820), método 609 (680), jornada 1148 (900), dicionário 729 (560), ressonância 2453 (2200), mentoria 796 (900), para quem 733 (560), perguntas 625 (620), fechamento 386 (360), rodapé 348 (360).
+
+### Achados do redesign v2
+
+Crítico (já conhecidos, seguem abertos):
+
+- **C1** marcadores visíveis ao visitante: `content/pagina.ts:87` (print `03-dados.jpg`), `content/pagina.ts:435` (resposta de "As reuniões ficam gravadas?"), `content/legal.ts:17, :18, :46, :48, :60, :109, :158` (prints `privacidade.jpg` e `termos.jpg`). Do mesmo tipo: "Amostra a validar pelo Ferrér" (`content/pagina.ts:254`, print `09-dicionario.jpg`).
+- **C2** rodapé sem contato nem razão social (print `15-footer.jpg`). **C3** números sem fonte confirmada.
+
+Médio:
+
+- **V2-M1** em 390x844 o topo não cabe inteiro na primeira tela: o retrato começa em ~620px e termina em 992px, e o banner de cookies cobre de 735px para baixo; aparece só o alto da cabeça (`src/components/secoes/Topo.tsx:11–21`, print `390/00-primeira-tela-com-cookies.jpg`).
+- **V2-M2** página com 19.778px em 390 (meta 18.000). As maiores: ressonância 4.274, jornada 1.996, quem é 1.796, mentoria 1.696, para quem 1.415.
+- **V2-M3** em 1280 a coluna da prévia da Ressonância acaba ~750px antes do formulário ao lado e deixa um vazio grande à esquerda (`src/components/secoes/Ressonancia.tsx:105`, print `1280/10-ressonancia.jpg`).
+- **V2-M4** o LCP do celular passou de 1,0 s (subtítulo) para 2,3 s: agora é o retrato (`div.entra > picture > img`), que no celular fica abaixo das chamadas. Dentro da meta, com pouca folga.
+- **V2-M5** 11 das 15 seções passam da altura-alvo em 1280 (lista acima); as mais distantes: jornada +248, ressonância +253, para quem +173, dicionário +169, dados +112, quem é +106. A página só cabe nos 12.000px por 32px.
+
+Baixo:
+
+- **V2-B1** `1280/07-metodo.jpg`: os dois cartões dos pilares têm alturas diferentes (4 e 6 etapas), sobra um degrau sob o da esquerda (`src/components/secoes/Metodo.tsx:11`, `items-start`).
+- **V2-B2** `1280/termos.jpg` e `1280/privacidade.jpg`: texto em coluna estreita à esquerda, metade direita vazia; as páginas legais não têm o cabeçalho novo, só o link de voltar.
+- **V2-B3** "Simulação com dados fictícios" aparece três vezes no mesmo cartão da prévia (rótulo, imagem e legenda), prints `10-ressonancia.jpg`.
+- **V2-B4** `1280/06-quem-e.jpg`: "Ver todos" das etiquetas cai sozinho numa segunda linha, com recuo diferente das etiquetas.
+- **V2-B5** quebras forçadas estranhas em 390: "Esta / é uma amostra" (`09-dicionario.jpg`) e os títulos das pautas (`08-jornada.jpg`); "Datas a confirmar" repetido nas três pautas.
+- **V2-B6** Inimigo tem 5 cartões de citação; o DESIGN v2 fala em 3 (`04-inimigo.jpg`). Conferir se é decisão.
+- **V2-B7** sem JavaScript o menu do celular não fecha ao escolher a âncora (fica aberto sobre a seção); com JavaScript fecha.
+
+Sem achado nos demais prints: nenhum texto cortado nem sobreposição em `01` a `15` nas duas larguras.
+
+### Não verificado no redesign v2
+
+- Tela de sucesso, link do manual e "Turnstile só quando a Cloudflare pede ação": o envio para no 503 esperado em prod (sem Supabase); o Turnstile não chegou a ser exercitado.
+- Rastreamento após o aceite (sem IDs), checkout (sem URL), `canonical`/`og:url` (A4, só em prévia da Vercel).
+- 1920: só as medidas (fonte, alturas, topo, rolagem); sem prints nem axe nessa largura.
+- Carrosséis: botões medidos (48px) e axe sem violação; a rolagem por botão e por teclado não tem teste próprio.
+- Prints das páginas legais em 390 conferidos só por axe e `saude`, não linha a linha.
+
 ## Medição final (16/11/2026, build de prod com 7a14517, 98059da, 38bc87e e a2e25e6)
 
 | Critério | Meta | Medido | Situação |
