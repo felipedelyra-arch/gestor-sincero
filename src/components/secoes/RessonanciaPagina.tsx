@@ -41,7 +41,7 @@ export function RessonanciaPagina() {
             largura={1600}
             altura={1131}
             prioridade
-            className="w-full rounded-cartao"
+            className="mx-auto w-full max-w-[240px] rounded-cartao lg:max-w-none"
           />
         </div>
       </section>
