@@ -1,6 +1,7 @@
 import { pagina } from "@content";
 import { site } from "@config/site";
 import { Botao } from "../ui/Botao";
+import { ConversaPapoReto } from "../papo-reto/ConversaPapoReto";
 import { Imagem } from "../ui/Imagem";
 import { TopoTitulo } from "./TopoTitulo";
 
@@ -17,9 +18,10 @@ export function Topo() {
       <div className="conteiner grid grid-cols-[minmax(0,1fr)_124px] items-start gap-x-4 py-6 lg:grid-cols-12 lg:items-end lg:gap-x-8 lg:py-0">
         <div className="contents lg:col-span-7 lg:block lg:py-20">
           <TopoTitulo variacoes={topo.variacoes} />
-          <div className="entra col-span-2 mt-5 flex flex-col items-start gap-x-6 gap-y-1 sm:flex-row sm:items-center lg:mt-8">
+          <div className="entra col-span-2 mt-4 flex flex-col items-start gap-x-6 gap-y-0 sm:flex-row sm:items-center lg:mt-8">
             <Botao chamada={topo.chamadaPrincipal} />
             <Botao chamada={topo.chamadaSecundaria} variante="secundario" />
+            <ConversaPapoReto className="max-sm:w-full" />
           </div>
         </div>
 

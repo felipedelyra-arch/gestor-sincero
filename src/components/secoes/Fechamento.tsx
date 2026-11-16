@@ -1,4 +1,5 @@
 import { pagina } from "@content";
+import { ConversaPapoReto } from "../papo-reto/ConversaPapoReto";
 import { Botao } from "../ui/Botao";
 
 /** 15. Faixa marinho: a frase final (36px), a frase de apoio e a última chamada. */
@@ -17,7 +18,10 @@ export function Fechamento() {
           </p>
         ))}
         {texto && <p className="mt-4 max-w-texto text-pretty">{texto}</p>}
-        <Botao chamada={chamada} className="mt-8" />
+        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
+          <Botao chamada={chamada} />
+          <ConversaPapoReto className="max-sm:w-full" />
+        </div>
       </div>
     </section>
   );
