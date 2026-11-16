@@ -36,13 +36,22 @@ const cifra: Cifra = {
 
 type Gravado<T> = T & { id: string; atualizadoEm: string };
 
+// Mesma regra da migração 0002: só é a mesma pessoa se e-mail E telefone coincidem; se só um
+// coincide, vira registro novo (o consentimento de um nunca cai no registro de outro).
+const mesmoContato = (a: ContatoProtegido, b: ContatoProtegido) =>
+  a.emailHash === b.emailHash && a.whatsappHash === b.whatsappHash;
+// Pedido: a mesma pessoa pode pedir para outra empresa; só repete se a empresa também for a mesma.
+const mesmoPedido = (a: PedidoRessonancia, b: PedidoRessonancia) =>
+  mesmoContato(a, b) && a.empresa.trim().toLowerCase() === b.empresa.trim().toLowerCase();
+
 function registrar<T extends ContatoProtegido>(
   lista: Gravado<T>[],
   registro: T,
   consentimentos: ConsentimentoNovo[],
   auditoria: AuditoriaRegistro,
+  mesmo: (a: T, b: T) => boolean = mesmoContato,
 ): ResultadoGravacao {
-  let gravado = lista.find((r) => r.emailHash === registro.emailHash || r.whatsappHash === registro.whatsappHash);
+  let gravado = lista.find((r) => mesmo(r, registro));
   const novo = !gravado;
   // Repetido não sobrescreve nada do primeiro registro: só marca a data.
   if (gravado) gravado.atualizadoEm = auditoria.data;
@@ -63,7 +72,7 @@ const dados = {
 
 const repositorio: RepositorioCadastros = {
   registrarCadastro: async (d) => registrar(dados.cadastros, d.cadastro, d.consentimentos, d.auditoria),
-  registrarPedidoRessonancia: async (d) => registrar(dados.pedidos, d.pedido, d.consentimentos, d.auditoria),
+  registrarPedidoRessonancia: async (d) => registrar(dados.pedidos, d.pedido, d.consentimentos, d.auditoria, mesmoPedido),
   registrarAuditoria: async (evento) => void dados.auditoria.push(evento),
 };
 

@@ -7,6 +7,8 @@ import { env, simularServicos } from "./teste/servicosSimulados";
 const TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.assinatura-de-teste";
 const EMAIL = "ana.souza@exemplo.com.br";
 const WHATSAPP = "5514999998888";
+const ADMIN = "22222222-2222-4222-8222-222222222222";
+const TITULAR = "a".repeat(64);
 
 function pedir(consulta: string, headers: Record<string, string> = { authorization: `Bearer ${TOKEN}` }) {
   return GET(new Request(`https://site.exemplo/api/admin/exportar${consulta}`, { headers: { "x-forwarded-for": "203.0.113.7", ...headers } }));
@@ -19,7 +21,7 @@ beforeEach(() => {
   rede = simularServicos();
   vi.spyOn(console, "error").mockImplementation(() => {});
   const cifra = criarCifra(env);
-  rede.usuario = { app_metadata: { papel: "admin" } };
+  rede.usuario = { id: ADMIN, app_metadata: { papel: "admin" } };
   rede.tabelas.cadastros = [
     {
       id: "11111111-1111-4111-8111-111111111111",
@@ -27,7 +29,7 @@ beforeEach(() => {
       nome: '=HYPERLINK("https://atacante.example";"clique")',
       email_cifrado: cifra.cifrar(EMAIL),
       whatsapp_cifrado: cifra.cifrar(WHATSAPP),
-      email_hash: "a".repeat(64),
+      email_hash: TITULAR,
       empresa: 'Souza, "Filhos" Ltda',
       cargo: null,
       variacao: "a",
@@ -36,9 +38,9 @@ beforeEach(() => {
     },
   ];
   rede.tabelas.consentimentos = [
-    { registro_id: "11111111-1111-4111-8111-111111111111", canal: "email", concedido: false },
-    { registro_id: "11111111-1111-4111-8111-111111111111", canal: "whatsapp", concedido: true },
-    { registro_id: "11111111-1111-4111-8111-111111111111", canal: "email", concedido: true },
+    { registro_id: "11111111-1111-4111-8111-111111111111", titular_hash: TITULAR, canal: "email", concedido: false },
+    { registro_id: "11111111-1111-4111-8111-111111111111", titular_hash: TITULAR, canal: "whatsapp", concedido: true },
+    { registro_id: "11111111-1111-4111-8111-111111111111", titular_hash: TITULAR, canal: "email", concedido: true },
   ];
 });
 
@@ -87,7 +89,31 @@ test("admin recebe o CSV com contato decifrado, último consentimento e fórmula
   // O token do admin vai ao Supabase Auth; a leitura das tabelas usa a service role.
   expect(rede.para("/auth/v1/user")[0].headers.get("authorization")).toBe(`Bearer ${TOKEN}`);
   expect(leituras()[0].headers.get("apikey")).toBe(env.SUPABASE_SERVICE_ROLE_KEY);
-  expect(JSON.parse(rede.para("/rest/v1/eventos_auditoria")[0].corpo)).toMatchObject({ tipo: "exportacao_admin", formulario: "cadastro-jornada" });
+  // A auditoria guarda quem exportou.
+  expect(JSON.parse(rede.para("/rest/v1/eventos_auditoria")[0].corpo)).toMatchObject({
+    tipo: "exportacao_admin",
+    formulario: "cadastro-jornada",
+    usuario_id: ADMIN,
+  });
+});
+
+test("aceite gravado por outro titular no mesmo registro não conta na exportação", async () => {
+  const id = "11111111-1111-4111-8111-111111111111";
+  const outro = "b".repeat(64);
+  // O titular recusou os dois canais; depois, outra pessoa "aceitou" apontando para o registro dele.
+  rede.tabelas.consentimentos = [
+    { registro_id: id, titular_hash: TITULAR, canal: "whatsapp", concedido: false },
+    { registro_id: id, titular_hash: TITULAR, canal: "email", concedido: false },
+    { registro_id: id, titular_hash: outro, canal: "whatsapp", concedido: true },
+    { registro_id: id, titular_hash: outro, canal: "email", concedido: true },
+  ];
+  const [, linha] = (await (await pedir("?tipo=cadastros")).text()).split("\r\n");
+  expect(linha).toContain(`"${WHATSAPP}","nao","nao",`);
+
+  // Sem nenhum aceite do próprio titular, as colunas ficam vazias (nunca "sim").
+  rede.tabelas.consentimentos = rede.tabelas.consentimentos.slice(2);
+  const [, semTitular] = (await (await pedir("?tipo=cadastros")).text()).split("\r\n");
+  expect(semTitular).toContain(`"${WHATSAPP}","","",`);
 });
 
 test("ressonância sem registros devolve só o cabeçalho", async () => {
@@ -108,7 +134,7 @@ test("mais de 1000 registros: lê todas as páginas", async () => {
 });
 
 test("token ausente, malformado, inválido ou de quem não é admin: 401 igual e nenhuma leitura", async () => {
-  const semAdmin = [{ app_metadata: {} }, { app_metadata: { papel: "editor" } }, { app_metadata: { papel: "admin " } }];
+  const semAdmin: NonNullable<typeof rede.usuario>[] = [{ app_metadata: {} }, { app_metadata: { papel: "editor" } }, { app_metadata: { papel: "admin " } }];
   const tentativas: (() => Promise<Response>)[] = [
     () => pedir("?tipo=cadastros", {}),
     () => pedir("?tipo=cadastros", { authorization: TOKEN }),

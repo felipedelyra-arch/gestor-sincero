@@ -21,15 +21,16 @@ export type AuditoriaRegistro = Omit<EventoAuditoria, "tipo" | "referenciaId">;
 export interface RepositorioCadastros {
   /**
    * Atômico (uma transação): registro + consentimentos + auditoria.
-   * Repetido (mesmo emailHash ou whatsappHash): não sobrescreve nenhum campo do primeiro registro,
+   * Repetido (mesmo emailHash E mesmo whatsappHash): não sobrescreve nenhum campo do primeiro registro,
    * só atualiza atualizado_em, acrescenta os consentimentos e a auditoria, e devolve novo = false.
+   * Se só um dos dois coincide é outra pessoa: registro novo, para o aceite de um não cair no de outro.
    */
   registrarCadastro(dados: {
     cadastro: Cadastro;
     consentimentos: ConsentimentoNovo[];
     auditoria: AuditoriaRegistro;
   }): Promise<ResultadoGravacao>;
-  /** Mesmas regras de registrarCadastro. */
+  /** Mesmas regras de registrarCadastro, por pessoa + empresa (trim, minúsculas): outra empresa é pedido novo. */
   registrarPedidoRessonancia(dados: {
     pedido: PedidoRessonancia;
     consentimentos: ConsentimentoNovo[];
@@ -69,6 +70,7 @@ export type LeadMeta = {
   emailSha256: string; // hex, e-mail já normalizado em minúsculas
   telefoneSha256: string; // hex, só dígitos com DDI
   momento: number; // segundos desde 1970
+  userAgent: string | null; // navegador do visitante; a Meta exige em eventos de site
 };
 
 export interface ConversoesMeta {
@@ -82,7 +84,7 @@ export type RegistroExportado = {
   criadoEm: string;
   emailCifrado: string;
   whatsappCifrado: string;
-  /** Último consentimento registrado por canal; null = nunca registrado. */
+  /** Último consentimento do próprio titular do registro, por canal; null = nunca registrado. */
   consentimentos: { whatsapp: boolean | null; email: boolean | null };
   /** Demais colunas, já em texto, com as chaves de `colunas`. */
   campos: Record<string, string>;
@@ -93,6 +95,6 @@ export interface LeitorExportacao {
 }
 
 export interface AutenticadorAdmin {
-  /** true só para token válido de usuário com app_metadata.papel = "admin". */
-  ehAdmin(token: string): Promise<boolean>;
+  /** Id do usuário só para token válido com app_metadata.papel = "admin"; senão null. */
+  ehAdmin(token: string): Promise<string | null>;
 }

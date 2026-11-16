@@ -36,6 +36,8 @@ export type Contexto = {
   consentiuCookies: boolean;
   /** Texto de cada consentimento como foi exibido no formulário. */
   textosConsentimento: Record<Consentimento["canal"], string>;
+  /** Cabeçalho user-agent já limitado em tamanho; só segue para a Meta, e só com aceite de cookies. */
+  userAgent: string | null;
   /** Executa depois da resposta (`after` do Next); falha aqui nunca chega ao visitante. */
   agendar: (tarefa: () => Promise<void>) => void;
 };
@@ -89,11 +91,12 @@ async function registrar<T extends Comum>(
   const auditar = (tipo: EventoAuditoria["tipo"], referenciaId: string | null) =>
     p.repositorio.registrarAuditoria({ tipo, formulario, referenciaId, ipHash, data });
   // Auditoria de falha é melhor esforço: não pode derrubar o que já deu certo.
-  const auditarFalha = (tipo: EventoAuditoria["tipo"], referenciaId: string) =>
+  const auditarFalha = (tipo: EventoAuditoria["tipo"], referenciaId: string | null) =>
     auditar(tipo, referenciaId).catch(() => {});
 
   if (!(await p.antirrobo.verificar(dados.turnstileToken, ctx.ip))) {
-    await auditar("antirrobo_reprovado", null);
+    // Melhor esforço: banco fora do ar não pode trocar o 400 do robô por 503.
+    await auditarFalha("antirrobo_reprovado", null);
     return { ok: false, erro: "antirrobo" };
   }
 
@@ -138,6 +141,7 @@ async function registrar<T extends Comum>(
         emailSha256: sha256(dados.email),
         telefoneSha256: sha256(dados.whatsapp),
         momento: Math.floor(Date.now() / 1000),
+        userAgent: ctx.userAgent,
       })
       .catch(() => auditarFalha("falha_meta", id));
   });

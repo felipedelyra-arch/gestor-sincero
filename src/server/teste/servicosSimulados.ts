@@ -20,7 +20,7 @@ export const env = {
 };
 
 export type Chamada = { url: URL; metodo: string; corpo: string; headers: Headers };
-type Registro = { id: string; emailHash: string; whatsappHash: string };
+type Registro = { id: string; emailHash: string; whatsappHash: string; empresa?: string };
 
 export function simularServicos() {
   for (const [nome, valor] of Object.entries(env)) vi.stubEnv(nome, valor);
@@ -29,7 +29,7 @@ export function simularServicos() {
     chamadas: [] as Chamada[],
     turnstile: true,
     fora: new Set<"supabase" | "turnstile" | "webhook" | "meta">(),
-    usuario: null as null | { app_metadata: Record<string, unknown> },
+    usuario: null as null | { id?: string; app_metadata: Record<string, unknown> },
     registros: { registrar_cadastro: [] as Registro[], registrar_pedido: [] as Registro[] },
     limites: new Map<string, number>(),
     tabelas: {} as Record<string, unknown[]>,
@@ -41,7 +41,7 @@ export function simularServicos() {
   function supabase(c: Chamada): Response {
     const caminho = c.url.pathname;
     if (estado.fora.has("supabase")) {
-      return json({ code: "XX000", message: "duplicate key value violates cadastros_email_hash_unico (detalhe interno)" }, 500);
+      return json({ code: "XX000", message: "duplicate key value violates cadastros_contato_unico (detalhe interno)" }, 500);
     }
     if (caminho === "/rest/v1/rpc/consumir_limite") {
       const { p_chave, p_max } = JSON.parse(c.corpo) as { p_chave: string; p_max: number };
@@ -51,11 +51,13 @@ export function simularServicos() {
     }
     if (caminho === "/rest/v1/rpc/registrar_cadastro" || caminho === "/rest/v1/rpc/registrar_pedido") {
       const funcao = caminho.endsWith("cadastro") ? "registrar_cadastro" : "registrar_pedido";
-      const args = JSON.parse(c.corpo) as Record<string, { emailHash: string; whatsappHash: string }>;
+      const args = JSON.parse(c.corpo) as Record<string, Omit<Registro, "id">>;
       const { emailHash, whatsappHash } = args.p_cadastro ?? args.p_pedido;
+      // Mesma regra da migração 0002: e-mail E telefone (no pedido, também a empresa normalizada).
+      const empresa = args.p_pedido?.empresa?.trim().toLowerCase();
       const lista = estado.registros[funcao];
-      const existente = lista.find((r) => r.emailHash === emailHash || r.whatsappHash === whatsappHash);
-      const registro = existente ?? { id: randomUUID(), emailHash, whatsappHash };
+      const existente = lista.find((r) => r.emailHash === emailHash && r.whatsappHash === whatsappHash && r.empresa === empresa);
+      const registro = existente ?? { id: randomUUID(), emailHash, whatsappHash, empresa };
       if (!existente) lista.push(registro);
       return json({ id: registro.id, novo: !existente });
     }

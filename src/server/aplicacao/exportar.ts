@@ -44,7 +44,8 @@ export async function responderExportacao(req: Request): Promise<Response> {
     const cabecalho = req.headers.get("authorization") ?? "";
     const token = cabecalho.length <= TOKEN_MAXIMO ? JWT.exec(cabecalho)?.[1] : undefined;
     // Token ausente, malformado, vencido ou de quem não é admin: a mesma resposta.
-    if (!token || !(await portas.autenticador.ehAdmin(token))) return recusar("nao-autorizado", 401);
+    const usuarioId = token ? await portas.autenticador.ehAdmin(token) : null;
+    if (!usuarioId) return recusar("nao-autorizado", 401);
 
     const consulta = consultaSchema.safeParse(Object.fromEntries(new URL(req.url).searchParams));
     if (!consulta.success) return recusar("validacao", 400);
@@ -63,13 +64,14 @@ export async function responderExportacao(req: Request): Promise<Response> {
         ...colunas.map((c) => r.campos[c] ?? ""),
       ]),
     ];
-    // A exportação tira dado pessoal do banco: fica registrada antes de o arquivo sair.
+    // A exportação tira dado pessoal do banco: fica registrada, com quem exportou, antes de o arquivo sair.
     await portas.repositorio.registrarAuditoria({
       tipo: "exportacao_admin",
       formulario: formularioDe[tipo],
       referenciaId: null,
       ipHash,
       data: new Date().toISOString(),
+      usuarioId,
     });
 
     // BOM: o Excel só lê acentos em UTF-8 com ele.

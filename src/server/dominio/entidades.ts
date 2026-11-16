@@ -47,4 +47,5 @@ export type EventoAuditoria = {
   referenciaId: string | null;
   ipHash: string | null;
   data: string; // ISO 8601
+  usuarioId?: string; // quem fez a ação, quando há usuário (exportação do admin)
 };

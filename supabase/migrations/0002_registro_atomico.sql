@@ -3,7 +3,10 @@
 -- COMO APLICAR: igual à 0001 (supabase db push, ou colar no SQL Editor), sempre depois dela.
 --
 -- registrar_cadastro / registrar_pedido fazem, em uma transação só:
---   1. procuram registro com o mesmo email_hash OU whatsapp_hash;
+--   1. procuram registro da MESMA pessoa: email_hash E whatsapp_hash iguais (no pedido, também a
+--      mesma empresa, sem diferenciar maiúsculas nem espaços nas pontas). Se só um dos dois coincide,
+--      é tratado como outra pessoa e vira registro novo: o consentimento de um nunca cai no registro
+--      de outro. A mesma pessoa pode pedir diagnóstico para mais de uma empresa;
 --   2. se não existe, inserem; se existe, NÃO sobrescrevem nada, só marcam atualizado_em;
 --   3. acrescentam os consentimentos e o evento de auditoria apontando para o registro.
 -- Os parâmetros chegam em jsonb com as mesmas chaves das entidades do domínio (camelCase).
@@ -17,7 +20,10 @@ alter table public.consentimentos
 
 alter table public.eventos_auditoria
   add column formulario text check (formulario in ('cadastro-jornada', 'ressonancia')),
-  add column ip_hash    text check (ip_hash ~ '^[0-9a-f]{64}$');
+  add column ip_hash    text check (ip_hash ~ '^[0-9a-f]{64}$'),
+  -- Quem fez a ação, quando há usuário (exportação do admin): id de auth.users, sem FK para o
+  -- registro sobreviver à exclusão do usuário.
+  add column usuario_id uuid;
 
 -- ---------------------------------------------------------------------------
 -- Apoio: consentimentos + auditoria de um registro (usado pelas duas funções)
@@ -60,15 +66,12 @@ begin
     raise exception 'registrar_cadastro: parametros invalidos';
   end if;
 
-  -- Envios simultâneos do mesmo e-mail ou telefone esperam aqui; a ordem fixa evita deadlock.
-  perform pg_advisory_xact_lock(hashtextextended('cadastro:' || least(v_email, v_whats), 0));
-  perform pg_advisory_xact_lock(hashtextextended('cadastro:' || greatest(v_email, v_whats), 0));
+  -- Envios simultâneos da mesma pessoa esperam aqui (e o unique do par garante no banco).
+  perform pg_advisory_xact_lock(hashtextextended('cadastro:' || v_email || ':' || v_whats, 0));
 
   select c.id into v_id
     from public.cadastros c
-   where c.email_hash = v_email or c.whatsapp_hash = v_whats
-   order by c.criado_em
-   limit 1;
+   where c.email_hash = v_email and c.whatsapp_hash = v_whats;
 
   if v_id is null then
     insert into public.cadastros
@@ -89,7 +92,7 @@ end;
 $$;
 
 -- ---------------------------------------------------------------------------
--- registrar_pedido (Ressonância Digital): mesmas regras
+-- registrar_pedido (Ressonância Digital): mesmas regras, por pessoa + empresa
 -- ---------------------------------------------------------------------------
 create function public.registrar_pedido(p_pedido jsonb, p_consentimentos jsonb, p_auditoria jsonb)
 returns jsonb
@@ -99,19 +102,20 @@ as $$
 declare
   v_email text := p_pedido->>'emailHash';
   v_whats text := p_pedido->>'whatsappHash';
+  v_empresa text := lower(btrim(p_pedido->>'empresa'));
   v_id    uuid;
   v_novo  boolean := false;
 begin
-  if v_email is null or v_whats is null then
+  if v_email is null or v_whats is null or v_empresa is null then
     raise exception 'registrar_pedido: parametros invalidos';
   end if;
 
-  perform pg_advisory_xact_lock(hashtextextended('pedido:' || least(v_email, v_whats), 0));
-  perform pg_advisory_xact_lock(hashtextextended('pedido:' || greatest(v_email, v_whats), 0));
+  -- Sem unique nesta tabela: é esta trava que impede o duplo clique de gravar dois pedidos iguais.
+  perform pg_advisory_xact_lock(hashtextextended('pedido:' || v_email || ':' || v_whats || ':' || v_empresa, 0));
 
   select p.id into v_id
     from public.pedidos_ressonancia p
-   where p.email_hash = v_email or p.whatsapp_hash = v_whats
+   where p.email_hash = v_email and p.whatsapp_hash = v_whats and lower(btrim(p.empresa)) = v_empresa
    order by p.criado_em
    limit 1;
 

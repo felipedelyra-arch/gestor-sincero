@@ -8,6 +8,7 @@ import { registrarCadastroJornada, registrarPedidoRessonancia, type Contexto } f
 // Fronteira HTTP comum às duas rotas de formulário. Usa só Request/Response padrão (sem Next).
 
 const CORPO_MAXIMO_BYTES = 10 * 1024;
+const USER_AGENT_MAXIMO = 512;
 
 const formularios = {
   "cadastro-jornada": { caso: registrarCadastroJornada, textos: () => pagina.jornada.formulario.consentimentos },
@@ -102,6 +103,7 @@ export async function responderFormulario(
         ip: ipDe(req),
         consentiuCookies: req.headers.get("x-gs-consentimento") === "aceito",
         textosConsentimento: textos(),
+        userAgent: req.headers.get("user-agent")?.slice(0, USER_AGENT_MAXIMO) || null,
         agendar,
       },
       portas,

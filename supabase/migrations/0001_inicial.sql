@@ -53,7 +53,8 @@ create table public.cadastros (
   variacao         text not null check (variacao in ('a', 'b')),
   utm              jsonb check (jsonb_typeof(utm) = 'object' and octet_length(utm::text) <= 4000),
   afiliado         text check (char_length(afiliado) <= 80),
-  constraint cadastros_email_hash_unico unique (email_hash)
+  -- Só o par identifica a pessoa: mesmo e-mail com outro telefone (ou o contrário) é outro registro.
+  constraint cadastros_contato_unico unique (email_hash, whatsapp_hash)
 );
 
 create index cadastros_whatsapp_hash_idx on public.cadastros (whatsapp_hash);
@@ -134,15 +135,17 @@ create index eventos_auditoria_registro_id_idx on public.eventos_auditoria (regi
 -- limites_taxa + consumir_limite (janela fixa por chave; a chave já vem com o IP em hash)
 -- ---------------------------------------------------------------------------
 create table public.limites_taxa (
-  chave         text primary key check (char_length(chave) between 1 and 200),
-  janela_inicio timestamptz not null default now(),
-  contagem      integer not null default 1 check (contagem >= 1)
+  chave     text primary key check (char_length(chave) between 1 and 200),
+  expira_em timestamptz not null,
+  contagem  integer not null default 1 check (contagem >= 1)
 );
 
-create index limites_taxa_janela_inicio_idx on public.limites_taxa (janela_inicio);
+create index limites_taxa_expira_em_idx on public.limites_taxa (expira_em);
 
--- Devolve true se a chamada cabe no limite. Um único comando (insert ... on conflict do update):
--- a linha fica travada durante a atualização, então chamadas simultâneas não perdem contagem.
+-- Devolve true se a chamada cabe no limite. A contagem é um único comando (insert ... on conflict
+-- do update): a linha fica travada durante a atualização, então chamadas simultâneas não perdem contagem.
+-- Cada chamada também apaga janelas vencidas (de qualquer chave): o hash de IP não fica guardado além
+-- da janela mais o intervalo até a próxima chamada, sem depender de agendador.
 create function public.consumir_limite(p_chave text, p_max integer, p_janela_segundos integer)
 returns boolean
 language plpgsql
@@ -158,15 +161,25 @@ begin
     raise exception 'consumir_limite: parametros invalidos';
   end if;
 
-  insert into public.limites_taxa as l (chave, janela_inicio, contagem)
-  values (p_chave, now(), 1)
+  -- Em lotes e pulando linhas travadas: barato e sem esperar outra chamada.
+  delete from public.limites_taxa
+   where chave in (
+     select v.chave from public.limites_taxa v
+      where v.expira_em <= now()
+      order by v.expira_em
+      limit 200
+      for update skip locked);
+
+  insert into public.limites_taxa as l (chave, expira_em, contagem)
+  values (p_chave, now() + make_interval(secs => p_janela_segundos), 1)
   on conflict (chave) do update
-    set janela_inicio = case
-          when l.janela_inicio <= now() - make_interval(secs => p_janela_segundos) then now()
-          else l.janela_inicio
+    -- Linha vencida que a limpeza pulou (travada por outra chamada): recomeça a janela.
+    set expira_em = case
+          when l.expira_em <= now() then now() + make_interval(secs => p_janela_segundos)
+          else l.expira_em
         end,
         contagem = case
-          when l.janela_inicio <= now() - make_interval(secs => p_janela_segundos) then 1
+          when l.expira_em <= now() then 1
           -- teto evita estouro de integer sob ataque prolongado
           else least(l.contagem + 1, 1000000)
         end

@@ -22,11 +22,13 @@ const linhaSchema = z.looseObject({
   criado_em: z.string(),
   email_cifrado: z.string(),
   whatsapp_cifrado: z.string(),
+  email_hash: z.string(),
   utm: z.record(z.string(), z.unknown()).nullable(),
 });
 
 const consentimentoSchema = z.object({
   registro_id: z.string(),
+  titular_hash: z.string(),
   canal: z.enum(["whatsapp", "email"]),
   concedido: z.boolean(),
 });
@@ -51,7 +53,7 @@ export function criarAdminSupabase(db: SupabaseClient): AutenticadorAdmin & Leit
     /** O Supabase Auth confere assinatura, validade e revogação; app_metadata só é gravável pelo servidor. */
     async ehAdmin(token) {
       const { data, error } = await db.auth.getUser(token);
-      return !error && data.user?.app_metadata?.papel === "admin";
+      return !error && data.user?.app_metadata?.papel === "admin" ? data.user.id : null;
     },
 
     async listar(tipo) {
@@ -63,15 +65,18 @@ export function criarAdminSupabase(db: SupabaseClient): AutenticadorAdmin & Leit
       const aceites = await todas("exportar consentimentos", consentimentoSchema, (de, ate) =>
         db
           .from("consentimentos")
-          .select("registro_id, canal, concedido")
+          .select("registro_id, titular_hash, canal, concedido")
           .eq("origem", origem)
           .in("canal", ["whatsapp", "email"])
           .order("criado_em")
           .order("id")
           .range(de, ate),
       );
+      const titular = new Map(linhas.map((l) => [l.id, l.email_hash]));
       const porRegistro = new Map<string, RegistroExportado["consentimentos"]>();
       for (const a of aceites) {
+        // Só vale o aceite do próprio titular do registro: aceite de outra pessoa nunca libera contato.
+        if (titular.get(a.registro_id) !== a.titular_hash) continue;
         const atual = porRegistro.get(a.registro_id) ?? { whatsapp: null, email: null };
         atual[a.canal] = a.concedido;
         porRegistro.set(a.registro_id, atual);

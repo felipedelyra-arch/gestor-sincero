@@ -226,14 +226,12 @@ test("script injetado é gravado como texto e nunca refletido", async () => {
   expect(erro.texto).not.toContain("script");
 });
 
-test("cadastro repetido não sobrescreve o primeiro registro e responde igual a um novo", async () => {
+test("cadastro repetido (mesmo e-mail e mesmo WhatsApp) não sobrescreve o primeiro registro e responde igual a um novo", async () => {
   const primeiro = await enviar(postCadastro, { ...cadastro, empresa: "Souza Ltda" });
   const original = structuredClone(memoria.dados.cadastros[0]);
 
-  // Mesmo e-mail com outro nome, outra empresa e outro telefone.
-  const segundo = await enviar(postCadastro, { ...cadastro, nome: "Invasor", empresa: "Outra", cargo: "x", whatsapp: "11988887777", consentimentoEmail: true });
-  // Mesmo WhatsApp com outro e-mail.
-  const terceiro = await enviar(postCadastro, { ...cadastro, nome: "Invasor", email: "outra@exemplo.com.br" });
+  const segundo = await enviar(postCadastro, { ...cadastro, nome: "Outro nome", empresa: "Outra", cargo: "x", consentimentoEmail: true });
+  const terceiro = await enviar(postCadastro, cadastro);
 
   for (const repetido of [segundo, terceiro]) {
     expect(repetido.res.status).toBe(primeiro.res.status);
@@ -253,11 +251,55 @@ test("cadastro repetido não sobrescreve o primeiro registro e responde igual a 
   expect(memoria.dados.consentimentos.filter((c) => c.canal === "email").map((c) => c.aceito)).toEqual([false, true, false]);
 });
 
-test("pedido de Ressonância repetido também não sobrescreve", async () => {
+test("só um dos contatos igual é outra pessoa: registro novo, e o aceite de um nunca cai no registro do outro", async () => {
+  const resposta = await enviar(postCadastro, { ...cadastro, consentimentoWhatsapp: false, consentimentoEmail: false });
+  // Quem sabe só o e-mail (ou só o telefone) da vítima tenta marcar "aceito" no registro dela.
+  const soEmail = await enviar(postCadastro, { ...cadastro, whatsapp: "11988887777", consentimentoWhatsapp: true, consentimentoEmail: true });
+  const soWhatsapp = await enviar(postCadastro, { ...cadastro, email: "outra@exemplo.com.br", consentimentoWhatsapp: true, consentimentoEmail: true });
+  for (const outro of [soEmail, soWhatsapp]) {
+    expect(outro.res.status).toBe(200);
+    expect(Object.keys(outro.json)).toEqual(Object.keys(resposta.json));
+  }
+
+  expect(memoria.dados.cadastros).toHaveLength(3);
+  expect(memoria.dados.auditoria.map((e) => e.tipo)).toEqual(["registro_criado", "registro_criado", "registro_criado"]);
+  const [vitima, ...outros] = memoria.dados.cadastros;
+  const aceitesDe = (id: string) => memoria.dados.consentimentos.filter((c) => c.referenciaId === id && c.canal !== "privacidade").map((c) => c.aceito);
+  expect(aceitesDe(vitima.id)).toEqual([false, false]);
+  for (const outro of outros) expect(aceitesDe(outro.id)).toEqual([true, true]);
+  expect(memoria.cifra.decifrar(vitima.whatsappCifrado)).toBe(WHATSAPP);
+  expect(memoria.cifra.decifrar(vitima.emailCifrado)).toBe(EMAIL);
+
+  // A mesma regra vale para o pedido de Ressonância.
+  await enviar(postRessonancia, pedido, { ip: "198.51.100.9" });
+  await enviar(postRessonancia, { ...pedido, whatsapp: "11988887777" }, { ip: "198.51.100.9" });
+  await enviar(postRessonancia, { ...pedido, email: "outra@exemplo.com.br" }, { ip: "198.51.100.9" });
+  expect(memoria.dados.pedidos).toHaveLength(3);
+});
+
+test("Ressonância: a mesma pessoa pede para outra empresa e os dois pedidos são gravados; mesma empresa não duplica nem sobrescreve", async () => {
   await enviar(postRessonancia, pedido);
-  await enviar(postRessonancia, { ...pedido, empresa: "Outra", principalDesafio: "Outro" });
-  expect(memoria.dados.pedidos).toHaveLength(1);
+  await enviar(postRessonancia, { ...pedido, empresa: "Outra Empresa", principalDesafio: "Outro" });
+  expect(memoria.dados.pedidos.map((p) => [p.empresa, p.principalDesafio])).toEqual([
+    ["Souza Ltda", "Vendas em queda"],
+    ["Outra Empresa", "Outro"],
+  ]);
+  expect(memoria.dados.auditoria.map((e) => e.tipo)).toEqual(["registro_criado", "registro_criado"]);
+
+  // Mesma empresa (maiúsculas e espaços não contam): repetido, nada é sobrescrito.
+  await enviar(postRessonancia, { ...pedido, empresa: "  SOUZA ltda ", principalDesafio: "Trocado" });
+  expect(memoria.dados.pedidos).toHaveLength(2);
   expect(memoria.dados.pedidos[0]).toMatchObject({ empresa: "Souza Ltda", principalDesafio: "Vendas em queda" });
+  expect(memoria.dados.auditoria.at(-1)).toMatchObject({ tipo: "registro_atualizado", referenciaId: memoria.dados.pedidos[0].id });
+});
+
+test("robô reprovado recebe 400 antirrobo mesmo com a auditoria fora do ar", async () => {
+  vi.spyOn(memoria.antirrobo, "verificar").mockResolvedValue(false);
+  vi.spyOn(memoria.repositorio, "registrarAuditoria").mockRejectedValue(new Error("banco fora do ar"));
+  const { res, json } = await enviar(postCadastro, cadastro);
+  expect(res.status).toBe(400);
+  expect(json).toEqual({ ok: false, erro: "antirrobo" });
+  expect(memoria.dados.cadastros).toHaveLength(0);
 });
 
 test("IP vem de x-vercel-forwarded-for, depois x-real-ip, depois x-forwarded-for", async () => {

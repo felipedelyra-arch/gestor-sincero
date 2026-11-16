@@ -38,7 +38,21 @@ const envSchema = z
 
 const semEfeito = async () => {};
 
-function reais(): (Portas & PortasAdmin) | null {
+// Chaves de teste públicas da Cloudflare (1x000..., 2x000..., 3x000...): o segredo 1x aprova qualquer token.
+const CHAVE_DE_TESTE = /^[123]x0{10}/;
+const VARIAVEIS = [...Object.keys(envSchema.shape), "CRIPTO_CHAVES", "CRIPTO_CHAVE_ATUAL", "HASH_PIMENTA", "NODE_ENV"];
+
+type Reais = (Portas & PortasAdmin) | null;
+let memo: { ambiente: string; portas: Reais } | undefined;
+
+/** Montado uma vez por processo (um cliente Supabase, um aviso de erro); refaz só se o ambiente mudar (testes). */
+function reais(): Reais {
+  const ambiente = JSON.stringify([site.turnstileSiteKey, ...VARIAVEIS.map((nome) => process.env[nome])]);
+  if (memo?.ambiente !== ambiente) memo = { ambiente, portas: montar() };
+  return memo.portas;
+}
+
+function montar(): Reais {
   try {
     // Variável vazia ("X=") conta como ausente.
     const bruto = Object.fromEntries(Object.entries(process.env).filter(([, valor]) => valor));
@@ -47,6 +61,14 @@ function reais(): (Portas & PortasAdmin) | null {
       throw new Error([...new Set(lido.error.issues.map((i) => String(i.path[0])))].join(", "));
     }
     const env = lido.data;
+    // Falha fechada: em produção, chave de teste deixaria o antirrobô aprovar tudo.
+    if (process.env.NODE_ENV === "production") {
+      const deTeste = [
+        ["NEXT_PUBLIC_TURNSTILE_SITE_KEY", site.turnstileSiteKey],
+        ["TURNSTILE_SECRET_KEY", env.TURNSTILE_SECRET_KEY],
+      ].filter(([, valor]) => CHAVE_DE_TESTE.test(valor));
+      if (deTeste.length) throw new Error(`${deTeste.map(([nome]) => nome).join(", ")} (chave de teste da Cloudflare em produção)`);
+    }
     const db = criarClienteSupabase(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
     const admin = criarAdminSupabase(db);
     const pixel = site.rastreamento.metaPixelId;

@@ -14,9 +14,19 @@ vi.mock("next/server", () => ({
   after: (tarefa: () => Promise<void>) => void segundoPlano.push(tarefa()),
 }));
 // O Pixel é PENDENTE em config/site.ts; aqui ele existe para a API de Conversões ser ligada.
+// A chave pública do Turnstile vem de teste por padrão; aqui cada teste escolhe a sua.
+const chaves = vi.hoisted(() => ({ publica: "0x4AAAAAAAchave-publica-real" }));
 vi.mock("@config/site", async (original) => {
   const real = await original<typeof import("@config/site")>();
-  return { site: { ...real.site, rastreamento: { ...real.site.rastreamento, metaPixelId: "123456789" } } };
+  return {
+    site: {
+      ...real.site,
+      rastreamento: { ...real.site.rastreamento, metaPixelId: "123456789" },
+      get turnstileSiteKey() {
+        return chaves.publica;
+      },
+    },
+  };
 });
 
 const origem = new URL(site.url).origin;
@@ -63,6 +73,7 @@ let log: ReturnType<typeof vi.spyOn>;
 
 beforeEach(() => {
   rede = simularServicos();
+  chaves.publica = "0x4AAAAAAAchave-publica-real";
   memoria.limpar();
   log = vi.spyOn(console, "error").mockImplementation(() => {});
 });
@@ -150,7 +161,8 @@ test("Meta só recebe com aceite de cookies: dados em hash, idEvento da resposta
   await enviar(postCadastro, cadastro, { "x-gs-consentimento": "recusado" });
   expect(rede.para("graph.facebook.com")).toHaveLength(0);
 
-  const { json } = await enviar(postCadastro, cadastro, { "x-gs-consentimento": "aceito" });
+  const navegador = `Mozilla/5.0 (teste) ${"x".repeat(2000)}`;
+  const { json } = await enviar(postCadastro, cadastro, { "x-gs-consentimento": "aceito", "user-agent": navegador });
   const [chamada] = rede.para("graph.facebook.com");
   expect(chamada.url.pathname).toBe("/v24.0/123456789/events");
   expect(chamada.url.href).not.toContain(env.META_CAPI_TOKEN);
@@ -159,6 +171,8 @@ test("Meta só recebe com aceite de cookies: dados em hash, idEvento da resposta
   expect(corpo.data[0]).toMatchObject({ event_name: "Lead", action_source: "website", event_id: json.ok && json.idEvento });
   expect(corpo.data[0].user_data.em[0]).toMatch(/^[0-9a-f]{64}$/);
   expect(corpo.data[0].user_data.ph[0]).toMatch(/^[0-9a-f]{64}$/);
+  // A Meta exige o user-agent em eventos de site; vai cortado em 512 caracteres.
+  expect(corpo.data[0].user_data.client_user_agent).toBe(navegador.slice(0, 512));
   expect(chamada.corpo).not.toContain(EMAIL);
   expect(chamada.corpo).not.toContain(WHATSAPP);
 });
@@ -231,6 +245,36 @@ test("configuração incompleta responde 503, não chama ninguém e o log cita s
   }
   expect(rede.chamadas).toHaveLength(0);
   expect(memoria.dados.cadastros).toHaveLength(0);
+});
+
+test("produção com chave de teste da Cloudflare (pública ou segredo) falha fechada: 503 e nenhuma chamada", async () => {
+  vi.stubEnv("NODE_ENV", "production");
+  expect((await enviar(postCadastro, cadastro)).res.status).toBe(200); // chaves reais: produção funciona
+  const chamadas = rede.chamadas.length;
+
+  for (const segredo of ["1x0000000000000000000000000000000AA", "2x0000000000000000000000000000000AA", "3x0000000000000000000000000000000AA"]) {
+    vi.stubEnv("TURNSTILE_SECRET_KEY", segredo);
+    expect((await enviar(postCadastro, cadastro)).res.status).toBe(503);
+    expect(String(log.mock.lastCall?.[0])).toContain("TURNSTILE_SECRET_KEY");
+  }
+  vi.stubEnv("TURNSTILE_SECRET_KEY", env.TURNSTILE_SECRET_KEY);
+
+  for (const publica of ["1x00000000000000000000AA", "2x00000000000000000000AB", "3x00000000000000000000FF"]) {
+    chaves.publica = publica;
+    expect((await enviar(postRessonancia, pedido)).res.status).toBe(503);
+    expect(String(log.mock.lastCall?.[0])).toContain("NEXT_PUBLIC_TURNSTILE_SITE_KEY");
+  }
+  expect(rede.chamadas).toHaveLength(chamadas);
+
+  // Fora de produção as chaves de teste continuam valendo (desenvolvimento e prévia local).
+  vi.stubEnv("NODE_ENV", "test");
+  expect((await enviar(postRessonancia, pedido)).res.status).toBe(200);
+});
+
+test("as portas reais são montadas uma vez: um cliente e um aviso de configuração por processo", async () => {
+  vi.stubEnv("TURNSTILE_SECRET_KEY", "");
+  for (let i = 0; i < 3; i++) expect((await enviar(postCadastro, cadastro)).res.status).toBe(503);
+  expect(log.mock.calls.filter((chamada: unknown[]) => String(chamada[0]).includes("[composicao]"))).toHaveLength(1);
 });
 
 test("sem webhook, sem token da Meta e sem caminho do manual o cadastro funciona, só sem esses recursos", async () => {

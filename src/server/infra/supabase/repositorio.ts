@@ -23,6 +23,7 @@ export function criarRepositorioSupabase(db: SupabaseClient): RepositorioCadastr
         registro_id: evento.referenciaId,
         formulario: evento.formulario,
         ip_hash: evento.ipHash,
+        usuario_id: evento.usuarioId ?? null,
       });
       if (error) throw falha("auditoria", error);
     },

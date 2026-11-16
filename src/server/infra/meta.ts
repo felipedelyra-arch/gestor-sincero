@@ -3,8 +3,8 @@ import type { ConversoesMeta } from "../dominio/portas";
 const VERSAO_API = "v24.0";
 
 /**
- * API de Conversões da Meta. Só recebe e-mail e telefone em SHA-256 e o idEvento (o mesmo do Pixel,
- * para a Meta não contar em dobro). Quem decide se pode enviar (aceite de cookies) é o caso de uso.
+ * API de Conversões da Meta. Só recebe e-mail e telefone em SHA-256, o user-agent do navegador (exigido
+ * em action_source "website") e o idEvento (o mesmo do Pixel, para a Meta não contar em dobro). Quem decide se pode enviar (aceite de cookies) é o caso de uso.
  */
 export function criarConversoesMeta(pixelId: string, token: string, urlDoSite: string): ConversoesMeta {
   return {
@@ -22,7 +22,11 @@ export function criarConversoesMeta(pixelId: string, token: string, urlDoSite: s
               event_id: lead.idEvento,
               action_source: "website",
               event_source_url: urlDoSite,
-              user_data: { em: [lead.emailSha256], ph: [lead.telefoneSha256] },
+              user_data: {
+                em: [lead.emailSha256],
+                ph: [lead.telefoneSha256],
+                ...(lead.userAgent ? { client_user_agent: lead.userAgent } : {}),
+              },
               custom_data: { formulario: lead.formulario },
             },
           ],
