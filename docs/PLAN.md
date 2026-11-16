@@ -67,12 +67,12 @@ sequenceDiagram
 
 ## Ondas (uma por vez; no máximo 2 executores vivos; regras R1 a R8 no `AGENTS.md`)
 
-| Onda | Terminal A | Terminal B | Servidor | Estado em 15/11 |
+| Onda | Terminal A | Terminal B | Servidor | Estado em 16/11 |
 |---|---|---|---|---|
-| 1 | Conteúdo: copy completo em `content/` + `docs/COPY.md` | Assets: recorte do retrato, slides 4/6/17/20 com selo, imagem de compartilhamento, favicon | nenhum | parcial: `content/pagina.ts` existe sem `docs/COPY.md`; `public/img` só com retrato e prêmio |
-| 2 | Front-end (dono do servidor): seções 03 a 16, globais no layout | Back-end: adaptadores reais, CSV admin, ligação na composição | dev, um só | parcial: seções 00 a 02 e globais prontos; núcleo, cripto, migração e CSP prontos |
-| 3 | Tester: Playwright, axe, Lighthouse, varreduras, prints | (vazio) | prod (build + start, pelo orquestrador) | não iniciada |
-| 4 | Correções, um executor por vez | (vazio) | conforme o reteste | não iniciada |
+| 1 | Conteúdo: copy completo em `content/` + `docs/COPY.md` | Assets: recorte do retrato, slides 4/6/17/20 com selo, imagem de compartilhamento, favicon | nenhum | concluída |
+| 2 | Front-end (dono do servidor): seções 03 a 16, globais no layout | Back-end: adaptadores reais, CSV admin, ligação na composição | dev, um só | concluída |
+| 3 | Tester: Playwright, axe, Lighthouse, varreduras, prints | (vazio) | prod (build + start, pelo orquestrador) | concluída: `docs/QA.md` |
+| 4 | Correções, um executor por vez | (vazio) | conforme o reteste | concluída, menos a prévia na Vercel (falta conta e CLI) e o Lighthouse do celular (mediana 90, meta 95; medir de novo na prévia) |
 
 Fim de cada onda: relatórios, commits, `scripts/servidor.sh parar`, sessões encerradas, conferência de sobras (R5) e `free -m` (R6) antes da próxima.
 
