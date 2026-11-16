@@ -89,6 +89,7 @@ export const paginaSchema = z.object({
     eh: lista(),
     tituloNaoEh: t,
     naoEh: lista(),
+    frase: t, // frase do Ferrér em destaque
     premio: item,
     tituloEmpresas: t,
     empresas: lista(),
@@ -125,6 +126,7 @@ export const paginaSchema = z.object({
     introducao: t,
     termos: z.array(z.object({ termo: t, traducao: t })).length(6),
     avisoValidacao: t,
+    prova: t, // linha de prova abaixo dos termos
   }),
 
   ressonancia: z.object({ // 10

@@ -37,6 +37,14 @@ const siteSchema = z.object({
     email: pendente(z.email()),
     instagram: pendente(z.url()),
   }),
+  // PENDENTE: o certificado diz "Prêmio Tupaenses Excelentes"; o briefing também traz "Prêmio Excelência Tupaense".
+  // A página exibe `nomeConfirmado` quando houver; até lá, o nome do certificado.
+  premio: z.object({
+    nomeConfirmado: pendente(z.string().min(1)),
+    nomeNoCertificado: z.string().min(1),
+    nomeAlternativo: z.string().min(1),
+    ano: z.number().int(),
+  }),
   empresa: z.object({
     razaoSocial: pendente(z.string().min(1)),
     cnpj: pendente(z.string().regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/)),
@@ -78,6 +86,12 @@ export const site: Site = siteSchema.parse({
   },
   revista: { precoAnualCentavos: 19900 },
   contatos: { whatsapp: null, email: null, instagram: null },
+  premio: {
+    nomeConfirmado: null,
+    nomeNoCertificado: "Prêmio Tupaenses Excelentes",
+    nomeAlternativo: "Prêmio Excelência Tupaense",
+    ano: 2025,
+  },
   empresa: { razaoSocial: null, cnpj: null },
   links: { privacidade: "/privacidade", termos: "/termos" },
   rastreamento: {

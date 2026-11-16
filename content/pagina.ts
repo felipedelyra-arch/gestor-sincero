@@ -1,5 +1,9 @@
 import type { PaginaEntrada } from "./schema";
 import { legal } from "./legal";
+import { site } from "../config/site";
+
+// Nome do prêmio: fonte única em config/site.ts (pendente de confirmação do Ferrér).
+const premio = site.premio.nomeConfirmado ?? site.premio.nomeNoCertificado;
 
 // Copy final da página (seções 00 a 16). Versão para leitura e revisão do Ferrér: docs/COPY.md.
 // Preço, datas, links e contatos não entram aqui: vêm de config/site.ts.
@@ -162,10 +166,11 @@ export const paginaBruta: PaginaEntrada = {
     ],
     tituloNaoEh: "O que ele não é",
     naoEh: ["Guru", "Coach", "Influenciador", "Vendedor de fórmula", "Empreendedor de palco"],
-    premio: { nome: "Prêmio Tupaenses Excelentes", descricao: "Portal Imprensa Brasileira, julho de 2025" },
+    frase: "Experiência sem atualização vira nostalgia.",
+    premio: { nome: premio, descricao: `Portal Imprensa Brasileira, julho de ${site.premio.ano}` },
     tituloEmpresas: "Empresas por onde passou",
     empresas: ["Marfinite", "Purificadores Europa", "Guia do Imóvel", "Topvinil/Traffic", "Red Eventos (Jaguariúna Rodeo)", "Gráfica Brasil", "Revista Go Where!", "TIM", "Humano Educação"],
-    altFoto: "Sidney Ferrér segurando o certificado do Prêmio Tupaenses Excelentes",
+    altFoto: `Sidney Ferrér segurando o certificado do ${premio}`,
   },
 
   metodo: {
@@ -252,6 +257,7 @@ export const paginaBruta: PaginaEntrada = {
       { termo: "Prompt", traducao: "O pedido que você escreve para a inteligência artificial. Pedido vago, resposta vaga, como acontece com qualquer funcionário." },
     ],
     avisoValidacao: "Amostra a validar pelo Ferrér",
+    prova: `No ${premio} de ${site.premio.ano}, Sidney Ferrér presenteou todos os homenageados com um exemplar do Dicionário do Internetês.`,
   },
 
   ressonancia: {
