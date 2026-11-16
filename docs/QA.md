@@ -2,6 +2,49 @@
 
 Alvo: `http://localhost:3000` em modo prod (build do orquestrador), sem `.env.local` (sem Supabase, Turnstile real, Pixel ou GA4). Chromium sem interface, 1 worker. Nada de código de produção foi alterado.
 
+## Reteste da Onda 4 (16/11/2026, build de prod com d3a648b, 47bc936, 088ecf9 e f6983cb)
+
+| Critério | Meta | Onda 3 | Onda 4 | Situação |
+|---|---|---|---|---|
+| Lighthouse desempenho, celular | ≥ 95 | 71, 69, 71 | 93 e 84 (2 medições) | ainda reprovado |
+| Lighthouse desempenho, desktop | ≥ 95 | 100 | 100 | aprovado |
+| LCP celular | < 2,5 s | 3,5 s | 0,9 s e 1,0 s | aprovado |
+| LCP desktop | < 2,5 s | 0,8 s | 0,5 s | aprovado |
+| Lighthouse acessibilidade | ≥ 95 | 100 | 100 | aprovado |
+| Lighthouse boas práticas | ≥ 95 | 96 | 100 | aprovado |
+| Lighthouse SEO | ≥ 95 | 69 | 69 | reprovado só pelo `noindex` proposital (B6) |
+| axe, violações graves | 0 | 0 | 0 (e 0 moderadas) | aprovado |
+
+Lighthouse 13.6.0, relatórios regravados em `tests/lighthouse/` (celular 1 e desktop):
+
+| Medição | Desempenho | Acessibilidade | Boas práticas | SEO | LCP | TBT | CLS | FCP | TTI | Índice da máquina |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Celular 1 (arquivo) | 93 | 100 | 100 | 69 | 0,9 s | 320 ms | 0 | 0,9 s | 3,5 s | 1646 |
+| Celular 2 | 84 | 100 | 100 | 69 | 1,0 s | 640 ms | 0 | não anotado | não anotado | 948 |
+| Desktop (arquivo) | 100 | 100 | 100 | 69 | 0,5 s | 10 ms | 0 | 0,3 s | 0,7 s | 1602 |
+
+Elemento do LCP: no celular, o subtítulo do topo (`section.relative > div.conteiner > div.lg:col-span-7 > p.entra`, atraso de renderização 141 ms); no desktop, o retrato (`picture > img`, alt "Sidney Ferrér, o Gestor Sincero…"). O banner de cookies deixou de ser o LCP.
+
+Ressalva de comparação: a nota do celular acompanha a carga da máquina. Com índice 1646 deu 93; com 948 (perto dos 835 a 901 da Onda 3) deu 84. O ganho de LCP aparece nas duas medições; o do TBT só pode ser comparado na medição 2 (640 ms contra 820 a 950 ms).
+
+Specs rodados em prod: `saude` 7 de 7, `acessibilidade` 8 de 8, `cookies` 3 passam e 1 pulado (M3), `variacoes-topo` 6 de 6, `prints` 6 de 6 (todos os 36 regravados). Nenhum teste dependia do texto antigo do banner (todos leem de `content`).
+
+| Item | Situação | Evidência |
+|---|---|---|
+| A1 LCP no banner | corrigido e conferido | LCP do celular 0,9 s a 1,0 s; elemento é o subtítulo do topo |
+| A2 thread principal no celular | ainda aberto, melhorou | TBT 320 ms e 640 ms; maior tarefa longa 296 ms em `01t2i9pe5vz2-.js` (hidratação); thread principal 2,6 s (antes 3,8 s); `/privacidade` e `/termos` não carregam mais chunk com Zod; página 396 KiB (antes 410). Desempenho 84 a 93, abaixo de 95 |
+| A3 `eval` bloqueado pela CSP | corrigido e conferido | `saude.spec.ts` 7 de 7 com a CSP de prod (sem `'unsafe-eval'`); `inspector-issues` e console vazios no Lighthouse; Boas Práticas 100 |
+| A4 endereço do site | corrigido em parte, não conferível aqui | `config/site.ts:57` a `:59` usa `VERCEL_URL` antes de cair em localhost, e `src/server/aplicacao/http.ts:63` a `:67` aceita o host da requisição. Local: origem certa segue adiante (503 pela falha fechada), outra origem responde 403. `canonical` e `og:url` continuam `http://localhost:3000` neste build, porque não há variável; só dá para conferir numa prévia da Vercel |
+| M1 banner cobrindo o botão no celular | corrigido e conferido | `tests/prints/390/00-primeira-tela-com-cookies.jpg`: banner com cerca de 150 px (antes 225), botão principal inteiro visível; o link secundário "Conhecer a mentoria" ainda fica meio coberto |
+| M2 corte reto no retrato em 1280px | corrigido e conferido na base | `tests/prints/1280/01-topo.jpg`: a base esmaece no preto. A borda esquerda do braço ainda tem uma transição leve, visível só de perto |
+| B1 tarja fora de região | corrigido e conferido | axe com 0 violações em `/` (390 e 1280, com e sem erros de formulário) |
+| B5 manifesto e ícone | corrigido e conferido | `<link rel="manifest" href="/manifest.webmanifest">` e `apple-touch-icon` no HTML; `saude.spec.ts` confere que respondem 200 |
+| B7 CSP e CORP | corrigido em parte | `Cross-Origin-Resource-Policy: same-origin` presente; `Permissions-Policy` sem `bluetooth` e `browsing-topics`, nenhum aviso no console; `script-src 'unsafe-inline'` continua (limite do ADR 0002) |
+
+Não retestado nesta onda: C1, C2, C3 (dependem do Ferrér; o rodapé segue sem contatos em `tests/prints/390/15-footer.jpg`), M3 a M6, B2 a B4, B6 e os specs de formulário, checkout e links fora de `saude`.
+
+A partir daqui, o registro original da Onda 3.
+
 ## Critérios de aceite
 
 | Critério | Meta | Medido | Situação |
