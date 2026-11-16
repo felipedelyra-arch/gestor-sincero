@@ -2,6 +2,42 @@
 
 Alvo: `http://localhost:3000` em modo prod (build do orquestrador), sem `.env.local` (sem Supabase, Turnstile real, Pixel ou GA4). Chromium sem interface, 1 worker. Nada de código de produção foi alterado.
 
+## Medição final (16/11/2026, build de prod com 7a14517, 98059da, 38bc87e e a2e25e6)
+
+| Critério | Meta | Medido | Situação |
+|---|---|---|---|
+| Lighthouse desempenho, celular | ≥ 95 | 87, 92, 90 (mediana 90) | reprovado |
+| Lighthouse desempenho, desktop | ≥ 95 | 100 | aprovado |
+| LCP celular | < 2,5 s | 1,0 s nas três | aprovado |
+| LCP desktop | < 2,5 s | 0,5 s | aprovado |
+| Lighthouse acessibilidade | ≥ 95 | 100 | aprovado |
+| Lighthouse boas práticas | ≥ 95 | 100 | aprovado |
+| Lighthouse SEO | ≥ 95 | 69 | reprovado só pelo `noindex` proposital (B6) |
+| axe, violações graves | 0 | 0 de qualquer gravidade, nas 3 rotas, em 390 e 1280 | aprovado |
+
+| Medição | Desempenho | LCP | TBT | CLS | FCP | TTI | Maior tarefa longa | Índice da máquina |
+|---|---|---|---|---|---|---|---|---|
+| Celular 1 | 87 | 1,0 s | 500 ms | 0 | 1,0 s | 3,5 s | 494 ms | 964 |
+| Celular 2 | 92 | 1,0 s | 340 ms | 0 | 1,0 s | 3,3 s | 410 ms | 941 |
+| Celular 3 (mediana, em `tests/lighthouse/celular.json`) | 90 | 1,0 s | 430 ms | 0 | 1,0 s | 3,4 s | 438 ms | 952 |
+| Desktop (`tests/lighthouse/desktop.json`) | 100 | 0,5 s | 50 ms | 0 | 0,3 s | 0,7 s | 112 ms | 949 |
+
+Elemento do LCP: celular, o subtítulo do topo (`section.relative > div.conteiner > div.relative > p.entra`); desktop, o retrato (`picture > img`). Página com 366 KiB (antes 396). Acessibilidade 100, boas práticas 100 e SEO 69 nas quatro medições.
+
+Specs em prod, um por vez: `saude` 7 de 7; `acessibilidade` 8 de 8; `cookies` 3 passam e 1 pulado (M3); `variacoes-topo` 6 de 6; `cadastro-jornada` 2 passam e 1 pulado; `ressonancia` 1 passa e 1 pulado; `comparativo` (novo) 2 de 2; `prints` 6 de 6.
+
+- Formulários com hidratação tardia: depois de rolar até eles, preencher e enviar funciona nos dois. O corpo enviado confere (UTM, afiliado, variação, consentimentos, token do Turnstile) e a rota responde o 503 esperado com a mensagem de envio indisponível; o pulo é só por esse 503.
+- Comparativo dos 17 pares: com JavaScript desligado em 390px, os 17 pares estão no HTML, o rádio "Digital" troca a coluna visível, a seta do teclado volta para "Analógica" e o lado escondido continua no documento para leitor de tela. Em 1280px as duas colunas aparecem juntas (`tests/prints/1280/05-virada.jpg`).
+- Prints conferidos: `390/00` e `390/01` mostram as duas chamadas do topo inteiras acima do banner; `1280/01` mostra o retrato maior, descendo até a linha das chamadas e esmaecendo na base.
+
+Segue aberto:
+
+- A2. Desempenho no celular 87 a 92 (meta 95). O que sobra é a hidratação: tarefa longa de 410 a 494 ms em `01t2i9pe5vz2-.js` e TBT de 340 a 500 ms, com a máquina no mesmo índice da Onda 3 (835 a 901), quando o TBT era 820 a 950 ms.
+- A4. `canonical` e `og:url` só conferíveis numa prévia da Vercel.
+- C1, C2, C3 (dependem do Ferrér) e as pendências de ambiente M3, M4 e o link do manual (P1).
+
+Não verificado nesta rodada: tela de sucesso e link do manual (precisam de dev ou Supabase), rastreamento após o aceite, checkout, o commit 98059da (revogar cookies recarrega a página) e o 38bc87e (deduplicação, limite de taxa, auditoria) não têm teste e2e próprio, e a varredura de copy não foi refeita depois de a2e25e6.
+
 ## Reteste da Onda 4 (16/11/2026, build de prod com d3a648b, 47bc936, 088ecf9 e f6983cb)
 
 | Critério | Meta | Onda 3 | Onda 4 | Situação |
