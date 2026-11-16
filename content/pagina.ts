@@ -256,11 +256,22 @@ export const paginaBruta: PaginaEntrada = {
       { termo: "Algoritmo", traducao: "O conjunto de regras que cada rede usa para decidir o que mostrar a cada pessoa. Funciona como um porteiro, que escolhe quem vê a sua empresa." },
       { termo: "Prompt", traducao: "O pedido que você escreve para a inteligência artificial. Pedido vago, resposta vaga, como acontece com qualquer funcionário." },
     ],
-    avisoValidacao: "Amostra a validar pelo Ferrér",
+    avisoValidacao: "[PENDENTE FERRÉR: validar a amostra] Amostra a validar pelo Ferrér", // some em produção
     prova: `No ${premio} de ${site.premio.ano}, Sidney Ferrér presenteou todos os homenageados com um exemplar do Dicionário do Internetês.`,
   },
 
   ressonancia: {
+    seo: {
+      titulo: "Ressonância Digital | Gestor Sincero",
+      descricao: "O diagnóstico de marketing, gestão e vendas da S4: 52 temas em 9 fases, com nota, prioridades e plano. Solicite o da sua empresa.",
+    },
+    resumo: {
+      linhas: [
+        "Assim como uma ressonância médica revela estruturas que os olhos não enxergam, a Ressonância Digital mostra o que a rotina esconde dentro da sua empresa.",
+        "É o diagnóstico de marketing, gestão e vendas da S4, com 52 temas examinados em 9 fases.",
+      ],
+      rotuloBotao: "Conhecer a Ressonância Digital",
+    },
     titulo: "Ressonância Digital",
     analogia: "Assim como uma ressonância médica revela estruturas que os olhos não enxergam…",
     paragrafos: [

@@ -129,7 +129,9 @@ export const paginaSchema = z.object({
     prova: t, // linha de prova abaixo dos termos
   }),
 
-  ressonancia: z.object({ // 10
+  ressonancia: z.object({ // 10: na landing só o resumo; o restante vive em /ressonancia
+    seo: z.object({ titulo: t.max(60), descricao: t.max(160) }),
+    resumo: z.object({ linhas: lista(1).max(2), rotuloBotao: t }),
     titulo: t,
     analogia: t,
     paragrafos: lista(),

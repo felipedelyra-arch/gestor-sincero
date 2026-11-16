@@ -49,7 +49,7 @@ const siteSchema = z.object({
     razaoSocial: pendente(z.string().min(1)),
     cnpj: pendente(z.string().regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/)),
   }),
-  links: z.object({ privacidade: z.string().min(1), termos: z.string().min(1) }),
+  links: z.object({ privacidade: z.string().min(1), termos: z.string().min(1), ressonancia: z.string().min(1) }),
   rastreamento: z.object({
     metaPixelId: pendente(z.string().regex(/^\d+$/)),
     ga4Id: pendente(z.string().regex(/^G-[A-Z0-9]+$/)),
@@ -93,7 +93,7 @@ export const site: Site = siteSchema.parse({
     ano: 2025,
   },
   empresa: { razaoSocial: null, cnpj: null },
-  links: { privacidade: "/privacidade", termos: "/termos" },
+  links: { privacidade: "/privacidade", termos: "/termos", ressonancia: "/ressonancia" },
   rastreamento: {
     metaPixelId: process.env.NEXT_PUBLIC_META_PIXEL_ID ?? null,
     ga4Id: process.env.NEXT_PUBLIC_GA4_ID ?? null,
