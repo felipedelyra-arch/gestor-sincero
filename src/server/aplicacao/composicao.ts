@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { site } from "@config/site";
+import type { RepositorioPapoReto } from "../dominio/papoReto";
 import type { AutenticadorAdmin, Cifra, LeitorExportacao, LimitadorDeTaxa, RepositorioCadastros } from "../dominio/portas";
 import { criarCifra } from "../infra/cripto/cifra";
 import { memoria } from "../infra/memoria";
@@ -8,9 +9,11 @@ import { criarAdminSupabase } from "../infra/supabase/admin";
 import { criarArmazenamentoSupabase } from "../infra/supabase/armazenamento";
 import { criarClienteSupabase } from "../infra/supabase/cliente";
 import { criarLimitadorSupabase } from "../infra/supabase/limitador";
+import { criarRepositorioPapoRetoSupabase } from "../infra/supabase/papoReto";
 import { criarRepositorioSupabase } from "../infra/supabase/repositorio";
 import { criarTurnstile } from "../infra/turnstile";
 import { criarWebhook } from "../infra/webhook";
+import type { PortasPapoReto } from "./papoReto";
 import type { Portas } from "./registrar";
 
 export type PortasAdmin = {
@@ -42,7 +45,7 @@ const semEfeito = async () => {};
 const CHAVE_DE_TESTE = /^[123]x0{10}/;
 const VARIAVEIS = [...Object.keys(envSchema.shape), "CRIPTO_CHAVES", "CRIPTO_CHAVE_ATUAL", "HASH_PIMENTA", "NODE_ENV"];
 
-type Reais = (Portas & PortasAdmin) | null;
+type Reais = (Portas & PortasAdmin & { repositorioPapoReto: RepositorioPapoReto }) | null;
 let memo: { ambiente: string; portas: Reais } | undefined;
 
 /** Montado uma vez por processo (um cliente Supabase, um aviso de erro); refaz só se o ambiente mudar (testes). */
@@ -88,6 +91,7 @@ function montar(): Reais {
       meta: pixel && env.META_CAPI_TOKEN ? criarConversoesMeta(pixel, env.META_CAPI_TOKEN, site.url) : { enviarLead: semEfeito },
       autenticador: admin,
       leitor: admin,
+      repositorioPapoReto: criarRepositorioPapoRetoSupabase(db),
     };
   } catch (erro) {
     // As mensagens daqui e de criarCifra citam só nomes de variável, nunca valores.
@@ -110,4 +114,23 @@ export function compor(): Portas | null {
 /** Exportação só existe com Supabase (é ele quem autentica o admin): sem ele, 503. */
 export function comporAdmin(): PortasAdmin | null {
   return process.env.SUPABASE_URL ? reais() : null;
+}
+
+// Segredo só para desenvolvimento e teste: em produção PAPO_RETO_SEGREDO é obrigatório.
+const SEGREDO_DE_DESENVOLVIMENTO = "segredo-de-desenvolvimento-do-papo-reto-nao-usar-em-producao";
+
+/**
+ * Portas do Papo reto (modo base, sem IA). null = indisponível (a rota responde 503):
+ * produção sem Supabase ou sem PAPO_RETO_SEGREDO (mín. 32 caracteres). Fora de produção usa a memória.
+ */
+export function comporPapoReto(): PortasPapoReto | null {
+  const producao = process.env.NODE_ENV === "production";
+  const segredo = process.env.PAPO_RETO_SEGREDO || (producao ? undefined : SEGREDO_DE_DESENVOLVIMENTO);
+  if (!segredo || segredo.length < 32) {
+    console.error("[composicao] papo reto indisponível: PAPO_RETO_SEGREDO");
+    return null;
+  }
+  const base = process.env.SUPABASE_URL ? reais() : producao ? null : memoria;
+  if (!base) return null;
+  return { cifra: base.cifra, limitador: base.limitador, antirrobo: base.antirrobo, repositorio: base.repositorioPapoReto, segredo };
 }

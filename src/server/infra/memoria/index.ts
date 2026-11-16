@@ -1,5 +1,6 @@
 import { createCipheriv, createDecipheriv, createHmac, randomBytes, randomUUID } from "node:crypto";
 import type { Cadastro, Consentimento, ContatoProtegido, EventoAuditoria, PedidoRessonancia } from "../../dominio/entidades";
+import type { RepositorioPapoReto } from "../../dominio/papoReto";
 import type {
   ArmazenamentoManual,
   AuditoriaRegistro,
@@ -62,7 +63,10 @@ function registrar<T extends ContatoProtegido>(
   return { id, novo };
 }
 
+const TRINTA_DIAS_MS = 30 * 24 * 60 * 60 * 1000;
+
 const dados = {
+  papoReto: [] as { sessao: string; respostasCifradas: string; regrasCifradas: string; recomendacao: string; criadaEm: number }[],
   cadastros: [] as Gravado<Cadastro>[],
   pedidos: [] as Gravado<PedidoRessonancia>[],
   consentimentos: [] as Consentimento[],
@@ -74,6 +78,15 @@ const repositorio: RepositorioCadastros = {
   registrarCadastro: async (d) => registrar(dados.cadastros, d.cadastro, d.consentimentos, d.auditoria),
   registrarPedidoRessonancia: async (d) => registrar(dados.pedidos, d.pedido, d.consentimentos, d.auditoria, mesmoPedido),
   registrarAuditoria: async (evento) => void dados.auditoria.push(evento),
+};
+
+// Mesma regra da migração 0003: apaga o que passou de 30 dias ao gravar; a mesma sessão não duplica.
+const repositorioPapoReto: RepositorioPapoReto = {
+  async gravar(d) {
+    const agora = Date.now();
+    dados.papoReto = dados.papoReto.filter((r) => agora - r.criadaEm < TRINTA_DIAS_MS);
+    if (!dados.papoReto.some((r) => r.sessao === d.sessao)) dados.papoReto.push({ ...d, criadaEm: agora });
+  },
 };
 
 const limitador: LimitadorDeTaxa = {
@@ -97,6 +110,7 @@ const meta: ConversoesMeta = { enviarLead: async () => {} };
 export const memoria = {
   cifra,
   repositorio,
+  repositorioPapoReto,
   limitador,
   antirrobo,
   armazenamento,
@@ -104,6 +118,7 @@ export const memoria = {
   meta,
   dados,
   limpar() {
+    dados.papoReto.length = 0;
     dados.cadastros.length = 0;
     dados.pedidos.length = 0;
     dados.consentimentos.length = 0;

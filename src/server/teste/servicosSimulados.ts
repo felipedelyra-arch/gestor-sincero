@@ -17,6 +17,7 @@ export const env = {
   WEBHOOK_AUTOMACAO_URL: WEBHOOK,
   WEBHOOK_AUTOMACAO_SEGREDO: "segredo-do-webhook-com-mais-de-32-caracteres",
   META_CAPI_TOKEN: "token-capi-de-teste",
+  PAPO_RETO_SEGREDO: "segredo-do-papo-reto-com-mais-de-32-caracteres",
 };
 
 export type Chamada = { url: URL; metodo: string; corpo: string; headers: Headers };
@@ -33,6 +34,7 @@ export function simularServicos() {
     registros: { registrar_cadastro: [] as Registro[], registrar_pedido: [] as Registro[] },
     limites: new Map<string, number>(),
     tabelas: {} as Record<string, unknown[]>,
+    papoReto: [] as Record<string, string>[],
     para: (trecho: string) => estado.chamadas.filter((c) => c.url.href.includes(trecho)),
   };
 
@@ -60,6 +62,10 @@ export function simularServicos() {
       const registro = existente ?? { id: randomUUID(), emailHash, whatsappHash, empresa };
       if (!existente) lista.push(registro);
       return json({ id: registro.id, novo: !existente });
+    }
+    if (caminho === "/rest/v1/rpc/registrar_papo_reto") {
+      estado.papoReto.push(JSON.parse(c.corpo) as Record<string, string>);
+      return new Response(null, { status: 204 });
     }
     if (caminho === "/rest/v1/eventos_auditoria" && c.metodo === "POST") return new Response(null, { status: 201 });
     if (caminho.startsWith("/rest/v1/") && c.metodo === "GET") {

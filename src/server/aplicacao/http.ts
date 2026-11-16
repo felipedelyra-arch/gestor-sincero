@@ -35,9 +35,9 @@ export function ipDe(req: Request): string | null {
   );
 }
 
-/** Lê no máximo CORPO_MAXIMO_BYTES; null = grande demais. Não confia só no Content-Length. */
-async function lerCorpo(req: Request): Promise<string | null> {
-  if (Number(req.headers.get("content-length")) > CORPO_MAXIMO_BYTES) return null;
+/** Lê no máximo `maximo` bytes; null = grande demais. Não confia só no Content-Length. */
+export async function lerCorpo(req: Request, maximo = CORPO_MAXIMO_BYTES): Promise<string | null> {
+  if (Number(req.headers.get("content-length")) > maximo) return null;
   if (!req.body) return "";
   const leitor = req.body.getReader();
   const partes: Uint8Array[] = [];
@@ -46,7 +46,7 @@ async function lerCorpo(req: Request): Promise<string | null> {
     const { done, value } = await leitor.read();
     if (done) break;
     total += value.byteLength;
-    if (total > CORPO_MAXIMO_BYTES) {
+    if (total > maximo) {
       await leitor.cancel();
       return null;
     }
@@ -60,7 +60,7 @@ async function lerCorpo(req: Request): Promise<string | null> {
  * Aceita site.url ou o host da própria requisição (prévias da Vercel mudam de endereço a cada deploy).
  * Página de outro site não consegue forjar Host nem x-forwarded-host sem preflight, que aqui não é atendido.
  */
-function mesmaOrigem(req: Request): boolean {
+export function mesmaOrigem(req: Request): boolean {
   const origin = req.headers.get("origin");
   if (!origin) return false;
   if (origin === new URL(site.url).origin) return true;
