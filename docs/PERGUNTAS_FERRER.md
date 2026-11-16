@@ -32,3 +32,6 @@ Em ordem de prioridade. Cada terminal acrescenta as suas no fim da lista "Novas"
 - Papo reto: o personagem trata o empresário por "você" (como o resto da página) ou por "o senhor"?
 - Papo reto: para que a conversa guardada será usada (finalidade)? Sem isso o texto de consentimento fica incompleto para a LGPD. Opções: (a) não guardar nada; (b) guardar para a equipe da S4 preparar o contato de quem se inscrever na Jornada; (c) guardar só de forma agregada para melhorar o roteiro.
 - Papo reto: o personagem deve indicar o CVV (188) se a pessoa relatar sofrimento sério? O roteiro por opções não abre espaço para isso; só o texto livre.
+- Nome do prêmio: o certificado traz "Prêmio Tupaenses Excelentes"; o briefing também usa "Prêmio Excelência Tupaense". Qual é o nome oficial? (A página exibe o do certificado; fonte única em `config/site.ts`.)
+- Registro no INPI: as marcas "Gestor Sincero", "Gestão Sem Maquiagem", "Empresas do Futuro" e "Ressonância Digital" estão registradas ou em pedido de registro? Em nome de quem? (Define se a página usa o símbolo de marca e o que entra nos termos de uso.) [Redação do orquestrador: o texto original desta pergunta no adendo não chegou a esta sessão.]
+- Material de voz: o Ferrér pode enviar textos, transcrições e áudios dele para `docs/voz-ferrer/`? Hoje a voz da página e do Papo reto vem só do briefing.

@@ -47,3 +47,10 @@ next-env.d.ts
 graphify-out/
 /test-results/
 /playwright-report/
+
+# material de voz do Ferrér (privado; só o README é versionado)
+/docs/voz-ferrer/*
+!/docs/voz-ferrer/README.md
+# vídeos do personagem: fora do git até a autorização escrita do Ferrér (ADR 0003)
+/public/ferrer-avatar/
+/public/ferrer-avatar.zip

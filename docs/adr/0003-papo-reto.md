@@ -19,3 +19,11 @@ Conversa em texto com o personagem do Ferrér: 6 a 8 perguntas, aponta contradi�
 ## Antes de ligar em produção
 
 Parágrafo na política de privacidade (conversa guardada por 30 dias com consentimento; se o texto livre estiver ligado, Groq como operadora e transferência internacional) e autorização de imagem arquivada.
+
+## Ligar na prévia depois da autorização de imagem (um commit)
+
+1. Em `.gitignore`, apagar a linha `/public/ferrer-avatar/`; em `.vercelignore`, apagar a linha `/public/ferrer-avatar`.
+2. `git add .gitignore .vercelignore public/ferrer-avatar && git commit -m "Papo reto: vídeos do personagem versionados após autorização de imagem"`.
+3. Na Vercel, variável `NEXT_PUBLIC_PAPO_RETO=1` só no ambiente de prévia (e `PAPO_RETO_SEGREDO`, Supabase e Turnstile, sem os quais a rota responde indisponível).
+
+O `.zip` continua fora do git e do envio.
