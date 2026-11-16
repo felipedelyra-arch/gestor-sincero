@@ -1,29 +1,29 @@
-import { z } from "zod";
+// Sem Zod de propósito: este módulo entra no layout de todas as rotas e a validação aqui é pequena.
 
 export const CHAVE_ORIGEM = "gs_origem";
 
-const valor = (max: number) => z.string().max(max).regex(/^[\w .-]+$/);
 const campos = ["source", "medium", "campaign", "term", "content"] as const;
+type CampoUtm = (typeof campos)[number];
 
 // Formato consumido pelos formulários (src/shared/contratos.ts). Não mudar sem avisar.
-export const origemSchema = z.object({
-  utm: z.object({
-    source: valor(120).optional(),
-    medium: valor(120).optional(),
-    campaign: valor(120).optional(),
-    term: valor(120).optional(),
-    content: valor(120).optional(),
-  }),
-  afiliado: valor(80).optional(), // 80 e não 120: é o limite do contrato dos formulários
-  variacao: z.enum(["a", "b"]),
-});
-export type Origem = z.infer<typeof origemSchema>;
+export type Origem = {
+  utm: Partial<Record<CampoUtm, string>>;
+  afiliado?: string;
+  variacao: "a" | "b";
+};
 
 type Armazenamento = Pick<Storage, "getItem" | "setItem">;
 
-const valido = (bruto: string | null, max = 120): string | undefined => {
-  const r = valor(max).safeParse(bruto?.trim());
-  return r.success ? r.data : undefined; // valor fora do padrão é descartado, não corrigido
+const PADRAO = /^[\w .-]+$/;
+const MAX_UTM = 120;
+const MAX_AFILIADO = 80; // 80 e não 120: é o limite do contrato dos formulários
+
+const confere = (v: unknown, max: number): v is string => typeof v === "string" && v.length <= max && PADRAO.test(v);
+const objeto = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
+
+const valido = (bruto: string | null, max = MAX_UTM): string | undefined => {
+  const v = bruto?.trim();
+  return confere(v, max) ? v : undefined; // valor fora do padrão é descartado, não corrigido
 };
 
 /** Lê a origem da query string. Função pura. */
@@ -34,8 +34,24 @@ export function extrairOrigem(busca: string): Origem {
     const v = valido(q.get(`utm_${c}`));
     if (v) utm[c] = v;
   }
-  const afiliado = ["afiliado", "ref", "aff"].map((p) => valido(q.get(p), 80)).find(Boolean);
+  const afiliado = ["afiliado", "ref", "aff"].map((p) => valido(q.get(p), MAX_AFILIADO)).find(Boolean);
   return { utm, ...(afiliado ? { afiliado } : {}), variacao: q.get("v") === "b" ? "b" : "a" };
+}
+
+/** O que vem do armazenamento é entrada não confiável: qualquer campo fora do formato invalida tudo. */
+function validarOrigem(bruto: unknown): Origem | null {
+  if (!objeto(bruto) || !objeto(bruto.utm)) return null;
+  if (bruto.variacao !== "a" && bruto.variacao !== "b") return null;
+  const utm: Origem["utm"] = {};
+  for (const c of campos) {
+    const v = bruto.utm[c];
+    if (v === undefined) continue;
+    if (!confere(v, MAX_UTM)) return null;
+    utm[c] = v;
+  }
+  const { afiliado } = bruto;
+  if (afiliado !== undefined && !confere(afiliado, MAX_AFILIADO)) return null;
+  return { utm, ...(afiliado ? { afiliado } : {}), variacao: bruto.variacao };
 }
 
 function armazenamento(): Armazenamento | null {
@@ -48,8 +64,7 @@ function armazenamento(): Armazenamento | null {
 
 export function lerOrigem(onde: Armazenamento | null = armazenamento()): Origem | null {
   try {
-    const r = origemSchema.safeParse(JSON.parse(onde?.getItem(CHAVE_ORIGEM) ?? "null"));
-    return r.success ? r.data : null;
+    return validarOrigem(JSON.parse(onde?.getItem(CHAVE_ORIGEM) ?? "null"));
   } catch {
     return null;
   }

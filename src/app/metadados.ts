@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: titulo,
   description: descricao,
   alternates: { canonical: "/" },
+  icons: { apple: "/apple-touch-icon.png" },
   openGraph: {
     type: "website",
     locale: "pt_BR",

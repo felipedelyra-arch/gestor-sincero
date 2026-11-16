@@ -33,7 +33,7 @@ export function Topo() {
           />
         ) : (
           <>
-            <div data-parallax suppressHydrationWarning>
+            <div data-parallax suppressHydrationWarning className="relative">
               <Imagem
                 nome="ferrer-retrato"
                 alt={topo.altFoto}
@@ -41,11 +41,13 @@ export function Topo() {
                 largura={1080}
                 altura={1080}
                 prioridade
-                className="w-full object-cover object-top lg:h-full"
+                className="w-full"
               />
+              {/* O único esmaecimento da página: a foto some no preto. Fica preso à caixa da imagem, */}
+              {/* não à do contêiner (mais alto no desktop), para alcançar a base e a lateral do recorte. */}
+              <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-preto to-transparent" />
+              <div aria-hidden="true" className="absolute inset-y-0 left-0 hidden w-1/4 bg-linear-to-r from-preto to-transparent lg:block" />
             </div>
-            {/* O único esmaecimento da página: a base da foto some no preto. */}
-            <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-preto to-transparent" />
           </>
         )}
       </div>

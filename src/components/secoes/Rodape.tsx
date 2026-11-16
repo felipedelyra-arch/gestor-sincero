@@ -85,14 +85,18 @@ export function Rodape() {
               </Link>
             </li>
             <li>
-              <ReverCookies className={link} />
+              <ReverCookies rotulo={pagina.cookies.rever} className={link} />
             </li>
           </ul>
         </div>
 
         <div className="border-t border-chumbo pt-8 lg:col-span-12">
           {razaoSocial && <p>{razaoSocial}</p>}
-          {cnpj && <p className="tabular-nums">{cnpj}</p>}
+          {cnpj && (
+            <p className="tabular-nums">
+              {r.rotuloCnpj} {cnpj}
+            </p>
+          )}
           <p>
             © {site.nome}. {r.direitos}
           </p>

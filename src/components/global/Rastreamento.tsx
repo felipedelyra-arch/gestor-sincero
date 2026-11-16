@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { site } from "@config/site";
 import { useConsentimento } from "./consentimento";
 
 export const EVENTO_RASTREAMENTO = "gs:evento";
@@ -101,12 +100,14 @@ export function montarChamadas(nome: NomeEvento, dadosBrutos?: unknown): { meta:
   };
 }
 
-export function Rastreamento() {
+// IDs chegam do layout (servidor); `null` = pendente em config/site.ts.
+type Props = { metaPixelId: string | null; ga4Id: string | null };
+
+export function Rastreamento({ metaPixelId, ga4Id }: Props) {
   const aceito = useConsentimento() === "aceito";
 
   useEffect(() => {
     if (!aceito) return; // sem aceite: nenhum script, e os eventos são descartados
-    const { metaPixelId, ga4Id } = site.rastreamento;
     if (metaPixelId) iniciarPixel(metaPixelId);
     if (ga4Id) iniciarGa4(ga4Id);
 
@@ -119,7 +120,7 @@ export function Rastreamento() {
     };
     window.addEventListener(EVENTO_RASTREAMENTO, repassar);
     return () => window.removeEventListener(EVENTO_RASTREAMENTO, repassar);
-  }, [aceito]);
+  }, [aceito, metaPixelId, ga4Id]);
 
   return null;
 }

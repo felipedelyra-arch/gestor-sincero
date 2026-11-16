@@ -1,14 +1,11 @@
 "use client";
 
-import { pagina } from "@content";
-import { site } from "@config/site";
 import { dispararEvento } from "./Rastreamento";
 
-export function BotaoWhatsApp() {
-  const numero = site.contatos.whatsapp;
-  if (!numero) return null;
+// Número, rótulo e mensagem chegam do layout (servidor); sem número, o layout não monta o botão.
+type Props = { numero: string; rotuloBotao: string; mensagem: string };
 
-  const { rotuloBotao, mensagem } = pagina.whatsapp;
+export function BotaoWhatsApp({ numero, rotuloBotao, mensagem }: Props) {
   return (
     <a
       href={`https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`}

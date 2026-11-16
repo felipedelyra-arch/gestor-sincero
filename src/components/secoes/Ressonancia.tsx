@@ -8,17 +8,18 @@ import { Secao } from "../ui/Secao";
 
 const ID_PEDIDO = "ressonancia-pedido";
 const linhas = "divide-y divide-chumbo border-y border-chumbo";
+const subtitulo = "mt-16 font-titulo text-h3 font-medium";
 
 /** 10. O diagnóstico: o que é, as 9 fases, as entregas, as etapas, a prévia dos slides e o pedido. */
 export function Ressonancia() {
   const r = pagina.ressonancia;
   return (
     <Secao id="ressonancia" titulo={r.titulo} fundo="marinho">
-      {/* Capa decorativa (o título da seção já a nomeia), com o parallax leve do equipamento. */}
+      {/* Parallax leve do equipamento. */}
       <div data-parallax suppressHydrationWarning>
         <Imagem
           nome="capa-ressonancia"
-          alt=""
+          alt={r.altCapa}
           tamanhos="(min-width: 1024px) 660px, 100vw"
           largura={1600}
           altura={1131}
@@ -37,40 +38,43 @@ export function Ressonancia() {
         {r.chamada.rotulo}
       </a>
 
-      <ol className={`${linhas} mt-16`}>
+      <h3 className={subtitulo}>{r.tituloFases}</h3>
+      <ol className={`${linhas} mt-6`}>
         {r.fases.map((fase) => (
           <li key={fase.letra} className="flex gap-4 py-4">
             <span aria-hidden="true" className="w-[1.5ch] shrink-0 font-titulo font-medium text-ouro">
               {fase.letra}
             </span>
             <div>
-              <h3 className="font-medium">{fase.nome}</h3>
+              <h4 className="font-medium">{fase.nome}</h4>
               <p className="mt-1 text-texto-2">{fase.descricao}</p>
             </div>
           </li>
         ))}
       </ol>
 
-      <dl className="mt-16 grid gap-8 sm:grid-cols-2">
+      <h3 className={subtitulo}>{r.tituloEntregas}</h3>
+      <dl className="mt-6 grid gap-8 sm:grid-cols-2">
         {r.entregas.map((entrega) => (
           <div key={entrega.nome}>
-            <dt className="font-titulo text-h3 font-medium">{entrega.nome}</dt>
-            <dd className="mt-2 text-texto-2">{entrega.descricao}</dd>
+            <dt className="font-medium">{entrega.nome}</dt>
+            <dd className="mt-1 text-texto-2">{entrega.descricao}</dd>
           </div>
         ))}
       </dl>
 
-      <ol className="mt-16 grid gap-8 border-l border-ouro pl-8">
+      <h3 className={subtitulo}>{r.tituloEtapas}</h3>
+      <ol className="mt-6 grid gap-8 border-l border-ouro pl-8">
         {r.etapas.map((etapa) => (
           <li key={etapa.nome}>
-            <h3 className="font-medium">{etapa.nome}</h3>
+            <h4 className="font-medium">{etapa.nome}</h4>
             <p className="mt-1 text-texto-2">{etapa.descricao}</p>
           </li>
         ))}
       </ol>
       <p className="mt-8 text-ouro-claro">{r.prazo}</p>
 
-      <h3 id="ressonancia-previa" className="mt-16 font-titulo text-h3 font-medium">
+      <h3 id="ressonancia-previa" className={subtitulo}>
         {r.previa.titulo}
       </h3>
       <p className="mt-2 text-apoio text-ouro-claro">{r.previa.selo}</p>

@@ -43,9 +43,11 @@
 }
 
 /* O único momento orquestrado da página: o fio desce, o topo aparece em sequência. */
+/* 0.01 e não 0: o Chrome ignora elemento com opacidade 0 ao medir o LCP, e o título do topo */
+/* deixava de contar (o LCP caía no banner de cookies). Visualmente é o mesmo esmaecimento. */
 @keyframes surgir {
   from {
-    opacity: 0;
+    opacity: 0.01;
   }
 }
 

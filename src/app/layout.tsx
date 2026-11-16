@@ -1,4 +1,6 @@
 import { Inter, Outfit } from "next/font/google";
+import { pagina } from "@content";
+import { site } from "@config/site";
 import { BannerCookies } from "@/components/global/BannerCookies";
 import { BotaoWhatsApp } from "@/components/global/BotaoWhatsApp";
 import { CapturaOrigem } from "@/components/global/CapturaOrigem";
@@ -28,10 +30,23 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {PULAR}
         </a>
         {children}
-        <BotaoWhatsApp />
-        <BannerCookies />
+        {/* Os globais são de cliente e recebem só o que usam: conteúdo, config e Zod ficam no servidor. */}
+        {site.contatos.whatsapp && (
+          <BotaoWhatsApp
+            numero={site.contatos.whatsapp}
+            rotuloBotao={pagina.whatsapp.rotuloBotao}
+            mensagem={pagina.whatsapp.mensagem}
+          />
+        )}
+        <BannerCookies
+          texto={pagina.cookies.texto}
+          aceitar={pagina.cookies.aceitar}
+          recusar={pagina.cookies.recusar}
+          rotuloPolitica={pagina.cookies.rotuloPolitica}
+          linkPolitica={site.links.privacidade}
+        />
         <CapturaOrigem />
-        <Rastreamento />
+        <Rastreamento metaPixelId={site.rastreamento.metaPixelId} ga4Id={site.rastreamento.ga4Id} />
         <DadosEstruturados />
         <RolagemSuave />
       </body>

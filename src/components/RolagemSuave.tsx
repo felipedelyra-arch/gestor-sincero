@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 /**
  * Rolagem amortecida (Lenis) + fio que cresce e parallax leve (GSAP ScrollTrigger).
- * As bibliotecas só são baixadas depois da primeira pintura; com movimento reduzido, nada carrega.
+ * As bibliotecas só são baixadas em tempo ocioso, depois da carga da página; com movimento reduzido, nada carrega.
  * Revelação: elementos com `data-revela` surgem uma vez (só opacidade) ao entrar na tela.
  * Parallax: qualquer elemento com `data-parallax` sobe no máximo 4% da própria altura.
  */
@@ -16,6 +16,7 @@ export function RolagemSuave() {
     let desligar = () => {};
 
     const iniciar = async () => {
+      if (cancelado) return;
       const [{ default: Lenis }, { gsap }, { ScrollTrigger }] = await Promise.all([
         import("lenis"),
         import("gsap"),
@@ -84,12 +85,18 @@ export function RolagemSuave() {
       };
     };
 
-    // Dois passos (quadro + tarefa) garantem que a primeira pintura já aconteceu.
-    const quadroInicial = requestAnimationFrame(() => setTimeout(iniciar, 0));
+    // Só em tempo ocioso depois da carga: a primeira pintura e a hidratação não disputam a thread com o GSAP.
+    // O prazo de 2 s garante a rolagem suave mesmo com a thread sempre ocupada; Safari antigo não tem a API.
+    const agendar = () => {
+      if ("requestIdleCallback" in window) window.requestIdleCallback(iniciar, { timeout: 2000 });
+      else setTimeout(iniciar, 200);
+    };
+    if (document.readyState === "complete") agendar();
+    else window.addEventListener("load", agendar, { once: true });
 
     return () => {
       cancelado = true;
-      cancelAnimationFrame(quadroInicial);
+      window.removeEventListener("load", agendar);
       desligar();
     };
   }, []);
