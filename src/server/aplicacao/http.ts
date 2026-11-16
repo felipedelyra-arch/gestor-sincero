@@ -54,16 +54,32 @@ async function lerCorpo(req: Request): Promise<string | null> {
   return Buffer.concat(partes).toString("utf8");
 }
 
+/**
+ * Mesma origem: navegadores sempre mandam Origin em POST; ausente, malformado ou de outro host é recusado.
+ * Aceita site.url ou o host da própria requisição (prévias da Vercel mudam de endereço a cada deploy).
+ * Página de outro site não consegue forjar Host nem x-forwarded-host sem preflight, que aqui não é atendido.
+ */
+function mesmaOrigem(req: Request): boolean {
+  const origin = req.headers.get("origin");
+  if (!origin) return false;
+  if (origin === new URL(site.url).origin) return true;
+  const host = (req.headers.get("x-forwarded-host") ?? req.headers.get("host"))?.split(",")[0].trim().toLowerCase();
+  if (!host) return false;
+  try {
+    const url = new URL(origin);
+    return /^https?:$/.test(url.protocol) && url.origin === origin && url.host === host;
+  } catch {
+    return false;
+  }
+}
+
 export async function responderFormulario(
   req: Request,
   formulario: Formulario,
   agendar: Contexto["agendar"],
 ): Promise<Response> {
   try {
-    // Mesma origem: navegadores sempre mandam Origin em POST; ausente ou de outro site é recusado.
-    if (req.headers.get("origin") !== new URL(site.url).origin) {
-      return responder({ ok: false, erro: "antirrobo" }, 403);
-    }
+    if (!mesmaOrigem(req)) return responder({ ok: false, erro: "antirrobo" }, 403);
     const tipo = req.headers.get("content-type")?.split(";")[0].trim().toLowerCase();
     if (tipo !== "application/json") return invalido(400);
 

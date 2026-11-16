@@ -32,10 +32,11 @@ const headersDeSeguranca = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
   {
     key: "Permissions-Policy",
     value:
-      "camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=(), midi=(), accelerometer=(), gyroscope=(), magnetometer=(), display-capture=(), browsing-topics=()",
+      "camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), hid=(), midi=(), accelerometer=(), gyroscope=(), magnetometer=(), display-capture=()",
   },
 ];
 
@@ -57,7 +58,11 @@ const nextConfig: NextConfig = {
     },
   },
   async headers() {
-    return [{ source: "/:path*", headers: headersDeSeguranca }];
+    return [
+      { source: "/:path*", headers: headersDeSeguranca },
+      // A imagem de compartilhamento precisa abrir em outros sites (prévias de link que exibem a imagem direto).
+      { source: "/og.jpg", headers: [{ key: "Cross-Origin-Resource-Policy", value: "cross-origin" }] },
+    ];
   },
 };
 

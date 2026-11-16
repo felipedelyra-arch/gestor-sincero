@@ -187,6 +187,27 @@ test("Origin de outro site ou ausente é recusado", async () => {
   expect(memoria.dados.cadastros).toHaveLength(0);
 });
 
+test("Origin do próprio host da requisição passa (prévia da Vercel); host diferente ou malformado é recusado", async () => {
+  const previa = "gestor-sincero-git-teste.vercel.app";
+  const porHost = await enviar(postCadastro, cadastro, { headers: { origin: `https://${previa}`, host: previa } });
+  expect(porHost.res.status).toBe(200);
+
+  // Atrás de proxy vale o x-forwarded-host, não o Host interno.
+  const porProxy = await enviar(postCadastro, { ...cadastro, email: "proxy@example.com" }, {
+    headers: { origin: `https://${previa}`, host: "interno:3000", "x-forwarded-host": previa },
+  });
+  expect(porProxy.res.status).toBe(200);
+
+  for (const origin of ["https://atacante.example", "null", `https://${previa}.atacante.example`, `ftp://${previa}`, previa]) {
+    const recusado = await enviar(postCadastro, cadastro, { headers: { origin, host: previa } });
+    expect(recusado.res.status, origin).toBe(403);
+  }
+  const proxyDeOutroHost = await enviar(postCadastro, cadastro, {
+    headers: { origin: `https://${previa}`, host: previa, "x-forwarded-host": "outro.example" },
+  });
+  expect(proxyDeOutroHost.res.status).toBe(403);
+});
+
 test("script injetado é gravado como texto e nunca refletido", async () => {
   const script = '<script>alert("x")</script>';
   const cad = await enviar(postCadastro, { ...cadastro, nome: script, empresa: script, afiliado: `"><img onerror=alert(1)>` });
