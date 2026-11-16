@@ -49,7 +49,7 @@
 
 :root {
   --margem: 20px;
-  --espaco-secao: 64px;
+  --espaco-secao: 56px;
   --altura-cabecalho: 56px;
 }
 
@@ -69,7 +69,7 @@
     --text-manifesto: 2rem; /* 36px */
     --text-manifesto--line-height: 1.15;
     --text-numero: 2.667rem; /* 48px */
-    --espaco-secao: 96px;
+    --espaco-secao: 72px;
     --altura-cabecalho: 64px;
   }
 }

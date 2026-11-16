@@ -29,7 +29,7 @@ export function Secao({ id, titulo, rotulo, apoio, fundo = "preto", estreito = f
           </h2>
           {apoio && <p className="mx-auto mt-3 max-w-texto text-pretty text-texto-2">{apoio}</p>}
         </header>
-        {children && <div className={`mt-8 lg:mt-12 ${estreito ? "mx-auto max-w-[800px]" : ""}`}>{children}</div>}
+        {children && <div className={`mt-8 lg:mt-9 ${estreito ? "mx-auto max-w-[800px]" : ""}`}>{children}</div>}
       </div>
     </section>
   );

@@ -1,10 +1,11 @@
 import { pagina } from "@content";
 import { Cartao } from "../ui/Cartao";
+import { etiqueta } from "../ui/estilos";
 import { Imagem } from "../ui/Imagem";
 import { Secao } from "../ui/Secao";
+import { SinalAbrir } from "../ui/SinalAbrir";
 
 const subtitulo = "font-titulo text-h3 font-medium";
-const etiqueta = "rounded-base border border-chumbo px-3 py-1 text-apoio text-texto-2";
 // Quantas credenciais aparecem antes de "ver todos".
 const VISIVEIS = 5;
 
@@ -15,11 +16,11 @@ export function QuemE() {
   return (
     <Secao id="quem-e" titulo={q.titulo} fundo="marinho">
       <div className="grid gap-8 lg:grid-cols-12">
-        <figure className="mx-auto w-full max-w-[320px] lg:col-span-4 lg:max-w-none">
+        <figure className="mx-auto w-full max-w-[220px] lg:col-span-4 lg:max-w-none">
           <Imagem
             nome="ferrer-premio"
             alt={q.altFoto}
-            tamanhos="(min-width: 1024px) 380px, 320px"
+            tamanhos="(min-width: 1024px) 380px, 220px"
             largura={1080}
             altura={1440}
             className="aspect-4/5 w-full rounded-cartao object-cover object-top"
@@ -61,7 +62,7 @@ export function QuemE() {
       </div>
 
       {/* Credenciais: as primeiras à vista, o resto abre com "ver todos". */}
-      <details className="group mt-8">
+      <details className="group mt-6">
         <summary className="flex cursor-pointer list-none flex-wrap items-center gap-2">
           {q.credenciais.slice(0, VISIVEIS).map((c) => (
             <span key={c} className={etiqueta}>
@@ -82,14 +83,20 @@ export function QuemE() {
         </ul>
       </details>
 
-      <h3 className={`${subtitulo} mt-6`}>{q.tituloEmpresas}</h3>
-      <ul className="mt-3 flex flex-wrap gap-2">
-        {q.empresas.map((e) => (
-          <li key={e} className={etiqueta}>
-            {e}
-          </li>
-        ))}
-      </ul>
+      {/* Empresas: recolhidas; o título abre a lista. */}
+      <details className="group mt-2 border-t border-chumbo">
+        <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4">
+          <h3 className={subtitulo}>{q.tituloEmpresas}</h3>
+          <SinalAbrir />
+        </summary>
+        <ul className="flex flex-wrap gap-2 pb-2">
+          {q.empresas.map((e) => (
+            <li key={e} className={etiqueta}>
+              {e}
+            </li>
+          ))}
+        </ul>
+      </details>
     </Secao>
   );
 }

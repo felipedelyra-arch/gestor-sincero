@@ -3,6 +3,7 @@ import { site } from "@config/site";
 import { camposJornada } from "../formulario/campos";
 import { FormularioTardio } from "../formulario/FormularioTardio";
 import { Cartao } from "../ui/Cartao";
+import { trilho, trilhoItem } from "../ui/estilos";
 import { Secao } from "../ui/Secao";
 
 // As datas de config são dias de calendário (sem hora): formatar em UTC evita cair no dia anterior.
@@ -15,13 +16,15 @@ export function Jornada() {
   return (
     <Secao id="jornada" titulo={j.titulo} apoio={j.introducao} fundo="marinho">
       <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
-        <div>
-          <ol className="grid gap-3">
+        {/* min-w-0: a fileira que rola não pode alargar a coluna */}
+        <div className="min-w-0">
+          {/* Celular: as três pautas lado a lado, rolando na horizontal. Desktop: empilhadas. */}
+          <ol tabIndex={0} aria-labelledby="jornada-titulo" className={`${trilho} lg:grid lg:overflow-visible lg:pb-0`}>
             {j.pautas.map((pauta, i) => {
               const data = datas[i];
               return (
-                <li key={pauta.titulo}>
-                  <Cartao fundo="preto" respiro="p-5">
+                <li key={pauta.titulo} className={`${trilhoItem} lg:w-auto`}>
+                  <Cartao fundo="preto" respiro="p-5" className="h-full">
                     <p className="text-apoio text-ouro-claro">
                       {data ? <time dateTime={data}>{formato.format(new Date(data))}</time> : j.datasPendentes}
                     </p>

@@ -4,6 +4,8 @@ type Opcoes = {
   sitekey: string;
   theme: "dark";
   language: string;
+  /** O widget só ocupa espaço se a Cloudflare precisar de uma ação do visitante. */
+  appearance: "interaction-only";
   callback: (token: string) => void;
   "expired-callback": () => void;
   "error-callback": () => void;

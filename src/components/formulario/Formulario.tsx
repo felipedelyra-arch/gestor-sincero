@@ -69,6 +69,7 @@ export function Formulario({ formulario, campos, rota, turnstileSiteKey }: Props
               sitekey: turnstileSiteKey,
               theme: "dark",
               language: "pt-br",
+              appearance: "interaction-only",
               callback: (t) => (token.current = t),
               "expired-callback": () => (token.current = ""),
               "error-callback": () => (token.current = ""),
@@ -251,8 +252,8 @@ export function Formulario({ formulario, campos, rota, turnstileSiteKey }: Props
             )}
           </div>
 
-          {/* Altura reservada para o widget não empurrar o botão quando carregar. */}
-          <div ref={alvoTurnstile} className="min-h-[65px] sm:col-span-2" />
+          {/* Sem altura reservada: o widget só aparece quando a Cloudflare pede uma ação (interaction-only). */}
+          <div ref={alvoTurnstile} className="empty:hidden sm:col-span-2" />
 
           <button type="submit" aria-disabled={enviando || undefined} className={`${estilosBotao.principal} sm:col-span-2 sm:w-full`}>
             {enviando ? formulario.enviando : formulario.enviar}
