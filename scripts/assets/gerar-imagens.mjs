@@ -88,6 +88,20 @@ const retrato = await (async () => {
     if (i >= width) semear(i - width);
     if (i < fundo.length - width) semear(i + width);
   }
+  // Branco do fundo preso dentro da silhueta (não ligado à borda): através da lente esquerda e entre os cachos do topo.
+  // Só branco quase sem cor, e só nessas duas caixas (frações da imagem), para não tocar em pele, barba ou camisa.
+  const limpar = (x0, y0, x1, y1, limiar) => {
+    for (let y = Math.round(y0 * height); y < Math.round(y1 * height); y++) {
+      for (let x = Math.round(x0 * width); x < Math.round(x1 * width); x++) {
+        const i = y * width + x;
+        const min = Math.min(rgb[i * 3], rgb[i * 3 + 1], rgb[i * 3 + 2]);
+        const max = Math.max(rgb[i * 3], rgb[i * 3 + 1], rgb[i * 3 + 2]);
+        if (min > limiar && max - min < 14) fundo[i] = 1;
+      }
+    }
+  };
+  limpar(0.37, 0.195, 0.455, 0.29, 232); // lente: só a parte que sobra para fora do rosto (mais à direita há brilho branco na armação)
+  limpar(0.45, 0, 0.73, 0.12, 215); // topo do cabelo
   const parte = fundo.reduce((s, f) => s + f, 0) / fundo.length;
   if (parte < 0.3 || parte > 0.7) throw new Error(`recorte do retrato suspeito: fundo = ${Math.round(parte * 100)}% da imagem`);
   // a borda recua 2px para tirar a franja clara da compressão e é suavizada
