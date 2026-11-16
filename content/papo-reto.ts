@@ -8,9 +8,9 @@ export const papoRetoBruto: PapoRetoEntrada = {
   titulo: "Papo reto com o Gestor Sincero",
   avisos: {
     roteiro:
-      "Roteiro de perguntas do Gestor Sincero, com a imagem de Sidney Ferrér usada com autorização. Não substitui uma consultoria.",
+      "Assistente com a imagem de Sidney Ferrér, usada com autorização. As respostas são geradas por regras e não substituem uma consultoria.",
     comIA:
-      "Roteiro de perguntas do Gestor Sincero, com a imagem de Sidney Ferrér usada com autorização. Se você escrever uma explicação, um assistente de inteligência artificial a lê para entender a sua resposta. Não substitui uma consultoria.",
+      'Assistente com a imagem de Sidney Ferrér, usada com autorização. As respostas são geradas por regras e não substituem uma consultoria. Se você escrever no campo "Quer explicar melhor?", um assistente de inteligência artificial lê o texto para entender a sua resposta.',
   },
   consentimento: {
     texto:
@@ -232,10 +232,10 @@ export const papoRetoBruto: PapoRetoEntrada = {
           ponto: "Você quer acertar a equipe, e isso começa por levar alguém jovem para perto das decisões.",
         },
         {
-          id: "sucessao",
-          rotulo: "Planejar a sucessão",
-          fala: "É a escolha de quem pensa no legado. Não precisa ser tudo de uma vez, mas precisa começar.",
-          ponto: "Você escolheu a sucessão como prioridade, e essa é a decisão que protege o legado.",
+          id: "depender-de-terceiros",
+          rotulo: "Parar de depender de terceiros",
+          fala: "Você não construiu sua empresa para depender dos outros. O primeiro passo é separar o que só a empresa pode decidir do que pode ficar com alguém de fora.",
+          ponto: "Você quer parar de depender de terceiros, e isso começa por separar o que só a empresa pode decidir.",
         },
         {
           id: "ja-decidi",
@@ -270,6 +270,8 @@ export const papoRetoBruto: PapoRetoEntrada = {
       'Sobre as decisões, você disse "{antes}". Sobre o custo de um cliente novo, você respondeu "{agora}". Se o número existe, por que a experiência decide sozinha? Qual dos dois manda hoje?',
     "sem-sucessao-prioridade-outra":
       'Sobre a sucessão, você disse "{antes}". Agora, como prioridade, escolheu "{agora}". Faz sentido, mas sucessão sem plano deixa o legado nas mãos do acaso. Quando essa conversa entra na pauta?',
+    "cuida-digital-mas-depende-de-terceiros":
+      'Sobre quem cuida do digital, você disse "{antes}". Agora, como prioridade, disse "{agora}". Se o digital está nas suas mãos, de quem a empresa depende? As duas coisas não andam juntas. Qual delas vale hoje?',
   },
   encerrar: "Encerrar a conversa",
   encerrada: "Conversa encerrada. Obrigado pela franqueza. O próximo passo está logo abaixo.",

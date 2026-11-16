@@ -110,7 +110,7 @@ Ids valem dentro do `tema` (o mesmo id pode existir em duas perguntas, como `nao
 | 3 vendas | `paradas` | estagnou | nenhuma regra |
 | 3 vendas | `cairam` | queda | `experiencia-mas-vendas-caindo` |
 | 3 vendas | `nao-sei` | não mede vendas | `sucessao-planejada-sem-numeros`; puxa ressonancia |
-| 4 digital | `eu-mesmo` | o dono faz | nenhuma regra |
+| 4 digital | `eu-mesmo` | o dono faz | `cuida-digital-mas-depende-de-terceiros` |
 | 4 digital | `equipe` | alguém de casa | nenhuma regra |
 | 4 digital | `agencia` | terceiro de fora | `digital-terceirizado-quer-digital` |
 | 4 digital | `parente` | terceiro da família | `digital-terceirizado-quer-digital` |
@@ -129,10 +129,10 @@ Ids valem dentro do `tema` (o mesmo id pode existir em duas perguntas, como `nao
 | 8 prioridade | `vender-mais` | o problema é vender | `vendas-boas-problema-vender` |
 | 8 prioridade | `digital` | quer resolver o digital | `digital-terceirizado-quer-digital` |
 | 8 prioridade | `equipe` | o problema é a equipe | `equipe-segue-mas-problema-equipe` |
-| 8 prioridade | `sucessao` | prioriza a sucessão | desliga `sem-sucessao-prioridade-outra` |
+| 8 prioridade | `depender-de-terceiros` | o problema é depender de terceiros | `cuida-digital-mas-depende-de-terceiros` |
 | 8 prioridade | `ja-decidi` | já decidiu mudar | puxa mentoria |
 
-Condições de cada confronto:
+Condições de cada confronto (9 regras). A pergunta 8 não tem opção de sucessão: o limite é de 5 opções e a sucessão já é a pergunta 7.
 
 | Regra (id) | Condição | {antes} → {agora} |
 | --- | --- | --- |
@@ -143,6 +143,7 @@ Condições de cada confronto:
 | `sucessao-planejada-sem-numeros` | 7 = `planejada` e (3 = `nao-sei` ou 5 = `nao-sei`) | 7 → a de 3 ou 5 (a que for `nao-sei`; se as duas, a 5) |
 | `experiencia-mas-vendas-caindo` | 2 = `experiencia` e 3 = `cairam` | 2 → 3 |
 | `sabe-custo-mas-decide-no-feeling` | 2 = `experiencia` e 5 respondida com número | 2 → 5 (número + "reais") |
-| `sem-sucessao-prioridade-outra` | 7 ∈ {`so-eu`, `nao-pensei`} e 8 ∉ {`sucessao`, `ja-decidi`} | 7 → 8 |
+| `sem-sucessao-prioridade-outra` | 7 ∈ {`so-eu`, `nao-pensei`} e 8 ≠ `ja-decidi` | 7 → 8 |
+| `cuida-digital-mas-depende-de-terceiros` | 4 = `eu-mesmo` e 8 = `depender-de-terceiros` | 4 → 8 |
 
 Atenção em `sucessao-planejada-sem-numeros`: a pergunta 7 vem depois da 3 e da 5, então ali `{antes}` é o rótulo da 7 e `{agora}` o da pergunta anterior; a fala foi escrita nessa ordem ("Sobre a sucessão… Sobre os números…").
