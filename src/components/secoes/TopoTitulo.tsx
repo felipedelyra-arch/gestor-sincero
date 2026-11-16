@@ -2,7 +2,10 @@
 
 import { useSyncExternalStore } from "react";
 import type { Pagina } from "@content";
-import { lerVariacaoUrl } from "../origem";
+import { extrairOrigem } from "../global/origem";
+
+// Só `?v=b` troca; qualquer outro valor é A.
+const lerVariacaoUrl = () => extrairOrigem(window.location.search).variacao;
 
 const semAssinatura = () => () => {};
 

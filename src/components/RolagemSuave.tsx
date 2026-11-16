@@ -5,6 +5,7 @@ import { useEffect } from "react";
 /**
  * Rolagem amortecida (Lenis) + fio que cresce e parallax leve (GSAP ScrollTrigger).
  * As bibliotecas só são baixadas depois da primeira pintura; com movimento reduzido, nada carrega.
+ * Revelação: elementos com `data-revela` surgem uma vez (só opacidade) ao entrar na tela.
  * Parallax: qualquer elemento com `data-parallax` sobe no máximo 4% da própria altura.
  */
 export function RolagemSuave() {
@@ -36,6 +37,15 @@ export function RolagemSuave() {
             yPercent: -4,
             ease: "none",
             scrollTrigger: { trigger: el, start: "clamp(top bottom)", end: "bottom top", scrub: true },
+          });
+        });
+        // Revelação única por seção: só opacidade, lenta, como corte de cinema.
+        gsap.utils.toArray<HTMLElement>("[data-revela]").forEach((el) => {
+          gsap.from(el, {
+            opacity: 0,
+            duration: 1.2,
+            ease: "power1.out",
+            scrollTrigger: { trigger: el, start: "top 85%", once: true },
           });
         });
       });

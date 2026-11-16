@@ -1,4 +1,9 @@
 import { Inter, Outfit } from "next/font/google";
+import { BannerCookies } from "@/components/global/BannerCookies";
+import { BotaoWhatsApp } from "@/components/global/BotaoWhatsApp";
+import { CapturaOrigem } from "@/components/global/CapturaOrigem";
+import { DadosEstruturados } from "@/components/global/DadosEstruturados";
+import { Rastreamento } from "@/components/global/Rastreamento";
 import { RolagemSuave } from "@/components/RolagemSuave";
 import "./globals.css";
 
@@ -23,6 +28,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {PULAR}
         </a>
         {children}
+        <BotaoWhatsApp />
+        <BannerCookies />
+        <CapturaOrigem />
+        <Rastreamento />
+        <DadosEstruturados />
         <RolagemSuave />
       </body>
     </html>

@@ -14,7 +14,7 @@ export function Secao({ id, titulo, fundo = "preto", children }: Props) {
   const idTitulo = `${id}-titulo`;
   return (
     <section id={id} aria-labelledby={idTitulo} className={`py-[calc(var(--espaco-secao)/2)] ${fundos[fundo]}`}>
-      <div className="conteiner grid gap-y-8 lg:grid-cols-12 lg:gap-x-8">
+      <div data-revela className="conteiner grid gap-y-8 lg:grid-cols-12 lg:gap-x-8">
         <h2 id={idTitulo} className="font-titulo text-h2 font-medium text-balance lg:col-span-4">
           {titulo}
         </h2>

@@ -1,7 +1,8 @@
 "use client";
 
 import type { MouseEvent, ReactNode } from "react";
-import { emitir, lerOrigem, montarLinkCheckout } from "../origem";
+import { montarLinkCheckout } from "../global/origem";
+import { dispararEvento } from "../global/Rastreamento";
 
 type Props = {
   href: string;
@@ -14,8 +15,8 @@ type Props = {
 export function LinkRastreado({ href, evento, className, children }: Props) {
   const aoClicar = (e: MouseEvent<HTMLAnchorElement>) => {
     // O href é completado no clique, antes de o navegador seguir o link.
-    if (evento === "clique_checkout") e.currentTarget.href = montarLinkCheckout(href, lerOrigem());
-    emitir(evento);
+    if (evento === "clique_checkout") e.currentTarget.href = montarLinkCheckout(href);
+    dispararEvento(evento);
   };
   const externo = evento === "clique_whatsapp";
   return (

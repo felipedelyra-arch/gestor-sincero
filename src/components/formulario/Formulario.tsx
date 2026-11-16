@@ -4,7 +4,9 @@ import { useEffect, useId, useRef, useState, type SubmitEvent } from "react";
 import { z } from "zod";
 import type { Formulario as BlocoFormulario } from "@content";
 import { cadastroJornadaSchema, pedidoRessonanciaSchema, rotas, type RespostaFormulario } from "@/shared/contratos";
-import { emitir, lerOrigem } from "../origem";
+import { useConsentimento } from "../global/consentimento";
+import { capturarOrigem } from "../global/origem";
+import { dispararEvento as emitir } from "../global/Rastreamento";
 import { Campo, IconeErro } from "../ui/Campo";
 import { CaixaDeMarcar } from "../ui/CaixaDeMarcar";
 import { estilosBotao } from "../ui/estilos";
@@ -38,6 +40,7 @@ type Estado = "ocioso" | "enviando" | "sucesso";
 
 export function Formulario({ formulario, campos, rota, turnstileSiteKey }: Props) {
   const id = useId();
+  const consentimento = useConsentimento();
   const [estado, setEstado] = useState<Estado>("ocioso");
   const [erros, setErros] = useState<Record<string, string>>({});
   const [aviso, setAviso] = useState<string>();
@@ -111,7 +114,7 @@ export function Formulario({ formulario, campos, rota, turnstileSiteKey }: Props
     if (estado === "enviando") return;
 
     const dados = new FormData(evento.currentTarget);
-    const origem = lerOrigem();
+    const origem = capturarOrigem(window.location.search); // a gravada na primeira visita; sem ela, a da URL
     const resultado = schemas[rota].safeParse({
       ...Object.fromEntries(campos.map((c) => [c.nome, texto(dados.get(c.nome))])),
       consentimentoWhatsapp: dados.has("consentimentoWhatsapp"),
@@ -146,7 +149,8 @@ export function Formulario({ formulario, campos, rota, turnstileSiteKey }: Props
     try {
       const r = await fetch(rotas[rota], {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        // O servidor só repassa a conversão à Meta se o visitante aceitou os cookies.
+        headers: { "Content-Type": "application/json", "x-gs-consentimento": consentimento ?? "recusado" },
         body: JSON.stringify(resultado.data),
       });
       resposta = respostaSchema.parse(await r.json());
