@@ -7,6 +7,8 @@ type Documento = Pagina["legal"]["privacidade"];
 
 // Página estática de texto corrido: /privacidade e /termos. Cabeçalho da home e coluna de leitura centralizada.
 export function DocumentoLegal({ documento }: { documento: Documento }) {
+  // Em produção o parágrafo pendente já saiu da lista; a seção que ficou sem nenhum parágrafo some junto.
+  const secoes = documento.secoes.filter((s) => s.paragrafos.length > 0);
   return (
     <>
       <Cabecalho base="/" />
@@ -20,8 +22,8 @@ export function DocumentoLegal({ documento }: { documento: Documento }) {
               {pagina.rodape.voltarAoInicio}
             </Link>
             <h1 className="mt-4 font-titulo text-h2 font-medium text-balance">{documento.titulo}</h1>
-            <p className="mt-2 text-apoio text-texto-2">{documento.atualizadoEm}</p>
-            {documento.secoes.map((secao) => (
+            {documento.atualizadoEm && <p className="mt-2 text-apoio text-texto-2">{documento.atualizadoEm}</p>}
+            {secoes.map((secao) => (
               <section key={secao.titulo} className="mt-10 border-t border-chumbo pt-6">
                 <h2 className="font-titulo text-h3 font-medium">{secao.titulo}</h2>
                 {secao.paragrafos.map((paragrafo, i) => (

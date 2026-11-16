@@ -17,6 +17,7 @@ export function Dicionario() {
           </Cartao>
         ))}
       </dl>
+      {d.prova && <p className="mx-auto mt-6 max-w-texto text-center text-apoio text-texto-2">{d.prova}</p>}
     </Secao>
   );
 }

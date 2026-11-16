@@ -16,7 +16,8 @@ export function BlocoDados() {
           </Cartao>
         ))}
       </dl>
-      <p className="mt-4 text-center text-apoio text-texto-2">{fonte}</p>
+      {/* Em produção a fonte pendente chega vazia: o bloco inteiro some, sem linha em branco. */}
+      {fonte && <p className="mt-4 text-center text-apoio text-texto-2">{fonte}</p>}
       <FraseManifesto className="mx-auto mt-10 max-w-[34ch] text-center">{fechamento}</FraseManifesto>
     </Secao>
   );

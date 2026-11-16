@@ -1,6 +1,7 @@
 import { pagina } from "@content";
 import { Cartao } from "../ui/Cartao";
 import { etiqueta } from "../ui/estilos";
+import { FraseManifesto } from "../ui/FraseManifesto";
 import { Imagem } from "../ui/Imagem";
 import { Secao } from "../ui/Secao";
 import { SinalAbrir } from "../ui/SinalAbrir";
@@ -39,6 +40,9 @@ export function QuemE() {
               </p>
             ))}
           </div>
+
+          {/* Frase do Ferrér: manifesto discreto, com o filete dourado de 1px da v2. */}
+          {q.frase && <FraseManifesto className="mt-6 border-l border-ouro pl-5">{q.frase}</FraseManifesto>}
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <Cartao fundo="preto">
