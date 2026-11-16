@@ -100,6 +100,35 @@ export function montarChamadas(nome: NomeEvento, dadosBrutos?: unknown): { meta:
   };
 }
 
+type Janela = {
+  fbq?: (...args: unknown[]) => void;
+  gtag?: (...args: unknown[]) => void;
+  location: { hostname: string; reload: () => void };
+};
+
+const COOKIE_RASTREIO = /^(_fbp|_ga|_ga_.+)$/;
+
+/**
+ * Revogação do aceite: se algum script de terceiro já foi carregado nesta página, avisa a Meta e o Google,
+ * apaga os cookies deles no nosso domínio e recarrega, para nenhum script continuar ativo.
+ * Devolve `false` (e não recarrega) quando nada tinha sido carregado.
+ */
+export function revogarRastreamento(janela: Janela = window, doc: { cookie: string } = document): boolean {
+  if (!janela.fbq && !janela.gtag) return false;
+  janela.fbq?.("consent", "revoke");
+  janela.gtag?.("consent", "update", { analytics_storage: "denied", ad_storage: "denied" });
+
+  // O GA grava no domínio de cima (.exemplo.com): apaga sem domínio e em cada sufixo do host.
+  const partes = janela.location.hostname.split(".");
+  const dominios = ["", ...partes.slice(0, -1).map((_, i) => `; domain=.${partes.slice(i).join(".")}`)];
+  const nomes = doc.cookie.split(";").map((c) => c.split("=")[0].trim());
+  for (const nome of nomes.filter((n) => COOKIE_RASTREIO.test(n))) {
+    for (const dominio of dominios) doc.cookie = `${nome}=; Max-Age=0; path=/${dominio}`;
+  }
+  janela.location.reload();
+  return true;
+}
+
 // IDs chegam do layout (servidor); `null` = pendente em config/site.ts.
 type Props = { metaPixelId: string | null; ga4Id: string | null };
 
@@ -107,7 +136,12 @@ export function Rastreamento({ metaPixelId, ga4Id }: Props) {
   const aceito = useConsentimento() === "aceito";
 
   useEffect(() => {
-    if (!aceito) return; // sem aceite: nenhum script, e os eventos são descartados
+    if (!aceito) {
+      // Sem aceite: nenhum script, e os eventos são descartados. Se o aceite foi revogado, desliga o que já rodava.
+      // Fica no corpo do efeito (e não na limpeza) para não disparar na remontagem do modo estrito em dev.
+      revogarRastreamento();
+      return;
+    }
     if (metaPixelId) iniciarPixel(metaPixelId);
     if (ga4Id) iniciarGa4(ga4Id);
 

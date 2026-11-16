@@ -185,7 +185,7 @@ export function Formulario({ formulario, campos, rota, turnstileSiteKey }: Props
   };
 
   const limparErro = (nome: string) => {
-    if (nome in erros) setErros(({ [nome]: _, ...resto }) => resto);
+    if (nome in erros) setErros((atual) => Object.fromEntries(Object.entries(atual).filter(([campo]) => campo !== nome)));
   };
 
   const enviando = estado === "enviando";
