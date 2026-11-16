@@ -6,7 +6,7 @@ export function Depoimentos() {
   const { titulo, itens } = pagina.depoimentos;
   if (itens.length === 0) return null;
   return (
-    <Secao id="depoimentos" titulo={titulo} fundo="preto-2">
+    <Secao id="depoimentos" titulo={titulo} estreito fundo="preto-2">
       <ul className="grid gap-12">
         {itens.map((d, n) => (
           <li key={n}>

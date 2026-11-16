@@ -11,6 +11,7 @@ type Props = {
   opcoes?: Record<string, string>;
   obrigatorio?: boolean;
   autoComplete?: string;
+  className?: string;
 };
 
 export function IconeErro() {
@@ -26,7 +27,7 @@ const caixa =
   "w-full rounded-base border border-chumbo bg-preto-2 px-4 text-corpo text-texto aria-invalid:border-erro";
 
 /** Rótulo sempre visível acima; ajuda e erro ligados por aria-describedby. */
-export function Campo({ id, nome, rotulo, ajuda, erro, tipo = "text", opcoes, obrigatorio, autoComplete }: Props) {
+export function Campo({ id, nome, rotulo, ajuda, erro, tipo = "text", opcoes, obrigatorio, autoComplete, className }: Props) {
   const idAjuda = ajuda ? `${id}-ajuda` : undefined;
   const idErro = erro ? `${id}-erro` : undefined;
   const comum = {
@@ -39,7 +40,7 @@ export function Campo({ id, nome, rotulo, ajuda, erro, tipo = "text", opcoes, ob
   };
 
   return (
-    <div>
+    <div className={className}>
       <label htmlFor={id} className="mb-2 block font-medium">
         {rotulo}
       </label>

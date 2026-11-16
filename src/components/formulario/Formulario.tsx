@@ -201,12 +201,12 @@ export function Formulario({ formulario, campos, rota, turnstileSiteKey }: Props
           onSubmit={enviar}
           onFocus={aoFocar}
           onChange={(e) => e.target instanceof HTMLElement && limparErro(e.target.getAttribute("name") ?? "")}
-          className="grid gap-6"
+          className="grid gap-x-4 gap-y-5 sm:grid-cols-2"
         >
-          <h3 id={idTitulo} className="font-titulo text-h3 font-medium">
+          <h3 id={idTitulo} className="font-titulo text-h3 font-medium sm:col-span-2">
             {formulario.titulo}
           </h3>
-          {formulario.introducao && <p className="text-texto-2">{formulario.introducao}</p>}
+          {formulario.introducao && <p className="text-apoio text-texto-2 sm:col-span-2">{formulario.introducao}</p>}
 
           {campos.map((campo) => {
             const textos = formulario.campos[campo.nome];
@@ -223,6 +223,7 @@ export function Formulario({ formulario, campos, rota, turnstileSiteKey }: Props
                 opcoes={formulario.opcoes?.[campo.nome]}
                 obrigatorio={campo.obrigatorio}
                 autoComplete={campo.autoComplete}
+                className={campo.larguraTotal ? "sm:col-span-2" : undefined}
               />
             );
           })}
@@ -232,7 +233,7 @@ export function Formulario({ formulario, campos, rota, turnstileSiteKey }: Props
             <input type="text" name="website" tabIndex={-1} autoComplete="off" />
           </div>
 
-          <div>
+          <div className="text-apoio sm:col-span-2">
             <CaixaDeMarcar name="consentimentoWhatsapp" rotulo={formulario.consentimentos.whatsapp} />
             <CaixaDeMarcar name="consentimentoEmail" rotulo={formulario.consentimentos.email} />
             <CaixaDeMarcar
@@ -251,9 +252,9 @@ export function Formulario({ formulario, campos, rota, turnstileSiteKey }: Props
           </div>
 
           {/* Altura reservada para o widget não empurrar o botão quando carregar. */}
-          <div ref={alvoTurnstile} className="min-h-[65px]" />
+          <div ref={alvoTurnstile} className="min-h-[65px] sm:col-span-2" />
 
-          <button type="submit" aria-disabled={enviando || undefined} className={estilosBotao.principal}>
+          <button type="submit" aria-disabled={enviando || undefined} className={`${estilosBotao.principal} sm:col-span-2 sm:w-full`}>
             {enviando ? formulario.enviando : formulario.enviar}
           </button>
         </form>

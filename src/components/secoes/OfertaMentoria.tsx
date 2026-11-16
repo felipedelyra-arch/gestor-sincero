@@ -12,7 +12,7 @@ export function OfertaMentoria() {
   const o = pagina.oferta;
   const { precoCentavos, parcelas } = site.mentoria;
   return (
-    <Secao id="mentoria" titulo={o.titulo} fundo="preto-2">
+    <Secao id="mentoria" titulo={o.titulo} estreito fundo="preto-2">
       <p>{o.introducao}</p>
       <ul className={`${linhas} mt-8`}>
         {o.inclui.map((i) => (

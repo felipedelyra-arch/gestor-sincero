@@ -1,4 +1,5 @@
-/* Tokens de docs/DESIGN.md. Componentes usam só estes nomes. */
+/* Tokens da "Direção v2" de docs/DESIGN.md. Componentes usam só estes nomes. */
+/* A raiz tem 18px em todas as larguras: os rem abaixo valem px/18. Nada na página passa de 56px. */
 
 @theme {
   --color-*: initial;
@@ -21,33 +22,35 @@
   --spacing: 4px;
 
   --text-*: initial;
-  --text-manifesto: clamp(2.5rem, 9vw, 3.5rem);
-  --text-manifesto--line-height: 1.08;
-  --text-manifesto--letter-spacing: -0.02em;
-  --text-h2: 2rem;
-  --text-h2--line-height: 1.12;
-  --text-h2--letter-spacing: var(--aperto-h2);
-  --text-h3: 1.375rem;
-  --text-h3--line-height: 1.15;
-  --text-corpo: 1rem;
+  --text-h1: 2rem; /* 36px */
+  --text-h1--line-height: 1.12;
+  --text-h1--letter-spacing: -0.02em;
+  --text-h2: 1.556rem; /* 28px */
+  --text-h2--line-height: 1.15;
+  --text-h3: 1.111rem; /* 20px */
+  --text-h3--line-height: 1.25;
+  --text-manifesto: 1.444rem; /* 26px */
+  --text-manifesto--line-height: 1.2;
+  --text-numero: 2rem; /* 36px */
+  --text-numero--line-height: 1.1;
+  --text-corpo: 1rem; /* 18px */
   --text-corpo--line-height: 1.6;
-  --text-apoio: 0.889rem;
+  --text-apoio: 0.833rem; /* 15px */
   --text-apoio--line-height: 1.5;
 
   --radius-*: initial;
-  --radius-base: 2px;
+  --radius-base: 2px; /* botões, campos, imagens */
+  --radius-cartao: 12px;
 
   --shadow-*: initial;
-  --shadow-livro: 0 24px 48px rgb(0 0 0 / 0.6);
 
-  --container-texto: 62ch;
+  --container-texto: 60ch;
 }
 
 :root {
-  --margem: 20px; /* o fio dourado corre no meio desta margem */
-  --espaco-secao: 96px;
-  --respiro-topo: 40px; /* distância da tarja ao título; o fio nasce aqui */
-  --aperto-h2: 0;
+  --margem: 20px;
+  --espaco-secao: 64px;
+  --altura-cabecalho: 56px;
 }
 
 @media (min-width: 768px) {
@@ -58,21 +61,15 @@
 
 @media (min-width: 1024px) {
   :root {
-    --text-manifesto: clamp(4rem, 6.5vw, 4.16rem); /* teto = o valor em 1280px (83px) */
-    --text-h2: 3rem;
-    --text-h3: 1.75rem;
-    --text-apoio: 0.85rem;
-    --espaco-secao: 144px;
-    --respiro-topo: 96px;
-    --aperto-h2: -0.02em;
-  }
-}
-
-/* Telas grandes: a grade para em 1200px, então o título também para de crescer. Com 72px e respiro menor, */
-/* título, subtítulo e as duas chamadas cabem na primeira tela (1440x900 e 1920x943) com tarja e banner. */
-@media (min-width: 1440px) {
-  :root {
-    --text-manifesto: 3.6rem;
-    --respiro-topo: 56px;
+    --text-h1: 3.111rem; /* 56px */
+    --text-h1--line-height: 1.08;
+    --text-h2: 2.222rem; /* 40px */
+    --text-h2--line-height: 1.12;
+    --text-h3: 1.222rem; /* 22px */
+    --text-manifesto: 2rem; /* 36px */
+    --text-manifesto--line-height: 1.15;
+    --text-numero: 2.667rem; /* 48px */
+    --espaco-secao: 96px;
+    --altura-cabecalho: 64px;
   }
 }

@@ -1,11 +1,11 @@
 import type { ComponentProps, ReactNode } from "react";
 
-type Props = { rotulo: ReactNode } & Omit<ComponentProps<"input">, "type" | "className">;
+type Props = { rotulo: ReactNode; className?: string } & Omit<ComponentProps<"input">, "type" | "className">;
 
 /** Caixa nativa (teclado e leitor de tela de graça) com desenho próprio. A linha inteira é clicável. */
-export function CaixaDeMarcar({ rotulo, ...entrada }: Props) {
+export function CaixaDeMarcar({ rotulo, className = "py-2.5", ...entrada }: Props) {
   return (
-    <label className="relative flex min-h-12 cursor-pointer items-start gap-4 py-2.5">
+    <label className={`relative flex min-h-12 cursor-pointer items-start gap-4 ${className}`}>
       <input type="checkbox" className="peer sr-only" {...entrada} />
       <span
         aria-hidden="true"

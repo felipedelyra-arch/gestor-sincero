@@ -14,9 +14,9 @@ const subtitulo = "mt-16 font-titulo text-h3 font-medium";
 export function Ressonancia() {
   const r = pagina.ressonancia;
   return (
-    <Secao id="ressonancia" titulo={r.titulo} fundo="marinho">
+    <Secao id="ressonancia" titulo={r.titulo} estreito fundo="marinho">
       {/* Parallax leve do equipamento. */}
-      <div data-parallax suppressHydrationWarning>
+      <div>
         <Imagem
           nome="capa-ressonancia"
           alt={r.altCapa}
@@ -104,13 +104,6 @@ export function Ressonancia() {
             </li>
           ))}
         </ul>
-        {/* A varredura do exame: o fio passa uma vez sobre a prévia (RolagemSuave anima `data-varredura`). */}
-        <div
-          data-varredura
-          suppressHydrationWarning
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-ouro-claro opacity-0"
-        />
       </div>
 
       <div id={ID_PEDIDO} className="mt-16">

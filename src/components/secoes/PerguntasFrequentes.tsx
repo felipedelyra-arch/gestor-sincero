@@ -7,11 +7,11 @@ const traco = "absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-ouro";
 export function PerguntasFrequentes() {
   const { titulo, itens } = pagina.perguntas;
   return (
-    <Secao id="perguntas" titulo={titulo}>
+    <Secao id="perguntas" titulo={titulo} estreito>
       <div className="border-t border-chumbo">
         {itens.map((item) => (
           <details key={item.pergunta} className="group border-b border-chumbo">
-            <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-3 [&::-webkit-details-marker]:hidden">
+            <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-3">
               <h3 className="font-medium">{item.pergunta}</h3>
               {/* sinal de mais que vira menos ao abrir */}
               <span aria-hidden="true" className="relative size-4 shrink-0">

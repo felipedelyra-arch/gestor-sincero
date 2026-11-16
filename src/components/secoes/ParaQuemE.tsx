@@ -8,7 +8,7 @@ const linhas = "mt-4 divide-y divide-chumbo border-y border-chumbo *:py-3";
 export function ParaQuemE() {
   const p = pagina.paraQuem;
   return (
-    <Secao id="para-quem" titulo={p.titulo}>
+    <Secao id="para-quem" titulo={p.titulo} estreito>
       <div className="grid gap-12 sm:grid-cols-2 sm:gap-8">
         <div>
           <h3 className={subtitulo}>{p.tituloEh}</h3>

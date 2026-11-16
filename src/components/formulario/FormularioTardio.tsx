@@ -1,6 +1,6 @@
 "use client";
 
-import { lazy, Suspense, useEffect, useRef, type ComponentProps } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, type ComponentProps } from "react";
 import type { Formulario as FormularioCompleto } from "./Formulario";
 
 // O código do formulário (com Zod e contratos) só é baixado e hidratado quando um deles se aproxima da tela.
@@ -11,8 +11,16 @@ const perto = typeof window === "undefined" ? Promise.resolve() : new Promise<vo
 
 const Formulario = lazy(() => perto.then(() => import("./Formulario")).then((m) => ({ default: m.Formulario })));
 
+/** Fica dentro do mesmo Suspense do formulário: o efeito só roda quando ele terminou de hidratar. */
+function Hidratado({ aoMontar }: { aoMontar: () => void }) {
+  useEffect(aoMontar, [aoMontar]);
+  return null;
+}
+
 export function FormularioTardio(props: ComponentProps<typeof FormularioCompleto>) {
   const caixa = useRef<HTMLDivElement>(null);
+  const pronto = useRef(false);
+  const envioPendente = useRef(false);
 
   useEffect(() => {
     const el = caixa.current;
@@ -22,7 +30,13 @@ export function FormularioTardio(props: ComponentProps<typeof FormularioCompleto
     });
     observador.observe(el);
     // Envio antes da hidratação seria um GET nativo com os dados na URL: nunca deixa o navegador enviar sozinho.
-    const segurar = (e: Event) => e.preventDefault();
+    // O clique não se perde: fica guardado e é repetido assim que o formulário hidrata.
+    const segurar = (e: Event) => {
+      e.preventDefault();
+      if (pronto.current) return;
+      envioPendente.current = true;
+      liberar();
+    };
     el.addEventListener("submit", segurar);
     el.addEventListener("focusin", liberar);
     return () => {
@@ -32,10 +46,18 @@ export function FormularioTardio(props: ComponentProps<typeof FormularioCompleto
     };
   }, []);
 
+  const aoHidratar = useCallback(() => {
+    pronto.current = true;
+    if (!envioPendente.current) return;
+    envioPendente.current = false;
+    caixa.current?.querySelector("form")?.requestSubmit();
+  }, []);
+
   return (
     <div ref={caixa}>
       <Suspense fallback={null}>
         <Formulario {...props} />
+        <Hidratado aoMontar={aoHidratar} />
       </Suspense>
     </div>
   );

@@ -1,31 +1,35 @@
 import { pagina } from "@content";
+import { Cartao } from "../ui/Cartao";
 import { Secao } from "../ui/Secao";
+import { SinalAbrir } from "../ui/SinalAbrir";
 
-/** 07. O fio vira linha do tempo: uma linha só, dois pilares, dez marcas. */
+/** 07. Um cartão por pilar, com as etapas numeradas (sequência real); a descrição de cada etapa abre no toque. */
 export function Metodo() {
   const { titulo, introducao, pilares } = pagina.metodo;
   return (
-    <Secao id="metodo" titulo={titulo}>
-      <p className="text-texto-2">{introducao}</p>
-      <div className="mt-12 grid gap-12 border-l border-ouro pl-8">
+    <Secao id="metodo" titulo={titulo} apoio={introducao}>
+      <div className="grid items-start gap-4 lg:grid-cols-2 lg:gap-6">
         {pilares.map((pilar) => (
-          <section key={pilar.nome} aria-label={pilar.nome}>
+          <Cartao key={pilar.nome}>
             <h3 className="font-titulo text-h3 font-medium">{pilar.nome}</h3>
-            <p className="mt-1 text-texto-2">{pilar.descricao}</p>
-            <ol start={pilar.etapas[0].numero} className="mt-8 grid gap-8">
+            <p className="mt-1 text-apoio text-texto-2">{pilar.descricao}</p>
+            <ol start={pilar.etapas[0].numero} className="mt-4 grid items-start gap-x-6 sm:grid-cols-2">
               {pilar.etapas.map((etapa) => (
-                <li key={etapa.numero} className="relative">
-                  {/* marca no fio: centrada na linha de 1px, à esquerda do recuo de 32px */}
-                  <span aria-hidden="true" className="absolute top-[0.55em] -left-[calc(32px+5px)] size-[9px] rounded-base bg-ouro" />
-                  <h4 className="flex gap-3 font-medium">
-                    <span className="w-[2ch] shrink-0 font-titulo text-ouro tabular-nums">{etapa.numero}</span>
-                    {etapa.nome}
-                  </h4>
-                  <p className="mt-1 pl-[calc(2ch+12px)] text-texto-2">{etapa.descricao}</p>
+                <li key={etapa.numero} className="border-t border-chumbo">
+                  <details className="group">
+                    <summary className="flex min-h-12 cursor-pointer list-none items-center gap-3 py-2">
+                      <span aria-hidden="true" className="w-[2ch] shrink-0 font-titulo font-medium text-ouro tabular-nums">
+                        {etapa.numero}
+                      </span>
+                      <span className="flex-1 font-medium">{etapa.nome}</span>
+                      <SinalAbrir />
+                    </summary>
+                    <p className="pb-3 pl-[calc(2ch+12px)] text-apoio text-texto-2">{etapa.descricao}</p>
+                  </details>
                 </li>
               ))}
             </ol>
-          </section>
+          </Cartao>
         ))}
       </div>
     </Secao>

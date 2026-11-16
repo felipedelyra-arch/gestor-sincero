@@ -6,7 +6,7 @@ import { BotaoWhatsApp } from "@/components/global/BotaoWhatsApp";
 import { CapturaOrigem } from "@/components/global/CapturaOrigem";
 import { DadosEstruturados } from "@/components/global/DadosEstruturados";
 import { Rastreamento } from "@/components/global/Rastreamento";
-import { RolagemSuave } from "@/components/RolagemSuave";
+import { Revelacao } from "@/components/global/Revelacao";
 import "./globals.css";
 
 export { metadata } from "./metadados";
@@ -15,8 +15,6 @@ export { metadata } from "./metadados";
 const outfit = Outfit({ subsets: ["latin"], display: "swap", variable: "--font-outfit" });
 const inter = Inter({ subsets: ["latin"], display: "swap", preload: false, variable: "--font-inter" });
 
-// shortcut: texto do link de pular fixo aqui porque o schema de conteúdo ainda não tem a chave;
-// mover para content/ quando o orquestrador criar o campo.
 const PULAR = pagina.pularParaConteudo;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -48,7 +46,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <CapturaOrigem />
         <Rastreamento metaPixelId={site.rastreamento.metaPixelId} ga4Id={site.rastreamento.ga4Id} />
         <DadosEstruturados />
-        <RolagemSuave />
+        <Revelacao />
       </body>
     </html>
   );

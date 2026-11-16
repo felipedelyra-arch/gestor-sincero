@@ -1,4 +1,4 @@
-import { FioDourado } from "@/components/FioDourado";
+import { Cabecalho } from "@/components/global/Cabecalho";
 import { BlocoDados } from "@/components/secoes/BlocoDados";
 import { Depoimentos } from "@/components/secoes/Depoimentos";
 import { Dicionario } from "@/components/secoes/Dicionario";
@@ -21,8 +21,8 @@ export default function Page() {
   return (
     <>
       <Tarja />
-      <main id="conteudo" tabIndex={-1} className="relative outline-none">
-        <FioDourado />
+      <Cabecalho />
+      <main id="conteudo" tabIndex={-1} className="outline-none">
         <Topo />
         <EspelhoDaDor />
         <BlocoDados />

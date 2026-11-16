@@ -1,17 +1,17 @@
 @import "tailwindcss";
-@import "lenis/dist/lenis.css";
 @import "../styles/tokens.css";
 
 @layer base {
   html {
-    font-size: 112.5%; /* 18px */
-    scroll-padding-top: 5rem; /* a tarja fixa não cobre o alvo das âncoras */
+    font-size: 112.5%; /* 18px em todas as larguras */
+    /* o cabeçalho fixo não cobre o alvo das âncoras */
+    scroll-padding-top: calc(var(--altura-cabecalho) + 16px);
     background: var(--color-preto);
   }
 
-  @media (min-width: 1024px) {
+  @media (prefers-reduced-motion: no-preference) {
     html {
-      font-size: 125%; /* 20px */
+      scroll-behavior: smooth;
     }
   }
 
@@ -32,6 +32,10 @@
     background: var(--color-ouro);
     color: var(--color-preto);
   }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
 }
 
 /* Largura da grade: 1200px mais a margem lateral. */
@@ -42,7 +46,6 @@
   padding-inline: var(--margem);
 }
 
-/* O único momento orquestrado da página: o fio desce, o topo aparece em sequência. */
 /* 0.01 e não 0: o Chrome ignora elemento com opacidade 0 ao medir o LCP, e o título do topo */
 /* deixava de contar (o LCP caía no banner de cookies). Visualmente é o mesmo esmaecimento. */
 @keyframes surgir {
@@ -51,27 +54,17 @@
   }
 }
 
-@keyframes nascer {
-  from {
-    transform: scaleY(0);
-  }
-}
-
+/* Movimento da v2: só opacidade, 300ms, uma vez. `Revelacao` marca com data-oculto o que está fora da tela. */
 @media (prefers-reduced-motion: no-preference) {
   .entra {
-    animation: surgir 900ms ease-out both;
-    animation-delay: calc(var(--ordem, 0) * 120ms);
+    animation: surgir 300ms ease-out both;
   }
 
-  .fio-nascente {
-    transform-origin: top;
-    animation: nascer 900ms ease-out both;
+  [data-revela] {
+    transition: opacity 300ms ease-out;
   }
-}
 
-/* Sem script ou com movimento reduzido o fio já aparece inteiro. */
-@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
-  .fio-resto {
-    transform: scaleY(0);
+  [data-oculto] {
+    opacity: 0;
   }
 }

@@ -6,10 +6,12 @@ export type DefinicaoCampo = {
   tipo?: TipoCampo;
   obrigatorio?: boolean;
   autoComplete?: string;
+  /** Ocupa as duas colunas do formulário (o padrão é meia largura a partir de 640px). */
+  larguraTotal?: boolean;
 };
 
 const contato: DefinicaoCampo[] = [
-  { nome: "nome", obrigatorio: true, autoComplete: "name" },
+  { nome: "nome", obrigatorio: true, autoComplete: "name", larguraTotal: true },
   { nome: "whatsapp", tipo: "tel", obrigatorio: true, autoComplete: "tel-national" },
   { nome: "email", tipo: "email", obrigatorio: true, autoComplete: "email" },
 ];
@@ -26,5 +28,5 @@ export const camposRessonancia: DefinicaoCampo[] = [
   { nome: "segmento", obrigatorio: true },
   { nome: "faixaFaturamento", tipo: "select", obrigatorio: true },
   { nome: "numeroFuncionarios", tipo: "select", obrigatorio: true },
-  { nome: "principalDesafio", tipo: "textarea", obrigatorio: true },
+  { nome: "principalDesafio", tipo: "textarea", obrigatorio: true, larguraTotal: true },
 ];

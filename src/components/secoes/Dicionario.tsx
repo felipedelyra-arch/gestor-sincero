@@ -5,7 +5,7 @@ import { Secao } from "../ui/Secao";
 export function Dicionario() {
   const d = pagina.dicionario;
   return (
-    <Secao id="dicionario" titulo={d.titulo}>
+    <Secao id="dicionario" titulo={d.titulo} estreito>
       <p>{d.introducao}</p>
       <p className="mt-6 inline-block rounded-base border border-ouro-escuro px-3 py-1 text-apoio text-ouro-claro">
         {d.avisoValidacao}
