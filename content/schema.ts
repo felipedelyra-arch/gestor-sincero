@@ -216,22 +216,39 @@ export const paginaSchema = z.object({
   cookies: z.object({ texto: t, aceitar: t, recusar: t, rotuloPolitica: t, rever: t.default("Rever escolha de cookies") }),
 });
 
-// "Papo reto com o Gestor Sincero": conversa com o personagem (ADR 0003). Texto em content/papo-reto.ts.
+// "Papo reto com o Gestor Sincero" (ADR 0003): conversa por opções, com falas pré-escritas. Texto em content/papo-reto.ts.
+const slug = z.string().regex(/^[a-z0-9-]{1,40}$/);
+const fala = t.max(400);
 const recomendacao = z.object({ texto: t, rotuloBotao: t });
+const perguntaPapo = z
+  .object({
+    numero: z.number().int().min(1).max(8),
+    tema: slug, // as regras em src/server/papo-reto/regras.ts usam `tema` e o `id` das opções
+    texto: t,
+    // botões de resposta; `fala` é a reação do personagem; `ponto` é a frase que essa resposta rende no papo reto final
+    opcoes: z.array(z.object({ id: slug, rotulo: t, fala, ponto: t.optional() })).max(5),
+    // campo numérico opcional; em `fala`, {valor} é trocado pelo número digitado (ele repete para confirmar)
+    campoNumero: z.object({ rotulo: t, sufixo: t.optional(), min: z.number(), max: z.number(), fala }).optional(),
+  })
+  .refine((p) => p.opcoes.length >= 2 || p.campoNumero, "pergunta precisa de opções ou de campo numérico");
 export const papoRetoSchema = z.object({
   rotuloBotao: t,
   titulo: t,
-  avisoIA: t, // aparece antes de tudo
+  // o aviso aparece antes de tudo; `comIA` só quando a camada de texto livre (Groq) está ligada
+  avisos: z.object({ roteiro: t, comIA: t }),
   consentimento: z.object({ texto: t, aceitar: t, recusar: t }), // guardar ou não a conversa
   comecar: t,
-  abertura: t, // primeira fala do personagem
-  perguntas: z.array(z.object({ numero: z.number().int().min(1).max(8), tema: t, texto: t })).min(6).max(8),
-  campo: z.object({ rotulo: t, enviar: t, enviando: t }),
+  abertura: fala, // primeira fala do personagem
+  perguntas: z.array(perguntaPapo).length(8),
+  livre: z.object({ rotulo: t, ajuda: t.optional() }), // "quer explicar melhor?"
+  responder: t, // botão que envia número ou texto livre
+  enviando: t,
+  // fala de confronto por regra: chave = id da regra em regras.ts; {antes} e {agora} viram os rótulos das respostas
+  confrontos: z.record(slug, fala).refine((c) => Object.keys(c).length >= 8, "mínimo de 8 confrontos"),
   encerrar: t,
   encerrada: t,
-  falaPadrao: t, // usada quando a resposta do modelo sai do contrato
   erros: z.object({ limite: t, antirrobo: t, indisponivel: t }),
-  fechamento: z.object({ titulo: t }), // título do "papo reto" de 3 pontos
+  fechamento: z.object({ titulo: t, abertura: fala, pontoPadrao: t }), // pontoPadrao completa os 3 pontos se faltar
   recomendacoes: z.object({ jornada: recomendacao, ressonancia: recomendacao, mentoria: recomendacao }),
   altVideo: t,
 });
