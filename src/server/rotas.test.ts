@@ -317,7 +317,7 @@ test("falha interna vira 503 sem detalhe e sem dado pessoal no log", async () =>
   expect(JSON.stringify(log.mock.calls)).not.toContain(EMAIL);
 });
 
-test("produção sem variáveis, ou com Supabase ainda sem adaptador, responde 503 e não grava em memória", async () => {
+test("produção sem variáveis, ou com Supabase sem as demais variáveis, responde 503 e não grava em memória", async () => {
   vi.stubEnv("NODE_ENV", "production");
   const semVariaveis = await enviar(postCadastro, cadastro);
   expect(semVariaveis.res.status).toBe(503);

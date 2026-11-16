@@ -25,6 +25,15 @@ function statusDe(r: RespostaFormulario): number {
   return { validacao: 400, antirrobo: 400, limite: 429, indisponivel: 503 }[r.erro];
 }
 
+/** Fora da Vercel estes cabeçalhos são forjáveis pelo cliente (só a plataforma os sobrescreve). */
+export function ipDe(req: Request): string | null {
+  return (
+    ["x-vercel-forwarded-for", "x-real-ip", "x-forwarded-for"]
+      .map((nome) => req.headers.get(nome)?.split(",")[0].trim())
+      .find(Boolean) ?? null
+  );
+}
+
 /** Lê no máximo CORPO_MAXIMO_BYTES; null = grande demais. Não confia só no Content-Length. */
 async function lerCorpo(req: Request): Promise<string | null> {
   if (Number(req.headers.get("content-length")) > CORPO_MAXIMO_BYTES) return null;
@@ -74,11 +83,7 @@ export async function responderFormulario(
     const resposta = await caso(
       entrada,
       {
-        // Fora da Vercel estes cabeçalhos são forjáveis pelo cliente (só a plataforma os sobrescreve).
-        ip:
-          ["x-vercel-forwarded-for", "x-real-ip", "x-forwarded-for"]
-            .map((nome) => req.headers.get(nome)?.split(",")[0].trim())
-            .find(Boolean) ?? null,
+        ip: ipDe(req),
         consentiuCookies: req.headers.get("x-gs-consentimento") === "aceito",
         textosConsentimento: textos(),
         agendar,

@@ -1,12 +1,6 @@
 import { createCipheriv, createDecipheriv, createHmac, randomBytes } from "node:crypto";
 import { z } from "zod";
-
-// Mesma assinatura da porta `Cifra` do domínio (src/server/dominio/portas.ts); alinhar na rodada 2.
-export type Cifra = {
-  cifrar(texto: string): string;
-  decifrar(cifrado: string): string;
-  hashBusca(texto: string): string;
-};
+import type { Cifra } from "../../dominio/portas";
 
 export type EnvCifra = {
   CRIPTO_CHAVES?: string;

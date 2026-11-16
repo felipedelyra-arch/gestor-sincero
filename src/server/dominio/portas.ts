@@ -74,3 +74,25 @@ export type LeadMeta = {
 export interface ConversoesMeta {
   enviarLead(lead: LeadMeta): Promise<void>;
 }
+
+export type TipoExportacao = "cadastros" | "ressonancia";
+
+export type RegistroExportado = {
+  id: string;
+  criadoEm: string;
+  emailCifrado: string;
+  whatsappCifrado: string;
+  /** Último consentimento registrado por canal; null = nunca registrado. */
+  consentimentos: { whatsapp: boolean | null; email: boolean | null };
+  /** Demais colunas, já em texto, com as chaves de `colunas`. */
+  campos: Record<string, string>;
+};
+
+export interface LeitorExportacao {
+  listar(tipo: TipoExportacao): Promise<{ colunas: string[]; registros: RegistroExportado[] }>;
+}
+
+export interface AutenticadorAdmin {
+  /** true só para token válido de usuário com app_metadata.papel = "admin". */
+  ehAdmin(token: string): Promise<boolean>;
+}

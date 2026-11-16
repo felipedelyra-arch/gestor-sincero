@@ -41,7 +41,8 @@ export type EventoAuditoria = {
     | "antirrobo_reprovado"
     | "falha_manual"
     | "falha_notificador"
-    | "falha_meta";
+    | "falha_meta"
+    | "exportacao_admin";
   formulario: Formulario;
   referenciaId: string | null;
   ipHash: string | null;
