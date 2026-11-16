@@ -36,9 +36,10 @@ for (const { largura, altura, alturaMaxima } of TELAS) {
         };
       });
       console.log(`MEDIDA topo ${largura}x${altura}: ${JSON.stringify(m)}`);
+      // Título e as duas chamadas acima do banner de cookies (o banner começa em `topoBanner`).
+      expect.soft(m.titulo, "título acima do banner").toBeLessThanOrEqual(m.topoBanner);
+      for (const c of m.chamadas) expect.soft(c, "chamada acima do banner").toBeLessThanOrEqual(m.topoBanner);
       expect.soft(m.titulo, "título dentro da primeira tela").toBeLessThanOrEqual(altura);
-      for (const c of m.chamadas) expect.soft(c, "chamada dentro da primeira tela").toBeLessThanOrEqual(altura);
-      expect.soft(m.secao, "seção do topo inteira na primeira tela").toBeLessThanOrEqual(altura);
     });
 
     for (const rota of ROTAS_V2) test(`${rota}: fonte, largura, altura e alvos de toque`, async ({ page }) => {
@@ -116,9 +117,10 @@ for (const { largura, altura, alturaMaxima } of TELAS) {
       expect.soft(abertos.maiorFonte[0].px, "maior fonte com os details abertos").toBeLessThanOrEqual(56);
       expect.soft(abertos.sobra, "rolagem horizontal com os details abertos").toBeLessThanOrEqual(0);
       expect.soft(abertos.vazam, "elementos fora da largura com os details abertos").toEqual([]);
+      // Altura por seção não é critério (decisão do orquestrador): só anota para leitura.
       if (largura === 1280 && rota === "/")
         for (const s of m.secoes)
-          if (ALVOS_1280[s.id]) expect.soft(s.a, `altura da seção ${s.id}`).toBeLessThanOrEqual(ALVOS_1280[s.id]);
+          if (ALVOS_1280[s.id]) test.info().annotations.push({ type: "altura-secao", description: `${s.id}: ${s.a}px (alvo ${ALVOS_1280[s.id]}px)` });
     });
   });
 }

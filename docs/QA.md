@@ -24,9 +24,9 @@ Specs: `ressonancia` reescrito para a rota nova (o botão do resumo leva a `/res
 | Altura total de `/` em 390, 1280 e 1920 | ≤ 18.000 / 12.000px | 15.316 (390, com details fechados; 18.668 abertos) / 9.888 / 9.865 | aprovado |
 | Altura total de `/ressonancia` | sem meta de design | 6.567 (390) / 4.829 (1280) / 4.817 (1920) | informativo |
 | Topo de `/` na primeira tela | 1280x800, 1920x943, 390x844 | 1280: seção acaba em 602px; 390: seção acaba em 703px e as duas chamadas em 627 e 679px, acima do banner (735px) | aprovado |
-| Alturas por seção de `/` em 1280 (alvo do DESIGN) | ver tabela | 7 de 15 passam; 8 acima (ver R-M1) | reprovado |
+| Alturas por seção de `/` em 1280 (alvo do DESIGN) | não é critério (decisão do orquestrador); só anotação | anotado no teste; 8 acima do alvo (ver R-M1, anotação) | anotação |
 | Prints de `/` e `/ressonancia`, 390 e 1280, por seção | sem texto cortado, sobreposição ou buraco | nenhum texto cortado nem sobreposto; sem buraco onde estava pendente | aprovado (ver achados de baixa) |
-| Specs e2e | | saude 13/13; acessibilidade 17/17; cabecalho 6/6; design-v2 8 de 9 (o 1280 de `/` reprova pelas alturas); variacoes 6/6; comparativo 2/2; cookies 3 + 1 pulado; checkout 1 + 1 pulado; cadastro 2 + 1 pulado; ressonancia 2 + 1 pulado | ver pulos |
+| Specs e2e | | saude 13/13; acessibilidade 17/17; cabecalho 6/6; design-v2 9 de 9 após a troca de critério (alturas por seção viraram anotação; topo medido contra o banner); variacoes 6/6; comparativo 2/2; cookies 3 + 1 pulado; checkout 1 + 1 pulado; cadastro 2 + 1 pulado; ressonancia 2 + 1 pulado | ver pulos |
 | `tsc --noEmit` e `eslint tests/e2e` | limpos | limpos | aprovado |
 
 Altura por seção em 1280 (alvo entre parênteses): espelho 643 (620), dados 593 (520), inimigo 530 (520), virada 807 (760), quem é 897 (820), jornada 1.124 (900), dicionário 759 (560), para quem 733 (560), fechamento 386 (360). Passam: topo, método, ressonância (547, dentro de 2.200), mentoria, perguntas, rodapé.
@@ -39,7 +39,7 @@ Crítico: nenhum. C1 a C3 seguem abertos; o que mudou é que a pendência não a
 
 Médio:
 
-- **R-M1** alturas por seção de `/` em 1280 acima do DESIGN: jornada 1.124 (`src/components/secoes/Jornada.tsx`), dicionário 759 (`src/components/secoes/Dicionario.tsx`), quem é 897 (`src/components/secoes/QuemE.tsx`), dados 593 (`src/components/secoes/BlocoDados.tsx`), para quem 733 (`src/components/secoes/ParaQuemE.tsx`), virada 807 (`src/components/secoes/Virada.tsx`), espelho 643 (`src/components/secoes/EspelhoDaDor.tsx`), fechamento 386 (`src/components/secoes/Fechamento.tsx`). Reprova `tests/e2e/design-v2.spec.ts` de propósito.
+- **R-M1** (anotação, não é critério) alturas por seção de `/` em 1280 acima do DESIGN: jornada 1.124 (`src/components/secoes/Jornada.tsx`), dicionário 759 (`src/components/secoes/Dicionario.tsx`), quem é 897 (`src/components/secoes/QuemE.tsx`), dados 593 (`src/components/secoes/BlocoDados.tsx`), para quem 733 (`src/components/secoes/ParaQuemE.tsx`), virada 807 (`src/components/secoes/Virada.tsx`), espelho 643 (`src/components/secoes/EspelhoDaDor.tsx`), fechamento 386 (`src/components/secoes/Fechamento.tsx`). Era reprovado por `tests/e2e/design-v2.spec.ts`; agora só anota (decisão do orquestrador).
 - **R-M2** `/ressonancia` no celular: LCP de 2,6 s (meta < 2,5 s). O elemento do LCP não saiu no relatório da Lighthouse e o detalhamento do LCP soma pouco (~115 ms), então a causa não está verificada. Medir de novo antes de mexer. Arquivo: `tests/lighthouse/ressonancia-celular.json`.
 
 Baixo:
