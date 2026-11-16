@@ -17,7 +17,7 @@ const inter = Inter({ subsets: ["latin"], display: "swap", preload: false, varia
 
 // shortcut: texto do link de pular fixo aqui porque o schema de conteúdo ainda não tem a chave;
 // mover para content/ quando o orquestrador criar o campo.
-const PULAR = "Pular para o conteúdo";
+const PULAR = pagina.pularParaConteudo;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

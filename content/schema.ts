@@ -201,6 +201,7 @@ export const paginaSchema = z.object({
   legal: z.object({ privacidade: documento, termos: documento }),
 
   whatsapp: z.object({ rotuloBotao: t, mensagem: t }),
+  pularParaConteudo: t, // link de salto do teclado, no layout
   cookies: z.object({ texto: t, aceitar: t, recusar: t, rotuloPolitica: t, rever: t.default("Rever escolha de cookies") }),
 });
 

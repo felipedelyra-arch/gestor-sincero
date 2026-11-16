@@ -465,8 +465,9 @@ export const paginaBruta: PaginaEntrada = {
     rotuloBotao: "Falar pelo WhatsApp",
     mensagem: "Olá. Vim pela página do Gestor Sincero e quero entender qual é o melhor primeiro passo para a minha empresa.",
   },
+  pularParaConteudo: "Pular para o conteúdo",
   cookies: {
-    texto: "Usamos cookies de medição para saber de onde vêm as visitas. Eles só são gravados se você aceitar.",
+    texto: "Cookies de medição das visitas só são gravados se você aceitar.",
     aceitar: "Aceitar cookies",
     recusar: "Recusar cookies",
     rotuloPolitica: "Ler a política de privacidade",
