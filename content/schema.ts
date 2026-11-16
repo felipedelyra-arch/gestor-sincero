@@ -201,6 +201,13 @@ export const paginaSchema = z.object({
   legal: z.object({ privacidade: documento, termos: documento }),
 
   whatsapp: z.object({ rotuloBotao: t, mensagem: t }),
+  // cabeçalho fixo: âncoras das seções e rótulos de abrir/fechar listas (direção v2 do DESIGN.md)
+  navegacao: z.object({
+    rotuloMenu: t,
+    itens: z.array(z.object({ rotulo: t, ancora: z.string().regex(/^#[a-z-]+$/) })).min(3).max(6),
+    chamada,
+  }),
+  rotulos: z.object({ verTodos: t, verMenos: t, anterior: t, proximo: t }),
   pularParaConteudo: t, // link de salto do teclado, no layout
   cookies: z.object({ texto: t, aceitar: t, recusar: t, rotuloPolitica: t, rever: t.default("Rever escolha de cookies") }),
 });

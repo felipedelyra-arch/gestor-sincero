@@ -3,6 +3,57 @@
 Público: dono de empresa com 45 anos ou mais, lendo no celular depois de um anúncio. Trabalho da página: fazer esse leitor se reconhecer e pedir o manual com a vaga na Jornada.
 Sensação: sala de conselho à noite. Sólida, silenciosa, cinematográfica.
 
+## Direção v2 (16/11/2026): vale acima de tudo o que vem depois neste arquivo
+
+Retorno do Felipe sobre a prévia: página poluída, letras grandes demais, elementos "jogados", a linha dourada que cresce na rolagem incomoda. Referência escolhida por ele: a home do G4 (g4business.com), só na estrutura. A identidade continua a do Gestor Sincero (preto, marinho, dourado como acento, fotos reais). As 17 seções do briefing §8 continuam todas, na mesma ordem, na mesma página.
+
+O que muda:
+
+1. **Sai o fio dourado.** `FioDourado` é removido da página. O dourado fica em botão principal, número, rótulo pequeno e filete de 1px em cartões.
+2. **Entra um cabeçalho fixo** (64px desktop, 56px celular): logo à esquerda, âncoras ao centro (`pagina.navegacao.itens`), botão de captação à direita. No celular: logo, botão e menu recolhido (details nativo). A tarja vira uma faixa fina (32px, texto de apoio) acima do cabeçalho e rola com a página.
+3. **Escala de texto fixa e menor.** Raiz em 18px em todas as larguras (sai o 125% do desktop). Tetos, em px:
+
+| Papel | Celular | Desktop (≥1024) |
+|---|---|---|
+| h1 do topo | 36 / 1,12 | 56 / 1,08 |
+| h2 de seção | 28 / 1,15 | 40 / 1,12 |
+| h3 e título de cartão | 20 / 1,25 | 22 / 1,25 |
+| frase-manifesto | 26 / 1,2 | 36 / 1,15 |
+| número de destaque | 36 | 48 |
+| corpo | 18 / 1,6 | 18 / 1,6 |
+| apoio e rótulo | 15 / 1,5 | 15 / 1,5 |
+
+   Nada na página passa de 56px. Frase-manifesto aparece no máximo uma vez por seção.
+4. **Seção com cabeça centralizada e corpo em largura cheia.** Sai a grade "título em 4 colunas, corpo em 7". Cada seção: rótulo pequeno em dourado (opcional), h2, uma linha de apoio (máx. 60ch), e embaixo o conteúdo usando as 12 colunas do contêiner de 1200px. Espaço vertical da seção: 64px no celular, 96px no desktop.
+5. **Conteúdo em cartões e grades, não em listas empilhadas.** Cartão: fundo `preto-2` (ou `marinho` sobre preto), borda 1px `chumbo`, raio 12px, 24px de respiro. Fundos alternam preto → marinho → preto para dar ritmo.
+6. **Tudo que é lista longa mostra um resumo e abre o resto** com details nativo ou carrossel com scroll-snap (sem biblioteca): rótulos em `pagina.rotulos`.
+
+Formato de cada seção:
+
+| Seção | Formato | Altura-alvo em 1280 |
+|---|---|---|
+| 01 Topo | texto à esquerda, retrato à direita, tudo na primeira tela | ≤ 720 |
+| 02 Espelho | 8 itens marcáveis em grade 4x2 (2x4 no celular) + resposta | ≤ 620 |
+| 03 Dados | 4 cartões de número em linha + fonte + uma frase | ≤ 520 |
+| 04 Inimigo | 3 cartões de citação em linha + uma frase-manifesto | ≤ 520 |
+| 05 Virada | 2 parágrafos + tabela com 6 pares; "ver os 17" abre o resto | ≤ 760 |
+| 06 Quem é | foto do prêmio + biografia curta; "é / não é" em 2 cartões; empresas em etiquetas de texto | ≤ 820 |
+| 07 Método | 2 cartões lado a lado (um por pilar) com as etapas numeradas | ≤ 680 |
+| 08 Jornada | esquerda: 3 pautas em cartões compactos, horário, manual; direita: formulário em cartão | ≤ 900 |
+| 09 Dicionário | 6 cartões em grade 3x2, selo "a validar" discreto | ≤ 560 |
+| 10 Ressonância | texto + capa lado a lado; abas ou details para Fases (grade 3x3), Entregas (5 cartões) e Etapas (4 passos em linha); prévia em carrossel; formulário em cartão com campos em 2 colunas | ≤ 2200 |
+| 11 Oferta | esquerda: inclui, bônus e plano em listas de conferência; direita: cartão de preço com garantia e botão | ≤ 900 |
+| 12 Para quem | 2 cartões (é / não é) + requisitos em linha | ≤ 560 |
+| 14 Perguntas | acordeão centralizado, máx. 800px | ≤ 620 |
+| 15 Fechamento | faixa marinho, uma frase de 36px, botão | ≤ 360 |
+| 16 Rodapé | 4 colunas | ≤ 360 |
+
+Metas: página inteira ≤ 12.000px em 1280 e 1920, ≤ 18.000px em 390; o topo cabe na primeira tela em 390x844, 1280x800 e 1920x943.
+
+Movimento: só revelação por opacidade, curta (300ms), uma vez. Sem parallax. Lenis continua opcional; se sobrar complexidade, sai.
+
+A seção "A ideia: o fio dourado" abaixo está revogada.
+
 ## A ideia: o fio dourado
 
 Um único fio dourado de 1px desce pela margem esquerda da página inteira. Ele é o legado: contínuo, nunca interrompido.

@@ -465,6 +465,18 @@ export const paginaBruta: PaginaEntrada = {
     rotuloBotao: "Falar pelo WhatsApp",
     mensagem: "Olá. Vim pela página do Gestor Sincero e quero entender qual é o melhor primeiro passo para a minha empresa.",
   },
+  navegacao: {
+    rotuloMenu: "Menu",
+    itens: [
+      { rotulo: "Quem é", ancora: "#quem-e" },
+      { rotulo: "Método", ancora: "#metodo" },
+      { rotulo: "Jornada", ancora: "#jornada" },
+      { rotulo: "Ressonância", ancora: "#ressonancia" },
+      { rotulo: "Mentoria", ancora: "#mentoria" },
+    ],
+    chamada: { rotulo: "Quero meu manual", destino: "captacao" },
+  },
+  rotulos: { verTodos: "Ver todos", verMenos: "Ver menos", anterior: "Anterior", proximo: "Próximo" },
   pularParaConteudo: "Pular para o conteúdo",
   cookies: {
     texto: "Cookies de medição das visitas só são gravados se você aceitar.",
