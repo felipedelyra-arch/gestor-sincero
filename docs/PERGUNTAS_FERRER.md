@@ -30,3 +30,5 @@ Em ordem de prioridade. Cada terminal acrescenta as suas no fim da lista "Novas"
 - Como termina a frase "Assim como uma ressonância médica revela estruturas que os olhos não enxergam…"? Hoje ela segue com reticências e o parágrafo seguinte completa a ideia.
 - Papo reto com o Gestor Sincero: autorização ESCRITA do Ferrér para usar a imagem dele (vídeos do personagem) num assistente de inteligência artificial que fala em nome da marca. Sem ela, a conversa não vai ao ar nem os vídeos são publicados.
 - Papo reto: o personagem trata o empresário por "você" (como o resto da página) ou por "o senhor"?
+- Papo reto: para que a conversa guardada será usada (finalidade)? Sem isso o texto de consentimento fica incompleto para a LGPD. Opções: (a) não guardar nada; (b) guardar para a equipe da S4 preparar o contato de quem se inscrever na Jornada; (c) guardar só de forma agregada para melhorar o roteiro.
+- Papo reto: o personagem deve indicar o CVV (188) se a pessoa relatar sofrimento sério? O roteiro por opções não abre espaço para isso; só o texto livre.
