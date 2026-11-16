@@ -44,7 +44,7 @@ export const legal: PaginaEntrada["legal"] = {
           "Não vendemos nem alugamos seus dados. Eles passam apenas por empresas que prestam serviço para esta página, chamadas de operadoras, e que só podem usá-los para essa finalidade.",
           "Hospedagem da página (Vercel), banco de dados (Supabase) e verificação contra robôs (Cloudflare).",
           "Ferramenta de envio de e-mail e de WhatsApp da S4 Marketing Digital de Resultados: [PENDENTE FERRÉR: nome do fornecedor].",
-          "Meta e Google, apenas se você aceitar os cookies de medição. Nesse caso, e-mail e telefone seguem em forma de código irreversível.",
+          "Meta e Google, apenas se você aceitar os cookies de medição. Nesse caso, e-mail e telefone seguem em forma de código irreversível, junto da identificação do seu navegador.",
           "Plataforma de pagamento da mentoria, quando você decide comprar: [PENDENTE FERRÉR: nome da plataforma]. A compra segue também a política dessa plataforma.",
         ],
       },
@@ -59,7 +59,7 @@ export const legal: PaginaEntrada["legal"] = {
         paragrafos: [
           "Dados de inscrição e de pedido de diagnóstico: [PENDENTE FERRÉR: prazo], ou até você pedir a exclusão.",
           "Registros de consentimento: pelo tempo necessário para comprovar que você autorizou o contato, mesmo depois de revogado.",
-          "Código do endereço de internet usado contra robôs: apenas pelo período curto de controle das tentativas.",
+          "Código do endereço de internet usado contra robôs: cerca de 10 minutos, só para controlar as tentativas. O mesmo código fica guardado junto do registro de consentimento e do registro de auditoria, pelo prazo desses registros.",
           "Terminado o prazo, os dados são apagados ou tornados anônimos.",
         ],
       },
