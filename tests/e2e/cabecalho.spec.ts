@@ -90,3 +90,33 @@ test.describe("cabeçalho em 390px", () => {
     await contexto.close();
   });
 });
+
+// Na Ressonância o cabeçalho é o mesmo, mas as âncoras apontam para a inicial.
+test.describe("cabeçalho em /ressonancia", () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test("âncoras voltam para /#seção e a seção aparece sem ficar atrás do cabeçalho", async ({ page }) => {
+    await page.goto("/ressonancia");
+    await page.getByRole("button", { name: /recusar/i }).click();
+    const nav = page.getByRole("banner").locator("nav").first();
+    for (const item of itens) {
+      await nav.getByRole("link", { name: item.rotulo, exact: true }).click();
+      await expect(page).toHaveURL(new RegExp(`/${item.ancora}$`));
+      await conferirSecao(page, item.ancora);
+    }
+  });
+});
+
+test.describe("cabeçalho em /ressonancia, 390px", () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
+
+  test("o menu leva à inicial e fecha ao escolher", async ({ page }) => {
+    await page.goto("/ressonancia");
+    await page.getByRole("button", { name: /recusar/i }).click();
+    const menu = page.getByRole("banner").locator("details");
+    await menu.locator("summary").tap();
+    await menu.getByRole("link", { name: itens[0].rotulo, exact: true }).tap();
+    await expect(page).toHaveURL(new RegExp(`/${itens[0].ancora}$`));
+    await conferirSecao(page, itens[0].ancora);
+  });
+});

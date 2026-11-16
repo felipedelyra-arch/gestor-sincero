@@ -1,3 +1,4 @@
+import { mkdirSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 
 // Gera tests/prints/. Só roda a pedido: PRINTS=1 scripts/pesado.sh npx playwright test tests/e2e/prints.spec.ts
@@ -8,11 +9,13 @@ for (const [largura, altura] of [[390, 844], [1280, 800]] as const) {
     test.skip(!process.env.PRINTS, "defina PRINTS=1 para regravar os prints");
     test.use({ viewport: { width: largura, height: altura } });
 
-    test("um print por seção de /", async ({ page }) => {
+    for (const rota of ["/", "/ressonancia"]) test(`um print por seção de ${rota}`, async ({ page }) => {
       test.setTimeout(180_000);
-      await page.goto("/");
+      await page.goto(rota);
       const tirar = { type: "jpeg", quality: 72, animations: "disabled" } as const;
-      await page.screenshot({ ...tirar, path: `${SAIDA}/${largura}/00-primeira-tela-com-cookies.jpg` });
+      const pasta = `${SAIDA}/${largura}${rota === "/" ? "" : rota}`;
+      mkdirSync(pasta, { recursive: true });
+      if (rota === "/") await page.screenshot({ ...tirar, path: `${pasta}/00-primeira-tela-com-cookies.jpg` });
       await page.getByRole("button", { name: /recusar/i }).click();
 
       // Passa por tudo antes: as seções entram por opacidade e as imagens são tardias.
@@ -35,13 +38,13 @@ for (const [largura, altura] of [[390, 844], [1280, 800]] as const) {
 
       const blocos = page.locator("main > section, body > footer, footer");
       const total = await blocos.count();
-      expect(total).toBeGreaterThan(10);
+      expect(total).toBeGreaterThan(rota === "/" ? 10 : 2);
       for (let i = 0; i < total; i++) {
         const bloco = blocos.nth(i);
         const id = (await bloco.getAttribute("id")) ?? (await bloco.evaluate((e) => e.tagName.toLowerCase()));
         await bloco.scrollIntoViewIfNeeded();
         await page.waitForTimeout(700);
-        await bloco.screenshot({ ...tirar, path: `${SAIDA}/${largura}/${String(i + 1).padStart(2, "0")}-${id === "section" ? "topo" : id}.jpg` });
+        await bloco.screenshot({ ...tirar, path: `${pasta}/${String(i + 1).padStart(2, "0")}-${id === "section" ? "topo" : id}.jpg` });
       }
     });
 

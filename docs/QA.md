@@ -2,6 +2,62 @@
 
 Alvo: `http://localhost:3000` em modo prod (build do orquestrador), sem `.env.local` (sem Supabase, Turnstile real, Pixel ou GA4). Chromium sem interface, 1 worker. Nada de código de produção foi alterado.
 
+## Reteste final (16/11/2026, build de prod de 1057e8a: Ressonância em /ressonancia, pendências ocultas)
+
+Specs: `ressonancia` reescrito para a rota nova (o botão do resumo leva a `/ressonancia`); `saude` ganhou a varredura de pendências nas 4 rotas; `cabecalho` ganhou as âncoras de `/ressonancia` voltando para `/#seção` e o menu do celular; `acessibilidade` passa a auditar `/ressonancia` e os details e o menu dela; `design-v2` roda fonte, rolagem e alvos também em `/ressonancia`. Corrigido na medida de largura: um recorte com overflow oculto que cabe na tela (o retrato do topo em 390) não conta como vazamento.
+
+| Critério | Meta | Medido | Situação |
+|---|---|---|---|
+| Pendência visível em `/`, `/ressonancia`, `/privacidade`, `/termos` (HTML e texto) | nenhuma "PENDENTE" nem "a validar" | nenhuma nas 4 rotas (saude, 4 testes) | aprovado |
+| Botão do resumo da landing leva a `/ressonancia` | sim | sim | aprovado |
+| Âncoras do cabeçalho em `/ressonancia` voltam para `/#seção` e a seção fica visível | sim | 5 de 5 em 1280; menu de 390 leva à inicial | aprovado |
+| Lighthouse celular, `/` (3 medições, mediana) | ≥ 95 | 97, 98, 98 (mediana 98, LCP 0,9 s, TBT 160 ms, CLS 0) | aprovado |
+| Lighthouse desktop, `/` | ≥ 95 | 100 (LCP 0,5 s, TBT 20 ms, CLS 0,007) | aprovado |
+| Lighthouse celular, `/ressonancia` (1 medição) | ≥ 95 e LCP < 2,5 s | desempenho 96, mas LCP 2,6 s; TBT 110 ms; página de 442 KiB | LCP reprovado (R-M2) |
+| Acessibilidade e boas práticas, `/` e `/ressonancia` | 100 | 100 e 100 | aprovado |
+| SEO | | 69 nas duas (`noindex` proposital, B6) | conhecido |
+| axe, 4 rotas em 390 e 1280 | 0 graves | 0 violações de qualquer gravidade (16 arquivos); "incompletas" só de contraste, que o axe não decide sozinho | aprovado |
+| axe com details abertos e menu do celular aberto | 0 graves | 0 violações | aprovado |
+| Maior fonte em `/` e `/ressonancia` | ≤ 56px | 56px em 1280 e 1920; 36px em 390 | aprovado |
+| Rolagem horizontal, 390, 1280 e 1920, fechado e aberto (`/` e `/ressonancia`) | nenhuma | nenhuma | aprovado |
+| Alvos de toque ≥ 48px, `/` e `/ressonancia` (fechado e aberto) | sim | sim em todas as larguras | aprovado |
+| Altura total de `/` em 390, 1280 e 1920 | ≤ 18.000 / 12.000px | 15.316 (390, com details fechados; 18.668 abertos) / 9.888 / 9.865 | aprovado |
+| Altura total de `/ressonancia` | sem meta de design | 6.567 (390) / 4.829 (1280) / 4.817 (1920) | informativo |
+| Topo de `/` na primeira tela | 1280x800, 1920x943, 390x844 | 1280: seção acaba em 602px; 390: seção acaba em 703px e as duas chamadas em 627 e 679px, acima do banner (735px) | aprovado |
+| Alturas por seção de `/` em 1280 (alvo do DESIGN) | ver tabela | 7 de 15 passam; 8 acima (ver R-M1) | reprovado |
+| Prints de `/` e `/ressonancia`, 390 e 1280, por seção | sem texto cortado, sobreposição ou buraco | nenhum texto cortado nem sobreposto; sem buraco onde estava pendente | aprovado (ver achados de baixa) |
+| Specs e2e | | saude 13/13; acessibilidade 17/17; cabecalho 6/6; design-v2 8 de 9 (o 1280 de `/` reprova pelas alturas); variacoes 6/6; comparativo 2/2; cookies 3 + 1 pulado; checkout 1 + 1 pulado; cadastro 2 + 1 pulado; ressonancia 2 + 1 pulado | ver pulos |
+| `tsc --noEmit` e `eslint tests/e2e` | limpos | limpos | aprovado |
+
+Altura por seção em 1280 (alvo entre parênteses): espelho 643 (620), dados 593 (520), inimigo 530 (520), virada 807 (760), quem é 897 (820), jornada 1.124 (900), dicionário 759 (560), para quem 733 (560), fechamento 386 (360). Passam: topo, método, ressonância (547, dentro de 2.200), mentoria, perguntas, rodapé.
+
+Copy: varredura de `content/` sem emoji, sem termos proibidos do briefing §6 (webinar, VSL, lead, funil, mindset, growth, insight, curso online, infoproduto, treinamento, garantia de resultado, escassez). Sobram só os usos permitidos: "Growth hacker" (biografia), verbetes do Dicionário (Lead, Funil, CRM, Prompt), "Coach" e "Guru" na lista do que ele não é, e a pergunta "Isso é curso online?", que a resposta nega. Palavra em inglês fora desses casos: "Pensamento Startup Enxuta" (ver R-B1).
+
+### Achados do reteste final
+
+Crítico: nenhum. C1 a C3 seguem abertos; o que mudou é que a pendência não aparece mais na tela, mas o conteúdo continua faltando (fonte da seção 03, resposta de "As reuniões ficam gravadas?", contatos e razão social do rodapé).
+
+Médio:
+
+- **R-M1** alturas por seção de `/` em 1280 acima do DESIGN: jornada 1.124 (`src/components/secoes/Jornada.tsx`), dicionário 759 (`src/components/secoes/Dicionario.tsx`), quem é 897 (`src/components/secoes/QuemE.tsx`), dados 593 (`src/components/secoes/BlocoDados.tsx`), para quem 733 (`src/components/secoes/ParaQuemE.tsx`), virada 807 (`src/components/secoes/Virada.tsx`), espelho 643 (`src/components/secoes/EspelhoDaDor.tsx`), fechamento 386 (`src/components/secoes/Fechamento.tsx`). Reprova `tests/e2e/design-v2.spec.ts` de propósito.
+- **R-M2** `/ressonancia` no celular: LCP de 2,6 s (meta < 2,5 s). O elemento do LCP não saiu no relatório da Lighthouse e o detalhamento do LCP soma pouco (~115 ms), então a causa não está verificada. Medir de novo antes de mexer. Arquivo: `tests/lighthouse/ressonancia-celular.json`.
+
+Baixo:
+
+- **R-B1** "Pensamento Startup Enxuta" em `content/pagina.ts:195`: termo em inglês, contra o §6 do briefing. Decidir se o nome do pilar fica ou se vira tradução (Ferrér).
+- **R-B2** prova do Dicionário em `content/pagina.ts:260`: "No Prêmio Tupaenses Excelentes de 2025, Sidney Ferrér presenteou todos os homenageados com um exemplar do Dicionário do Internetês." É um fato novo que não consta nas fontes que eu tenho; confirmar com o Ferrér antes de publicar.
+- **R-B3** datas e preço ainda aparecem ao visitante como texto de placeholder, sem o marcador: "Datas a confirmar. Quem se inscreve é avisado primeiro." (`content/pagina.ts:224`) e "Valor a confirmar" (`content/pagina.ts:383`). Não é "PENDENTE", então passa na varredura, mas é decisão de produto: confirmar se é para ficar assim.
+- **R-B4** na landing, o resumo da Ressonância (`src/components/secoes/Ressonancia.tsx:14`, print `1280/10-ressonancia.jpg`) tem o texto recuado e um vão grande antes da capa; o bloco parece deslocado em 1280.
+- **R-B5** Dicionário em 390 e Jornada em 390 mostram o segundo cartão cortado de propósito (carrossel). Não é defeito, mas quem vê só o print pode ler como texto cortado.
+
+### Não verificado no reteste final
+
+- Prints de `/privacidade` e `/termos` regravados, mas não olhados linha a linha nesta rodada; prints de 1920 não existem.
+- Tela de sucesso, link do manual e Turnstile sob demanda: o envio para no 503 esperado sem Supabase, então os testes de sucesso pulam como pendência de ambiente.
+- Rolagem dos carrosséis por teclado e botões, além do que a medida de alvos cobre.
+- Rastreamento após o aceite, checkout (sem URL), `canonical` e `og:url` (só em prévia da Vercel).
+- Lighthouse de `/ressonancia` feita uma vez só, como pedido; a diferença de LCP entre as medições da home pode ser ruído.
+
 ## Reteste do redesign v2 (16/11/2026, build de prod com dbcd7fb e a127c22, sem gsap e lenis)
 
 Os 8 specs antigos passaram sem ajuste de seletor. Specs novos: `tests/e2e/cabecalho.spec.ts` e `tests/e2e/design-v2.spec.ts`; `acessibilidade.spec.ts` ganhou os casos com os details abertos e com o menu do celular aberto.

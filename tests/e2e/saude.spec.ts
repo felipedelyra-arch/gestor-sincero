@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const ROTAS = ["/", "/privacidade", "/termos"];
+const ROTAS = ["/", "/ressonancia", "/privacidade", "/termos"];
 
 for (const rota of ROTAS) {
   test(`${rota}: sem erro de console, violação de CSP ou requisição falha`, async ({ page }) => {
@@ -70,3 +70,19 @@ test("arquivos de apoio existem (robots, sitemap, manifesto, ícone, imagem de c
   }
   expect(faltando).toEqual([]);
 });
+
+// Em produção nada de pendente chega ao visitante: nem o marcador, nem o selo de validação do Dicionário.
+const ROTAS_PUBLICAS = ["/", "/ressonancia", "/privacidade", "/termos"];
+for (const rota of ROTAS_PUBLICAS) {
+  test(`${rota}: sem "PENDENTE" nem "a validar" no HTML e no texto visível`, async ({ page }) => {
+    await page.goto(rota);
+    const { html, texto } = await page.evaluate(() => ({
+      html: document.documentElement.outerHTML,
+      texto: document.body.innerText,
+    }));
+    for (const termo of [/PENDENTE/i, /a validar/i]) {
+      expect(html, `${rota} no HTML: ${termo}`).not.toMatch(termo);
+      expect(texto, `${rota} no texto: ${termo}`).not.toMatch(termo);
+    }
+  });
+}

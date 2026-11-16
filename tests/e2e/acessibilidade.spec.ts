@@ -36,7 +36,7 @@ for (const [largura, altura] of [[390, 844], [1280, 800]] as const) {
   test.describe(`axe em ${largura}px`, () => {
     test.use({ viewport: { width: largura, height: altura } });
 
-    for (const rota of ["/", "/privacidade", "/termos"]) {
+    for (const rota of ["/", "/ressonancia", "/privacidade", "/termos"]) {
       test(`${rota} sem violações graves`, async ({ page }) => {
         await page.goto(rota);
         const nome = `${rota === "/" ? "inicio" : rota.slice(1)}-${largura}`;
@@ -47,7 +47,7 @@ for (const [largura, altura] of [[390, 844], [1280, 800]] as const) {
     test("/ com erros de formulário e sem o banner de cookies", async ({ page }) => {
       await page.goto("/");
       await page.getByRole("button", { name: /recusar/i }).click();
-      for (const id of ["#jornada", "#ressonancia"]) {
+      for (const id of ["#jornada"]) {
         const form = page.locator(`${id} form`);
         await form.scrollIntoViewIfNeeded();
         await form.locator('button[type="submit"]').click();
@@ -56,8 +56,18 @@ for (const [largura, altura] of [[390, 844], [1280, 800]] as const) {
       expect(graves(await auditar(page, `inicio-erros-${largura}`))).toEqual([]);
     });
 
-    // Só a página inicial tem details e menu; as páginas legais não têm nenhum dos dois.
-    for (const rota of ["/"]) {
+    test("/ressonancia com erros de formulário e sem o banner de cookies", async ({ page }) => {
+      await page.goto("/ressonancia");
+      await page.getByRole("button", { name: /recusar/i }).click();
+      const form = page.locator("#pedido form");
+      await form.scrollIntoViewIfNeeded();
+      await form.locator('button[type="submit"]').click();
+      await expect(form.locator('[name="empresa"]')).toHaveAttribute("aria-invalid", "true");
+      expect(graves(await auditar(page, `ressonancia-erros-${largura}`))).toEqual([]);
+    });
+
+    // Details: a inicial e a Ressonância. As páginas legais não têm nenhum.
+    for (const rota of ["/", "/ressonancia"]) {
       test(`${rota} com os details abertos`, async ({ page }) => {
         await page.goto(rota);
         await page.getByRole("button", { name: /recusar/i }).click();

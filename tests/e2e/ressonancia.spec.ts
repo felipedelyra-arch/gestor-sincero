@@ -4,11 +4,22 @@ import { contatoNovo, enviar, esperarTurnstile, preencherContato } from "./apoio
 
 const f = pagina.ressonancia.formulario;
 const ROTA = "/api/ressonancia";
+const PAGINA = "/ressonancia";
+const FORM = "#pedido form";
 
 test.describe("Pedido de Ressonância", () => {
-  test("campos próprios do pedido são obrigatórios", async ({ page }) => {
+  test("o resumo da landing leva à página /ressonancia", async ({ page }) => {
     await page.goto("/");
-    const form = page.locator("#ressonancia form");
+    const botao = page.locator('#ressonancia a[href="/ressonancia"]');
+    await botao.scrollIntoViewIfNeeded();
+    await botao.click();
+    await expect(page).toHaveURL(/\/ressonancia$/);
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  });
+
+  test("campos próprios do pedido são obrigatórios", async ({ page }) => {
+    await page.goto(PAGINA);
+    const form = page.locator(FORM);
     await form.scrollIntoViewIfNeeded();
     await preencherContato(form, contatoNovo());
     await form.getByText(f.consentimentos.privacidade).click();
@@ -21,8 +32,8 @@ test.describe("Pedido de Ressonância", () => {
   });
 
   test("pedido completo envia o contrato e mostra a confirmação", async ({ page }) => {
-    await page.goto("/?utm_source=qa&ref=parceiro-2");
-    const form = page.locator("#ressonancia form");
+    await page.goto(`${PAGINA}?utm_source=qa&ref=parceiro-2`);
+    const form = page.locator(FORM);
     await form.scrollIntoViewIfNeeded();
     const contato = contatoNovo();
     await preencherContato(form, contato);
@@ -53,10 +64,10 @@ test.describe("Pedido de Ressonância", () => {
     expect(corpo.turnstileToken).not.toBe("");
 
     if (status === 503) {
-      await expect(page.locator("#ressonancia").getByText(f.erros.indisponivel)).toBeVisible();
+      await expect(page.getByText(f.erros.indisponivel)).toBeVisible();
       test.skip(true, "Pendência de ambiente: rota 503 (prod sem Supabase não usa memória); tela de sucesso não verificada");
     }
     expect(status).toBe(200);
-    await expect(page.locator("#ressonancia").getByRole("heading", { name: f.sucesso.titulo })).toBeFocused();
+    await expect(page.getByRole("heading", { name: f.sucesso.titulo })).toBeFocused();
   });
 });

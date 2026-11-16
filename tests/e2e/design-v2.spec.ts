@@ -7,6 +7,9 @@ const TELAS = [
   { largura: 1920, altura: 943, alturaMaxima: 12_000 },
 ] as const;
 
+// Fonte, rolagem e alvos valem nas duas páginas; altura e seções só na inicial (têm alvo próprio).
+const ROTAS_V2 = ["/", "/ressonancia"] as const;
+
 // Altura-alvo por seção em 1280px (tabela do DESIGN v2).
 const ALVOS_1280: Record<string, number> = {
   topo: 720, espelho: 620, dados: 520, inimigo: 520, virada: 760, "quem-e": 820, metodo: 680, jornada: 900,
@@ -38,8 +41,8 @@ for (const { largura, altura, alturaMaxima } of TELAS) {
       expect.soft(m.secao, "seção do topo inteira na primeira tela").toBeLessThanOrEqual(altura);
     });
 
-    test("fonte, largura, altura e alvos de toque", async ({ page }) => {
-      await page.goto("/");
+    for (const rota of ROTAS_V2) test(`${rota}: fonte, largura, altura e alvos de toque`, async ({ page }) => {
+      await page.goto(rota);
       await page.getByRole("button", { name: /recusar/i }).click();
       await page.evaluate(async () => {
         for (let y = 0; y < document.body.scrollHeight; y += 500) {
@@ -75,9 +78,14 @@ for (const { largura, altura, alturaMaxima } of TELAS) {
           id: e.id || (e.tagName === "FOOTER" ? "rodape" : "topo"),
           a: Math.round(e.getBoundingClientRect().height),
         }));
-        // Elementos que passam da largura da tela (fora de fileiras que rolam de propósito).
+        // Elementos que passam da largura da tela: fora de fileiras que rolam de propósito e de recortes
+        // (um ancestral com overflow oculto que cabe na tela, como o retrato recortado do topo em 390).
+        const recortado = (e: Element) => {
+          const a = e.parentElement?.closest(".overflow-hidden, .overflow-x-auto, .overflow-clip");
+          return !!a && a.getBoundingClientRect().right <= window.innerWidth + 1;
+        };
         const vazam = [...document.querySelectorAll("body *")]
-          .filter((e) => visivel(e) && !e.closest(".overflow-x-auto") && e.getBoundingClientRect().right > window.innerWidth + 1)
+          .filter((e) => visivel(e) && !e.closest(".overflow-x-auto") && !recortado(e) && e.getBoundingClientRect().right > window.innerWidth + 1)
           .map(nome)
           .slice(0, 10);
         return {
@@ -102,13 +110,13 @@ for (const { largura, altura, alturaMaxima } of TELAS) {
       expect.soft(m.maiorFonte[0].px, `maior fonte: ${m.maiorFonte[0].el}`).toBeLessThanOrEqual(56);
       expect.soft(m.sobra, "rolagem horizontal").toBeLessThanOrEqual(0);
       expect.soft(m.vazam, "elementos fora da largura").toEqual([]);
-      expect.soft(m.alturaTotal, "altura total da página").toBeLessThanOrEqual(alturaMaxima);
+      if (rota === "/") expect.soft(m.alturaTotal, "altura total da página").toBeLessThanOrEqual(alturaMaxima);
       expect.soft(m.alvos.filter((x) => x.a < 48 || x.l < 48), "alvos de toque menores que 48px").toEqual([]);
       expect.soft(abertos.alvos.filter((x) => x.a < 48 || x.l < 48), "alvos menores que 48px com os details abertos").toEqual([]);
       expect.soft(abertos.maiorFonte[0].px, "maior fonte com os details abertos").toBeLessThanOrEqual(56);
       expect.soft(abertos.sobra, "rolagem horizontal com os details abertos").toBeLessThanOrEqual(0);
       expect.soft(abertos.vazam, "elementos fora da largura com os details abertos").toEqual([]);
-      if (largura === 1280)
+      if (largura === 1280 && rota === "/")
         for (const s of m.secoes)
           if (ALVOS_1280[s.id]) expect.soft(s.a, `altura da seção ${s.id}`).toBeLessThanOrEqual(ALVOS_1280[s.id]);
     });
