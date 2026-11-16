@@ -23,3 +23,8 @@ Em ordem de prioridade. Cada terminal acrescenta as suas no fim da lista "Novas"
 - Número de temas da Ressonância: o formulário revisado fala em 52 temas; o índice de entregas lista 45. A página usa 52. Confirma?
 - Para onde enviar os cadastros: endereço do webhook da automação de e-mail e WhatsApp da S4.
 - Plataforma de checkout da mentoria e nome do parâmetro de afiliado que ela aceita (hoje a página repassa `afiliado`).
+- A Jornada Executiva é gratuita? O copy afirma que o manual é gratuito e não diz nada sobre o valor da Jornada.
+- A S4 executa a parte digital para o cliente depois da Ressonância? Quais serviços? (resposta da pergunta frequente "A S4 pode fazer a parte digital por mim?")
+- Validar a linha de cada uma das 10 etapas do método, das 9 fases e das 5 entregas da Ressonância (redigidas a partir do nome) e informar o que significa a sigla B.A.S.I.C.O.
+- O bônus "masterclass" entrou como "Aula magna" para evitar inglês. Confirma o nome e qual é o tema?
+- Como termina a frase "Assim como uma ressonância médica revela estruturas que os olhos não enxergam…"? Hoje ela segue com reticências e o parágrafo seguinte completa a ideia.
