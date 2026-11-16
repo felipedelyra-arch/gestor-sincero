@@ -7,7 +7,7 @@ export function Virada() {
   const { titulo, paragrafos, comparativo } = pagina.virada;
   return (
     <Secao id="virada" titulo={titulo}>
-      <div className="grid items-start gap-8 lg:grid-cols-12">
+      <div className="grid items-start gap-8 lg:grid-cols-12 lg:items-center">
         <div className="grid gap-4 lg:col-span-4">
           {paragrafos.map((p) => (
             <p key={p} className="text-pretty">

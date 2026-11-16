@@ -16,22 +16,22 @@ export function Jornada() {
   const semDatas = datas.every((d) => d === null);
   return (
     <Secao id="jornada" titulo={j.titulo} apoio={j.introducao} fundo="marinho">
-      <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
+      <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
         {/* min-w-0: a fileira que rola não pode alargar a coluna */}
-        <div className="min-w-0">
+        <div className="flex min-w-0 flex-col">
           {/* Celular: as três pautas lado a lado, rolando na horizontal. Desktop: empilhadas. */}
-          <ol tabIndex={0} aria-labelledby="jornada-titulo" className={`${trilho} lg:grid lg:overflow-visible lg:pb-0`}>
+          <ol tabIndex={0} aria-labelledby="jornada-titulo" className={`${trilho} lg:flex lg:flex-1 lg:flex-col lg:overflow-visible lg:pb-0`}>
             {j.pautas.map((pauta, i) => {
               const data = datas[i];
               return (
-                <li key={pauta.titulo} className={`${trilhoItem} lg:w-auto`}>
-                  <Cartao fundo="preto" respiro="p-5" className="h-full">
+                <li key={pauta.titulo} className={`${trilhoItem} lg:w-auto lg:flex-1`}>
+                  <Cartao fundo="preto" respiro="p-5" className="flex h-full flex-col justify-center">
                     {!semDatas && (
                       <p className="text-apoio text-ouro-claro">
                         {data ? <time dateTime={data}>{formato.format(new Date(data))}</time> : j.datasPendentes}
                       </p>
                     )}
-                    <h3 className="font-titulo text-h3 font-medium">{pauta.titulo}</h3>
+                    <h3 className="font-titulo text-h3 font-medium lg:text-balance">{pauta.titulo}</h3>
                     <p className="mt-1 text-apoio text-texto-2">{pauta.descricao}</p>
                   </Cartao>
                 </li>

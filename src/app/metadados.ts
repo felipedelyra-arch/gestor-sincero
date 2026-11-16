@@ -29,6 +29,17 @@ export function metadataLegal(tituloPagina: string, caminho: string): Metadata {
   return { title: `${tituloPagina} | ${site.nome}`, alternates: { canonical: caminho } };
 }
 
+/** Metadados de uma página própria (como /ressonancia): título, descrição, canonical e Open Graph no endereço dela. */
+export function metadataPagina(seo: { titulo: string; descricao: string }, caminho: string): Metadata {
+  return {
+    title: { absolute: seo.titulo },
+    description: seo.descricao,
+    alternates: { canonical: caminho },
+    openGraph: { ...metadata.openGraph, url: caminho, title: seo.titulo, description: seo.descricao },
+    twitter: { card: "summary_large_image", title: seo.titulo, description: seo.descricao, images: [og.url] },
+  };
+}
+
 // --- JSON-LD. Só entra o que existe em content/ e config/; pendente fica de fora. ---
 
 const idOrganizacao = `${site.url}/#organizacao`;

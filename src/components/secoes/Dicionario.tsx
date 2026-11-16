@@ -8,7 +8,8 @@ export function Dicionario() {
   const d = pagina.dicionario;
   return (
     <Secao id="dicionario" titulo={d.titulo} apoio={d.introducao}>
-      <p className="mb-4 text-center text-apoio text-ouro-claro">{d.avisoValidacao}</p>
+      {/* em produção o selo pendente chega vazio: nenhum espaço sobra */}
+      {d.avisoValidacao && <p className="mb-4 text-center text-apoio text-ouro-claro">{d.avisoValidacao}</p>}
       <dl tabIndex={0} aria-labelledby="dicionario-titulo" className={`${trilho} lg:grid lg:grid-cols-3 lg:gap-4 lg:overflow-visible lg:pb-0`}>
         {d.termos.map((termo) => (
           <Cartao key={termo.termo} className={`${trilhoItem} lg:w-auto`}>

@@ -11,7 +11,7 @@ const MUITOS = 4;
 
 // Cada item é um cartão marcável: a borda vira ouro quando marcado.
 const cartao =
-  "h-full rounded-cartao border border-chumbo bg-preto p-4 text-apoio transition-colors duration-200 has-[:checked]:border-ouro";
+  "h-full rounded-cartao border border-chumbo bg-preto p-4 text-apoio transition-colors duration-200 not-has-[:checked]:hover:border-ouro-escuro has-[:checked]:border-ouro";
 
 export function EspelhoDaDorLista({ introducao, itens, contador, respostas }: Props) {
   const [marcados, setMarcados] = useState<ReadonlySet<number>>(new Set());

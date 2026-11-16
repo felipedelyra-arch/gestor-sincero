@@ -17,8 +17,8 @@ export function TopoTitulo({ variacoes }: Props) {
   const { titulo, subtitulo } = variacoes[variacao];
   return (
     <>
-      <h1 className="entra font-titulo text-h1 font-medium text-balance">{titulo}</h1>
-      <p className="entra mt-4 max-w-[52ch] text-pretty text-texto-2 lg:mt-5">{subtitulo}</p>
+      <h1 className="entra col-start-1 row-start-1 font-titulo text-h1 font-medium text-balance">{titulo}</h1>
+      <p className="entra col-span-2 mt-4 max-w-[52ch] text-pretty text-texto-2 lg:mt-5">{subtitulo}</p>
     </>
   );
 }
