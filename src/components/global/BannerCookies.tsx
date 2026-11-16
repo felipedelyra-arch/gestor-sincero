@@ -34,7 +34,7 @@ export function BannerCookies({ texto, aceitar, recusar, rotuloPolitica, linkPol
     <section
       ref={publicarAltura}
       aria-labelledby="gs-cookies-texto"
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-chumbo bg-preto-2 px-5 py-3 text-texto md:px-12 md:py-4"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-chumbo bg-preto-2 px-5 py-2 text-texto md:px-12 md:py-4"
     >
       <div className="mx-auto flex max-w-[1200px] flex-col gap-2 md:flex-row md:items-center md:justify-between md:gap-4">
         {/* Compacto no celular (texto de apoio) para não cobrir a chamada principal do topo. */}
@@ -47,7 +47,8 @@ export function BannerCookies({ texto, aceitar, recusar, rotuloPolitica, linkPol
             {rotuloPolitica}
           </Link>
         </p>
-        <div className="flex gap-3">
+        {/* md:shrink-0: sem isto o grupo encolhia em 1024px e o segundo botão saía da tela. */}
+        <div className="flex gap-3 md:shrink-0">
           <button type="button" className={botao} onClick={() => gravarConsentimento("recusado")}>
             {recusar}
           </button>

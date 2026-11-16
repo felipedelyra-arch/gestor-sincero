@@ -1,7 +1,7 @@
 import { pagina } from "@content";
 import { site } from "@config/site";
 import { camposRessonancia } from "../formulario/campos";
-import { Formulario } from "../formulario/Formulario";
+import { FormularioTardio } from "../formulario/FormularioTardio";
 import { estilosBotao } from "../ui/estilos";
 import { Imagem } from "../ui/Imagem";
 import { Secao } from "../ui/Secao";
@@ -114,7 +114,7 @@ export function Ressonancia() {
       </div>
 
       <div id={ID_PEDIDO} className="mt-16">
-        <Formulario
+        <FormularioTardio
           formulario={r.formulario}
           campos={camposRessonancia}
           rota="ressonancia"

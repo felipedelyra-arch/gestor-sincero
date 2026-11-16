@@ -1,7 +1,7 @@
 import { pagina } from "@content";
 import { site } from "@config/site";
 import { camposJornada } from "../formulario/campos";
-import { Formulario } from "../formulario/Formulario";
+import { FormularioTardio } from "../formulario/FormularioTardio";
 import { Secao } from "../ui/Secao";
 
 // As datas de config são dias de calendário (sem hora): formatar em UTC evita cair no dia anterior.
@@ -38,7 +38,7 @@ export function Jornada() {
       </div>
 
       <div className="mt-16">
-        <Formulario
+        <FormularioTardio
           formulario={j.formulario}
           campos={camposJornada}
           rota="cadastroJornada"

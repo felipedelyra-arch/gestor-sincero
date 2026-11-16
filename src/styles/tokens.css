@@ -46,7 +46,7 @@
 :root {
   --margem: 20px; /* o fio dourado corre no meio desta margem */
   --espaco-secao: 96px;
-  --respiro-topo: 48px; /* distância da tarja ao título; o fio nasce aqui */
+  --respiro-topo: 40px; /* distância da tarja ao título; o fio nasce aqui */
   --aperto-h2: 0;
 }
 

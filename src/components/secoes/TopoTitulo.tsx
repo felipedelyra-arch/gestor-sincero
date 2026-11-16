@@ -18,7 +18,7 @@ export function TopoTitulo({ variacoes }: Props) {
   return (
     <>
       <h1 className="entra font-titulo text-manifesto font-medium text-balance">{titulo}</h1>
-      <p className="entra mt-6 max-w-texto font-titulo text-h3 text-texto-2 [--ordem:1]">{subtitulo}</p>
+      <p className="entra mt-4 max-w-texto sm:mt-6 font-titulo text-h3 text-texto-2 [--ordem:1]">{subtitulo}</p>
     </>
   );
 }
