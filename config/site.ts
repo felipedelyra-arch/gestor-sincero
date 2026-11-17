@@ -109,7 +109,7 @@ export const site: Site = siteSchema.parse({
   },
   // Chave de teste pública da Cloudflare (sempre aprova); trocar pela real via env.
   turnstileSiteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA",
-  tipografiaManifesto: "outfit",
+  tipografiaManifesto: "serifa", // aprovado pelo Felipe em 17/11
   secaoPapel: true,
   dados: { fonte: null },
   ferrer: { anosCarreira: 40, livros: 3 },
