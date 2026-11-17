@@ -43,7 +43,7 @@ export const legal: PaginaEntrada["legal"] = {
         paragrafos: [
           "Não vendemos nem alugamos seus dados. Eles passam apenas por empresas que prestam serviço para esta página, chamadas de operadoras, e que só podem usá-los para essa finalidade.",
           "Hospedagem da página (Vercel), banco de dados (Supabase) e verificação contra robôs (Cloudflare).",
-          "Na conversa com o personagem do Gestor Sincero, se você escrever no campo de explicação, o texto é enviado a um serviço de inteligência artificial (Groq, nos Estados Unidos) só para ser lido e encaixado em uma das respostas. Esse texto não é guardado por nós. O serviço não o usa para treinar modelos e pode mantê-lo por até 30 dias apenas para investigar falha ou abuso.",
+          "Na conversa com o personagem do Gestor Sincero, se você escrever a sua resposta ou responder por áudio, o texto ou a gravação são enviados a um serviço de inteligência artificial (Groq, nos Estados Unidos) só para serem transcritos, lidos e encaixados em uma das respostas. Nem o texto nem o áudio são guardados por nós. O serviço não o usa para treinar modelos e pode mantê-lo por até 30 dias apenas para investigar falha ou abuso.",
           "Ferramenta de envio de e-mail e de WhatsApp da S4 Marketing Digital de Resultados: [PENDENTE FERRÉR: nome do fornecedor].",
           "Meta e Google, apenas se você aceitar os cookies de medição. Nesse caso, e-mail e telefone seguem em forma de código irreversível, junto da identificação do seu navegador.",
           "Plataforma de pagamento da mentoria, quando você decide comprar: [PENDENTE FERRÉR: nome da plataforma]. A compra segue também a política dessa plataforma.",
