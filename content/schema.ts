@@ -69,13 +69,13 @@ export const paginaSchema = z.object({
     fechamento: t,
   }),
 
-  inimigo: z.object({ titulo: t, introducao: t, frases: lista(3), fechamento: t }), // 04
+  inimigo: z.object({ titulo: t, introducao: t, frases: lista(3), fechamento: t.optional() }), // 04
 
   virada: z.object({ // 05
     titulo: t,
     paragrafos: lista(),
     comparativo: z.object({
-      titulo: t,
+      titulo: t.optional(), // v2.1: a pergunta saiu; só os 6 primeiros pares aparecem
       rotuloAnalogica: t,
       rotuloDigital: t,
       pares: z.array(z.object({ tema: t, analogica: t, digital: t })).length(17),

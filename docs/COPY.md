@@ -529,3 +529,11 @@ Botões: **Aceitar cookies** e **Recusar cookies**. Link: Ler a política de pri
 
 _Por quê: os dois documentos estão em `content/legal.ts` e nas páginas /privacidade e /termos; razão social, CNPJ, encarregado, prazo de guarda, fornecedores e foro seguem pendentes._
 
+
+## Corte de texto v2.1 (17/11, pedido do Felipe)
+
+- **O inimigo:** a introdução virou "Ele não aparece no balanço. Mora em frases razoáveis que adiam a decisão por mais um ano." Saíram o segundo parágrafo e a frase "Experiência sem atualização virou risco." (a seção Quem é já traz "vira nostalgia").
+- **A virada:** um parágrafo só. Saiu a pergunta "Em qual das duas colunas está a sua empresa?". Na página ficam 6 pares (Site, Anúncios, Cadastro de clientes, Gestão, Liderança, Crise); os outros 11 continuam em `content/pagina.ts`, sem aparecer.
+- **Quem é:** um parágrafo; 6 credenciais (saíram Growth hacker, Diretor de arte, Encarregado de dados e Consultor e mentor de empresas nascentes); as listas "é / não é" viraram uma frase.
+- **Método:** introdução em uma frase; cada etapa com descrição de até 8 palavras.
+- **Perguntas:** linha nova "Ficou alguma dúvida? Fale com a equipe no WhatsApp", que só aparece quando houver número em `config/site.ts`.

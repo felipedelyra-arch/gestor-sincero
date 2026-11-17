@@ -101,8 +101,7 @@ export const paginaBruta: PaginaEntrada = {
 
   inimigo: {
     titulo: "O inimigo tem voz de prudência",
-    introducao:
-      "Ele não aparece no balanço nem bate à porta. Mora em frases razoáveis, ditas por gente séria na mesa de reunião, que empurram a decisão para o ano que vem. E carrega uma crença antiga, a de que o mercado ainda paga pelas mesmas escolhas de 10 ou 20 anos atrás. Reconhece alguma destas?",
+    introducao: "Ele não aparece no balanço. Mora em frases razoáveis que adiam a decisão por mais um ano.",
     frases: [
       "Vou estudar depois.",
       "Meu sobrinho cuida das redes.",
@@ -110,29 +109,27 @@ export const paginaBruta: PaginaEntrada = {
       "Vou esperar. Isso passa.",
       "Sempre fiz assim.",
     ],
-    fechamento:
-      "Nenhuma delas é mentira, e é isso que as torna perigosas. Cada uma parece prudência e adia a decisão por mais um ano, e o ano adiado não volta. Experiência sem atualização virou risco.",
   },
 
   virada: {
     titulo: "Sua empresa não precisa nascer de novo. Precisa de um segundo motor.",
     paragrafos: [
-      "Ninguém aqui vai pedir que você derrube o que levou décadas para erguer. O legado fica. Os clientes, o nome e a palavra dada também.",
-      "O que falta é criar, dentro da própria empresa, a versão digital do negócio. Um segundo motor de crescimento, ligado ao primeiro e comandado por você, e não pela agência ou pelo sobrinho. Você não construiu sua empresa para depender dos outros.",
+      "Ninguém aqui vai pedir que você derrube o que levou décadas para erguer. O que falta é criar, dentro da própria empresa, a versão digital do negócio. Um segundo motor de crescimento, comandado por você.",
     ],
     comparativo: {
-      titulo: "Em qual das duas colunas está a sua empresa?",
       rotuloAnalogica: "Analógica",
       rotuloDigital: "Digital",
       pares: [
+        // v2.1: só os 6 primeiros aparecem na página; os outros 11 ficam guardados.
         { tema: "Site", analogica: "Um panfleto parado na internet", digital: "Uma máquina de vendas que trabalha todos os dias" },
-        { tema: "Redes sociais", analogica: "Vitrine para mostrar produto", digital: "Canal de relacionamento com o cliente" },
         { tema: "Anúncios", analogica: "Impulsionamento no palpite", digital: "Investimento com desempenho medido" },
-        { tema: "Canais de venda", analogica: "Cada um para um lado", digital: "Integrados, com o mesmo cliente e a mesma história" },
         { tema: "Cadastro de clientes", analogica: "Planilhas espalhadas", digital: "Sistema de gestão de clientes" },
-        { tema: "Pós-venda", analogica: "Reage quando o cliente reclama", digital: "Procura o cliente antes do problema" },
         { tema: "Gestão", analogica: "Decide pela intuição", digital: "Decide olhando os dados" },
         { tema: "Liderança", analogica: "Centraliza tudo no dono", digital: "Ágil, com autonomia para a equipe" },
+        { tema: "Crise", analogica: "Hora de esperar passar", digital: "Hora de mudar a rota" },
+        { tema: "Redes sociais", analogica: "Vitrine para mostrar produto", digital: "Canal de relacionamento com o cliente" },
+        { tema: "Canais de venda", analogica: "Cada um para um lado", digital: "Integrados, com o mesmo cliente e a mesma história" },
+        { tema: "Pós-venda", analogica: "Reage quando o cliente reclama", digital: "Procura o cliente antes do problema" },
         { tema: "Contratação", analogica: "Escolhe pelo currículo", digital: "Escolhe pela capacidade de se adaptar" },
         { tema: "Retenção de pessoas", analogica: "Ficam por obrigação", digital: "Ficam por propósito" },
         { tema: "Erro", analogica: "É punido", digital: "Vira aprendizado" },
@@ -141,7 +138,6 @@ export const paginaBruta: PaginaEntrada = {
         { tema: "Inovação", analogica: "Só lança quando está perfeito", digital: "Testa rápido e corrige" },
         { tema: "Estrutura", analogica: "Tudo instalado no escritório", digital: "Nuvem e inteligência artificial" },
         { tema: "Concorrência", analogica: "O vizinho do bairro", digital: "Qualquer empresa do mundo" },
-        { tema: "Crise", analogica: "Hora de esperar passar", digital: "Hora de mudar a rota" },
       ],
     },
   },
@@ -149,21 +145,17 @@ export const paginaBruta: PaginaEntrada = {
   quemE: {
     titulo: "Do Telex à inteligência artificial",
     paragrafos: [
-      "Gestor Sincero é o nome com que Sidney Ferrér assina o que aprendeu em quatro décadas de carreira. Ele começou na era do Telex e viu de dentro cada troca de regra do mercado, como executivo e como dono de empresa. Viu a chegada do computador pessoal, da internet, das redes sociais e agora da inteligência artificial.",
-      "Hoje comanda a S4 Marketing Digital de Resultados e faz uma ponte que pouca gente faz. De um lado, a velocidade dos jovens. Do outro, a visão estratégica e a experiência em crise de quem tem estrada. Ele traduz a Era Digital para quem cresceu sem internet, sem pedir que ninguém vire técnico.",
+      "Gestor Sincero é o nome com que Sidney Ferrér assina o que aprendeu em quatro décadas de carreira. Começou na era do Telex, viu de dentro cada troca de regra do mercado e hoje comanda a S4 Marketing Digital de Resultados.",
     ],
     credenciais: [
-      "Growth hacker",
       "Dono da S4 Marketing Digital de Resultados",
       "Idealizador da Academia de Gestores",
       "Reitor da Escola de Inovação Aberta",
-      "Diretor de arte",
-      "Encarregado de dados (LGPD)",
-      "Consultor e mentor de empresas nascentes",
       "Ex-secretário de Turismo",
-      "MBAs em marketing digital, gestão de negócios e gestão de equipes",
       "Autor de 3 livros",
+      "MBAs em marketing, gestão e equipes",
     ],
+    sintese: "Não é guru, coach nem influenciador. É empresário que atravessou todas as crises desde o Telex e hoje traduz a Era Digital para quem cresceu sem internet.",
     tituloEh: "O que ele é",
     eh: [
       "Empresário sobrevivente",
@@ -182,29 +174,30 @@ export const paginaBruta: PaginaEntrada = {
 
   metodo: {
     titulo: "Primeiro muda a cabeça de quem decide. Depois, a operação.",
-    introducao:
-      "O Método Empresas do Futuro tem dez etapas em dois pilares. Comprar ferramenta antes de mudar a forma de pensar é informatizar a bagunça, por isso a ordem importa.",
+    introducao: "O Método Empresas do Futuro tem dez etapas em dois pilares, e a ordem importa.",
     pilares: [
       {
         nome: "Melhoria Contínua",
         descricao: "A mentalidade. O que precisa mudar na cabeça de quem decide antes de mudar na operação.",
+        rotulo: "a mentalidade",
         etapas: [
-          { numero: 1, nome: "Empoderamento", descricao: "Retomar o comando e entender o digital o bastante para decidir sem intérprete." },
-          { numero: 2, nome: "Posicionamento", descricao: "Definir como a empresa quer ser vista e escolhida no mercado de hoje." },
-          { numero: 3, nome: "Engajamento", descricao: "Trazer a equipe, de todas as gerações, para dentro da mudança." },
-          { numero: 4, nome: "Ecossistema", descricao: "Tratar clientes, parceiros e fornecedores como uma rede que faz o negócio crescer." },
+          { numero: 1, nome: "Empoderamento", descricao: "Retomar o comando e decidir sem intérprete." },
+          { numero: 2, nome: "Posicionamento", descricao: "Definir como a empresa quer ser escolhida." },
+          { numero: 3, nome: "Engajamento", descricao: "Trazer todas as gerações para a mudança." },
+          { numero: 4, nome: "Ecossistema", descricao: "Tratar clientes e parceiros como uma rede." },
         ],
       },
       {
         nome: "Empresa Digital",
         descricao: "A execução. A versão digital do negócio saindo do papel, uma etapa por vez.",
+        rotulo: "a execução",
         etapas: [
-          { numero: 5, nome: "Equipe", descricao: "Montar o time da versão digital, somando a velocidade dos jovens à visão de quem tem estrada." },
-          { numero: 6, nome: "Pensamento Startup Enxuta", descricao: "Testar pequeno, medir e corrigir rápido, como fazem as empresas nascentes, antes de investir alto." },
-          { numero: 7, nome: "Métodos", descricao: "Trocar o improviso por rotinas de trabalho que a equipe consegue repetir." },
-          { numero: 8, nome: "Integração", descricao: "Ligar canais, sistemas e áreas para a informação parar de se perder no caminho." },
-          { numero: 9, nome: "Escalabilidade", descricao: "Preparar a empresa para crescer sem que o custo e a confusão cresçam junto." },
-          { numero: 10, nome: "Gamificação", descricao: "Usar metas, placar e reconhecimento para manter a equipe no jogo." },
+          { numero: 5, nome: "Equipe", descricao: "Somar a velocidade dos jovens à sua estrada." },
+          { numero: 6, nome: "Pensamento Startup Enxuta", descricao: "Testar pequeno e corrigir antes de investir alto." },
+          { numero: 7, nome: "Métodos", descricao: "Trocar o improviso por rotinas que se repetem." },
+          { numero: 8, nome: "Integração", descricao: "Ligar canais, sistemas e áreas da empresa." },
+          { numero: 9, nome: "Escalabilidade", descricao: "Crescer sem que custo e confusão cresçam junto." },
+          { numero: 10, nome: "Gamificação", descricao: "Metas, placar e reconhecimento para manter o ritmo." },
         ],
       },
     ],
@@ -427,6 +420,7 @@ export const paginaBruta: PaginaEntrada = {
   depoimentos: { titulo: "Quem já passou pela mentoria", itens: [] },
 
   perguntas: {
+    duvida: { texto: "Ficou alguma dúvida?", rotuloLink: "Fale com a equipe no WhatsApp" },
     titulo: "Antes que você pergunte",
     itens: [
       {
