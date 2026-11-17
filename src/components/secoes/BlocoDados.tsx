@@ -13,7 +13,7 @@ export function BlocoDados() {
   return (
     <section id="dados" aria-labelledby="dados-titulo" className="py-(--sec-curta)">
       <div className="conteiner-v2 grid gap-10 lg:grid-cols-12 lg:gap-x-8">
-        <div data-revela suppressHydrationWarning className="lg:col-span-5">
+        <div data-revela data-desloca suppressHydrationWarning className="lg:col-span-5">
           <h2 id="dados-titulo" className="font-titulo text-secao font-medium text-balance">
             {titulo}
           </h2>

@@ -16,7 +16,7 @@ export function OfertaMentoria() {
     <section id="mentoria" aria-labelledby="mentoria-titulo" className="py-(--sec-media)">
       <div className="conteiner-v2 grid grid-cols-[minmax(0,1fr)] gap-14 lg:grid-cols-12 lg:gap-x-8">
         <div className="lg:col-span-7">
-          <div data-revela suppressHydrationWarning>
+          <div data-revela data-desloca suppressHydrationWarning>
             <h2 id="mentoria-titulo" className="font-titulo text-secao font-medium text-balance">
               {o.titulo}
             </h2>

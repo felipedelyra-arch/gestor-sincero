@@ -68,16 +68,43 @@
   letter-spacing: var(--text-display--letter-spacing);
 }
 
-/* Retrato do topo: luz de contorno dourada sutil (o recorte tem transparência, o drop-shadow acompanha a silhueta) e,
-   no celular, a base some por máscara (sem corte seco). No desktop o degradê escuro fica num elemento à parte. */
+/* Retrato do topo: luz de contorno dourada sutil (o recorte tem transparência, o drop-shadow acompanha a silhueta).
+   A máscara apaga a base e a lateral esquerda: o retrato sai do preto em vez de parecer colado. */
 @utility luz-contorno {
   filter: drop-shadow(0 0 1px rgb(206 163 61 / 0.5)) drop-shadow(0 0 24px rgb(206 163 61 / 0.11));
 }
 
-@media (max-width: 1023px) {
+.retrato-topo {
+  mask-image: linear-gradient(to bottom, #000 58%, transparent 100%);
+}
+
+@media (min-width: 1024px) {
   .retrato-topo {
-    mask-image: linear-gradient(to bottom, #000 58%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 48%, transparent 98%), linear-gradient(to right, transparent 0, #000 22%);
+    mask-composite: intersect;
   }
+}
+
+/* Fundos que se fundem: só tons escuros da paleta, sem cor nova. */
+.fundo-jornada {
+  background: linear-gradient(to bottom, var(--color-preto) 0, var(--color-marinho) 160px, var(--color-marinho) calc(100% - 160px), var(--color-preto) 100%);
+}
+
+/* Arte da Ressonância: entra pelas bordas (acima, abaixo e, no desktop, do lado do texto). */
+.arte-ressonancia {
+  mask-image: linear-gradient(to bottom, transparent 0, #000 20%, #000 80%, transparent 100%);
+}
+
+@media (min-width: 1024px) {
+  .arte-ressonancia {
+    mask-image: linear-gradient(to bottom, transparent 0, #000 18%, #000 82%, transparent 100%), linear-gradient(to right, transparent 0, #000 30%, #000 90%, transparent 100%);
+    mask-composite: intersect;
+  }
+}
+
+/* Fundo fotográfico do Fechamento: sobe e desce até o preto. */
+.foto-fechamento {
+  mask-image: linear-gradient(to bottom, transparent 0, #000 30%, #000 70%, transparent 100%);
 }
 
 /* 0.01 e não 0: o Chrome ignora elemento com opacidade 0 ao medir o LCP, e o título do topo */
@@ -100,5 +127,23 @@
 
   [data-oculto] {
     opacity: 0;
+  }
+
+  /* deslocamento curto junto da opacidade (título ou imagem de cada seção) */
+  [data-desloca] {
+    transition: opacity 500ms ease-out, transform 500ms ease-out;
+  }
+
+  [data-oculto][data-desloca] {
+    transform: translateY(16px);
+  }
+
+  /* entrada da arte da Ressonância: opacidade e uma aproximação leve */
+  [data-zoom] {
+    transition: opacity 900ms ease-out, transform 1200ms ease-out;
+  }
+
+  [data-oculto][data-zoom] {
+    transform: scale(1.04);
   }
 }

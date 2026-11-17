@@ -8,7 +8,7 @@ export function PerguntasFrequentes() {
     <section id="perguntas" aria-labelledby="perguntas-titulo" className="py-(--sec-media)">
       <div className="conteiner-v2">
         <div className="max-w-[680px]">
-          <h2 id="perguntas-titulo" data-revela suppressHydrationWarning className="font-titulo text-secao font-medium text-balance">
+          <h2 id="perguntas-titulo" data-revela data-desloca suppressHydrationWarning className="font-titulo text-secao font-medium text-balance">
             {titulo}
           </h2>
           <div className="mt-12 border-b border-filete-ouro">

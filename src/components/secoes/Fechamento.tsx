@@ -11,7 +11,7 @@ export function Fechamento() {
   const { frases, texto, chamada } = pagina.fechamento;
   return (
     <section id="fechamento" aria-labelledby="fechamento-titulo" className="relative isolate overflow-hidden py-(--sec-ampla)">
-      <div aria-hidden="true" className="absolute inset-0 -z-10 opacity-[0.2] blur-sm">
+      <div aria-hidden="true" className="foto-fechamento absolute inset-0 -z-10 opacity-[0.2] blur-sm">
         <Imagem
           nome="ferrer-retrato"
           alt=""
@@ -21,7 +21,7 @@ export function Fechamento() {
           className="size-full object-cover object-[50%_18%]"
         />
       </div>
-      <div data-revela suppressHydrationWarning className="conteiner-v2 flex flex-col items-center text-center">
+      <div data-revela data-desloca suppressHydrationWarning className="conteiner-v2 flex flex-col items-center text-center">
         <h2 id="fechamento-titulo" className="manifesto max-w-[20ch] text-balance">
           {frases[0]}
         </h2>

@@ -7,18 +7,19 @@ import { FormularioTardio } from "../formulario/FormularioTardio";
 const formato = new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
 
 /**
- * S8. Convite de conselho executivo, em marinho: a agenda numerada das três reuniões (com filetes, sem cartões), o
- * formulário de captação num bloco só e, ao lado, o mockup do manual feito em CSS (fica fixo enquanto a agenda rola).
+ * S8. Convite de conselho executivo, em marinho que se funde ao preto acima e abaixo: à esquerda a agenda numerada das
+ * três reuniões (com filetes, sem cartões); à direita o texto do manual e o formulário de captação num bloco só.
+ * Não há capa nem imagem do manual (ela ainda não existe).
  */
 export function Jornada() {
   const j = pagina.jornada;
   const { horario, datas } = site.jornada;
   const semDatas = datas.every((d) => d === null);
   return (
-    <section id="jornada" aria-labelledby="jornada-titulo" className="bg-marinho py-(--sec-ampla)">
-      <div className="conteiner-v2 grid grid-cols-[minmax(0,1fr)] gap-14 lg:grid-cols-12 lg:gap-x-8">
+    <section id="jornada" aria-labelledby="jornada-titulo" className="fundo-jornada py-(--sec-ampla)">
+      <div className="conteiner-v2 grid grid-cols-[minmax(0,1fr)] gap-14 lg:grid-cols-12 lg:gap-x-12">
         <div className="lg:col-span-7">
-          <div data-revela suppressHydrationWarning>
+          <div data-revela data-desloca suppressHydrationWarning>
             <h2 id="jornada-titulo" className="font-titulo text-secao font-medium text-balance">
               {j.titulo}
             </h2>
@@ -54,9 +55,17 @@ export function Jornada() {
           </ol>
           {/* enquanto as três datas estão pendentes, o aviso vale para todas e aparece uma vez */}
           {semDatas && <p className="mt-4 text-legenda text-texto-2">{j.datasPendentes}</p>}
+        </div>
+
+        <div className="lg:col-span-5">
+          {/* o manual, só em texto: filete dourado, nome e descrição */}
+          <div className="border-t border-ouro pt-5">
+            <h3 className="font-titulo text-sub font-medium text-balance">{j.manual.nome}</h3>
+            <p className="mt-2">{j.manual.descricao}</p>
+          </div>
 
           {/* o único bloco com borda e fundo da seção: o formulário */}
-          <div className="mt-14 border border-chumbo bg-preto p-6 lg:p-8">
+          <div className="mt-10 border border-chumbo bg-preto p-6 lg:p-8">
             <FormularioTardio
               formulario={j.formulario}
               campos={camposJornada}
@@ -65,18 +74,6 @@ export function Jornada() {
             />
           </div>
         </div>
-
-        {/* Mockup do manual em CSS: livro preto sóbrio, título em dourado, lombada e sombra de livro. */}
-        <figure className="max-w-[320px] lg:sticky lg:top-[calc(var(--altura-cabecalho)+24px)] lg:col-span-5 lg:max-w-[380px] lg:self-start lg:justify-self-end">
-          <div className="relative aspect-3/4 w-full border border-filete-ouro border-l-[14px] border-l-preto bg-preto p-7 shadow-[0_24px_48px_rgb(0_0_0/0.6)] lg:p-9">
-            <div className="flex h-full flex-col justify-between border border-ouro-escuro p-5">
-              <span aria-hidden="true" className="h-px w-10 bg-ouro" />
-              <p className="manifesto text-[length:clamp(1.667rem,2.4vw,2.222rem)] text-ouro">{j.manual.nome}</p>
-              <span aria-hidden="true" className="h-px w-full bg-filete-ouro" />
-            </div>
-          </div>
-          <figcaption className="mt-5 text-legenda text-texto-2">{j.manual.descricao}</figcaption>
-        </figure>
       </div>
     </section>
   );
