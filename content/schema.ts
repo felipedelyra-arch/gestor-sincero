@@ -249,6 +249,20 @@ export const papoRetoSchema = z.object({
   abertura: fala, // primeira fala do personagem
   perguntas: z.array(perguntaPapo).length(8),
   livre: z.object({ rotulo: t, ajuda: t.optional() }), // "quer explicar melhor?"
+  // Conversa por texto e por voz (ADR 0003, revisão de 17/11): campo de mensagem, gravação de áudio e leitura das falas em voz alta.
+  conversa: z.object({
+    campo: t, // texto de exemplo do campo de mensagem
+    enviar: t, // rótulo do botão de enviar (leitor de tela)
+    gravar: t,
+    pararGravacao: t,
+    gravando: t, // estado anunciado enquanto grava
+    transcrevendo: t,
+    semMicrofone: t, // permissão negada ou navegador sem gravação
+    audioNaoEntendido: fala, // a transcrição falhou: pede para repetir ou escrever
+    ouvirFalas: t, // liga a voz do personagem
+    silenciarFalas: t,
+    sugestoes: t, // título discreto das respostas prontas
+  }),
   responder: t, // botão que envia número ou texto livre
   naoEntendi: fala, // quando o texto livre não pôde ser lido: pede para escolher uma das opções, sem soar como erro
   enviando: t,

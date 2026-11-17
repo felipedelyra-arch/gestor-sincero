@@ -10,7 +10,7 @@ export const papoRetoBruto: PapoRetoEntrada = {
     roteiro:
       "Assistente com a imagem de Sidney Ferrér, usada com autorização. As respostas são geradas por regras e não substituem uma consultoria.",
     comIA:
-      'Assistente com a imagem de Sidney Ferrér, usada com autorização. As respostas são geradas por regras e não substituem uma consultoria. Se você escrever no campo "Quer explicar melhor?", um assistente de inteligência artificial lê o texto para entender a sua resposta.',
+      'Assistente com a imagem de Sidney Ferrér, usada com autorização. As respostas são geradas por regras e não substituem uma consultoria. Se você escrever ou responder por áudio, um assistente de inteligência artificial transcreve e lê a sua resposta para entendê-la. O áudio não é guardado.',
   },
   consentimento: {
     texto:
@@ -249,6 +249,19 @@ export const papoRetoBruto: PapoRetoEntrada = {
   livre: {
     rotulo: "Quer explicar melhor?",
     ajuda: "Opcional. Escreva com as suas palavras, sem nome, telefone nem documentos.",
+  },
+  conversa: {
+    campo: "Escreva a sua resposta",
+    enviar: "Enviar resposta",
+    gravar: "Responder por áudio",
+    pararGravacao: "Parar e enviar o áudio",
+    gravando: "Gravando. Fale e toque de novo para enviar.",
+    transcrevendo: "Ouvindo o seu áudio",
+    semMicrofone: "Não consegui usar o microfone. Escreva a resposta ou escolha uma das opções.",
+    audioNaoEntendido: "Não peguei o que você disse. Pode repetir, mais perto do microfone, ou escrever?",
+    ouvirFalas: "Ouvir as respostas em voz alta",
+    silenciarFalas: "Silenciar a voz",
+    sugestoes: "Respostas rápidas",
   },
   naoEntendi: "Quero ter certeza de que entendi direito. Escolha a resposta que chega mais perto do seu caso, e seguimos.",
   responder: "Responder",

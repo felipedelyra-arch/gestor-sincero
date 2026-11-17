@@ -52,3 +52,13 @@ export type RespostaPapoReto =
   | { ok: false; erro: "validacao" | "limite" | "antirrobo" | "indisponivel" };
 
 export const rotaPapoReto = "/api/papo-reto";
+
+// Resposta por voz (17/11): o navegador grava, o servidor transcreve (Groq Whisper) e devolve o texto,
+// que segue pelo mesmo caminho do texto livre. O áudio nunca é guardado.
+export const rotaPapoRetoAudio = "/api/papo-reto/audio";
+export const AUDIO_MAX_SEGUNDOS = 30;
+export const AUDIO_MAX_BYTES = 1_000_000;
+/** Corpo: multipart/form-data com `audio` (arquivo) e `estado` (o estado assinado da conversa em curso). */
+export type RespostaTranscricao =
+  | { ok: true; texto: string }
+  | { ok: false; erro: "validacao" | "limite" | "antirrobo" | "indisponivel" | "nao-entendido" };

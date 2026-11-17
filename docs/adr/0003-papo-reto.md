@@ -27,3 +27,13 @@ Parágrafo na política de privacidade (conversa guardada por 30 dias com consen
 3. Na Vercel, variável `NEXT_PUBLIC_PAPO_RETO=1` só no ambiente de prévia (e `PAPO_RETO_SEGREDO`, Supabase e Turnstile, sem os quais a rota responde indisponível).
 
 O `.zip` continua fora do git e do envio.
+
+## Revisão de 17/11: conversa por texto e por voz
+
+Pedido do Felipe: o painel deve parecer uma conversa (campo de mensagem, como num aplicativo de mensagens), aceitar resposta por áudio e falar as respostas. Ainda em teste.
+
+1. **Campo de mensagem como entrada principal.** O texto segue pela camada de texto livre (decisão 4). As opções continuam, como respostas rápidas.
+2. **Áudio de entrada.** O navegador grava até 30 s (MediaRecorder) e envia para `POST /api/papo-reto/audio` junto do estado assinado da conversa (só quem está numa conversa válida consegue transcrever; conta no limite de mensagens). O servidor repassa ao Groq (`whisper-large-v3-turbo`, idioma português), devolve o texto e descarta o áudio. Limites: 1 MB, 30 s, tipos de áudio conhecidos, timeout de 15 s. Sem `GROQ_API_KEY` a rota responde indisponível e o botão de áudio não aparece.
+3. **Voz de saída.** A chave do Groq só tem voz sintética em inglês e árabe. No teste, a fala usa a voz do próprio navegador (`speechSynthesis`, pt-BR): custo zero, nada sai da máquina. Não é a voz do Ferrér. Desligada por padrão; quem liga é a pessoa.
+4. **Microfone.** `Permissions-Policy` passa a `microphone=(self)`. Nada mais muda nos cabeçalhos.
+5. **Privacidade.** Voz é dado pessoal: o aviso inicial diz que o áudio é transcrito por IA e não é guardado; a política de privacidade ganha a menção ao áudio.
