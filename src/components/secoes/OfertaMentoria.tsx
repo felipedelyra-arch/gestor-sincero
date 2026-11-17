@@ -6,7 +6,7 @@ const reais = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL
 const sub = "font-titulo text-sub font-medium";
 
 /**
- * S11. Esquerda: o que é (texto corrido), o que inclui (lista numerada com filetes), bônus (com travessão) e plano de
+ * S11. Esquerda: o que é (texto corrido), o que inclui (lista numerada com filetes), bônus (com marcador redondo) e plano de
  * sucesso (5 linhas numeradas). Direita: um bloco discreto com investimento, botão e garantia. Sem checks.
  */
 export function OfertaMentoria() {
@@ -38,9 +38,7 @@ export function OfertaMentoria() {
           <ul className="mt-4 grid gap-3">
             {o.bonus.map((item) => (
               <li key={item} className="grid grid-cols-[1.75rem_1fr]">
-                <span aria-hidden="true" className="text-ouro">
-                  —
-                </span>
+                <span aria-hidden="true" className="mt-[0.62em] size-1.5 rounded-full bg-ouro" />
                 {item}
               </li>
             ))}

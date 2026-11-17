@@ -14,16 +14,16 @@ export function QuemE() {
   return (
     <section id="quem-e" aria-labelledby="quem-e-titulo" className="py-12 lg:py-16">
       <div className="conteiner-v2 grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-12 lg:gap-x-8">
-        {/* a foto estica até o fim da coluna do texto: a imagem preenche a altura da linha, sem coluna vazia */}
-        <figure data-revela suppressHydrationWarning className="flex max-w-[260px] flex-col lg:col-span-5 lg:max-w-none">
-          <div className="relative aspect-3/4 w-full lg:aspect-auto lg:min-h-0 lg:flex-1">
+        {/* a foto aparece inteira, na proporção original (3:4): esticá-la até a altura do texto cortava o logo do fundo */}
+        <figure data-revela suppressHydrationWarning className="flex max-w-[260px] flex-col self-start lg:sticky lg:top-28 lg:col-span-5 lg:max-w-none">
+          <div className="relative aspect-3/4 w-full">
             <Imagem
               nome="ferrer-premio"
               alt={q.altFoto}
               tamanhos="(min-width: 1024px) 520px, 260px"
               largura={1080}
               altura={1440}
-              className="size-full object-cover object-[78%_50%] lg:absolute lg:inset-0"
+              className="size-full object-cover"
             />
           </div>
           <figcaption className="mt-4 text-legenda text-texto-2">
