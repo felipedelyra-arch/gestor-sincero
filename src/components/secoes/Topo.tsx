@@ -20,9 +20,9 @@ export function Topo() {
         {/* luz de fundo atrás do retrato: ouro apagado, só no desktop */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute right-(--margem-v2) bottom-0 hidden aspect-square h-[calc(100%-64px)] max-h-[800px] bg-[radial-gradient(closest-side_at_60%_45%,rgb(146_112_39/0.2),transparent)] lg:block"
+          className="pointer-events-none absolute -right-6 bottom-0 hidden aspect-square h-[calc(100%-64px)] max-h-[800px] bg-[radial-gradient(closest-side_at_60%_45%,rgb(146_112_39/0.2),transparent)] lg:block"
         />
-        <div className="retrato-topo -mx-5 h-[188px] overflow-hidden sm:-mx-8 lg:pointer-events-none lg:absolute lg:top-16 lg:right-(--margem-v2) lg:bottom-0 lg:m-0 lg:aspect-square lg:h-[calc(100%-64px)] lg:max-h-[800px] lg:overflow-visible">
+        <div className="retrato-topo -mx-5 h-[188px] overflow-hidden sm:-mx-8 lg:pointer-events-none lg:absolute lg:top-16 lg:-right-6 lg:bottom-0 lg:m-0 lg:aspect-square lg:h-[calc(100%-64px)] lg:max-h-[800px] lg:overflow-visible">
           {site.video.url ? (
             // shortcut: iframe direto serve para link de incorporação; quando o vídeo existir, trocar por
             // fachada (foto + botão de tocar) se o player pesar na carga.
@@ -49,8 +49,8 @@ export function Topo() {
         <div className="relative -mt-6 lg:mt-0">
           <TopoTitulo variacoes={topo.variacoes} />
           {/* Celular: a captação ocupa a linha toda e, embaixo, o link da mentoria e o Papo reto dividem a linha. */}
-          {/* Desktop: captação, mentoria e Papo reto numa linha só (os dois últimos são links de texto). */}
-          <div className="relative z-1 mt-4 grid grid-cols-2 items-center gap-x-3 gap-y-1 sm:flex sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-3 lg:mt-10 lg:flex-nowrap lg:gap-x-7">
+          {/* Desktop: captação, mentoria e Papo reto numa linha só (os dois últimos são links de texto; se não couberem na coluna do texto, o último desce, para não passar sobre o retrato). */}
+          <div className="relative z-1 mt-4 grid grid-cols-2 items-center gap-x-3 gap-y-1 sm:flex sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-3 lg:mt-10 lg:w-[52%] lg:gap-x-7">
             <Botao chamada={topo.chamadaPrincipal} className="max-sm:col-span-2 max-sm:py-2" />
             <Botao chamada={topo.chamadaSecundaria} variante="secundario" className="max-sm:py-1 max-sm:text-apoio" />
             <ConversaPapoReto variante="secundario" className="max-sm:justify-center max-sm:rounded-base max-sm:border max-sm:border-ouro-escuro max-sm:px-3 max-sm:py-1.5 max-sm:text-center max-sm:text-apoio max-sm:no-underline" />

@@ -66,7 +66,7 @@ export function Avatar({ estado, formato, pasta, alt, somentePoster, aoFimCetico
   if (somentePoster || falhou) {
     return posterFalhou ? null : (
       // eslint-disable-next-line @next/next/no-img-element -- poster estático do próprio domínio
-      <img src={poster} alt={alt} onError={() => setPosterFalhou(true)} className={`block h-full w-full object-cover object-[50%_30%] ${className}`} />
+      <img src={poster} alt={alt} onError={() => setPosterFalhou(true)} className={`block h-full w-full object-cover object-center ${className}`} />
     );
   }
 
@@ -74,7 +74,7 @@ export function Avatar({ estado, formato, pasta, alt, somentePoster, aoFimCetico
     <div role="img" aria-label={alt} className={`relative overflow-hidden bg-preto ${className}`}>
       <video
         key={`${formato}-base`}
-        className="absolute inset-0 size-full object-cover object-[50%_30%]"
+        className="absolute inset-0 size-full object-cover object-center"
         poster={poster}
         autoPlay
         loop
@@ -87,7 +87,7 @@ export function Avatar({ estado, formato, pasta, alt, somentePoster, aoFimCetico
       </video>
       <video
         ref={cima}
-        className={`absolute inset-0 size-full object-cover object-[50%_30%] opacity-0 ${FADE}`}
+        className={`absolute inset-0 size-full object-cover object-center opacity-0 ${FADE}`}
         muted
         playsInline
         preload="none"
