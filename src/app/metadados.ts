@@ -10,7 +10,15 @@ export const metadata: Metadata = {
   title: titulo,
   description: descricao,
   alternates: { canonical: "/" },
-  icons: { apple: "/apple-touch-icon.png" },
+  // O ícone da aba é o da marca (public/favicon.ico e icon-*.png, gerados por scripts/assets). O favicon padrão do Next saiu.
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+      { url: "/icon-512.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
   openGraph: {
     type: "website",
     locale: "pt_BR",
