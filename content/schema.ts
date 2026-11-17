@@ -91,6 +91,7 @@ export const paginaSchema = z.object({
     tituloNaoEh: t,
     naoEh: lista(),
     frase: t, // frase do Ferrér em destaque
+    sintese: t.optional(), // v2.1: uma frase só no lugar das listas "é / não é"
     premio: item,
     tituloEmpresas: t,
     empresas: lista(),
@@ -105,6 +106,7 @@ export const paginaSchema = z.object({
         z.object({
           nome: t,
           descricao: t,
+          rotulo: t.optional(), // duas ou três palavras para a faixa da linha do tempo: "a mentalidade", "a execução" (v2.1)
           etapas: z.array(z.object({ numero: z.number().int().min(1).max(10), nome: t, descricao: t })).min(1),
         }),
       )
@@ -186,7 +188,11 @@ export const paginaSchema = z.object({
     itens: z.array(z.object({ nome: t, cargo: t, empresa: t, texto: t })),
   }),
 
-  perguntas: z.object({ titulo: t, itens: z.array(z.object({ pergunta: t, resposta: t })).min(5) }), // 14
+  perguntas: z.object({ // 14
+    titulo: t,
+    itens: z.array(z.object({ pergunta: t, resposta: t })).min(5),
+    duvida: z.object({ texto: t, rotuloLink: t }).optional(), // v2.1: linha abaixo da última pergunta; só aparece com WhatsApp em config
+  }),
 
   fechamento: z.object({ frases: lista(), texto: t.optional(), chamada }), // 15
 
