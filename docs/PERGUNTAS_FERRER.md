@@ -35,3 +35,6 @@ Em ordem de prioridade. Cada terminal acrescenta as suas no fim da lista "Novas"
 - Nome do prêmio: o certificado traz "Prêmio Tupaenses Excelentes"; o briefing também usa "Prêmio Excelência Tupaense". Qual é o nome oficial? (A página exibe o do certificado; fonte única em `config/site.ts`.)
 - Registro no INPI: as marcas "Gestor Sincero", "Gestão Sem Maquiagem", "Empresas do Futuro" e "Ressonância Digital" estão registradas ou em pedido de registro? Em nome de quem? (Define se a página usa o símbolo de marca e o que entra nos termos de uso.) [Redação do orquestrador: o texto original desta pergunta no adendo não chegou a esta sessão.]
 - Material de voz: o Ferrér pode enviar textos, transcrições e áudios dele para `docs/voz-ferrer/`? Hoje a voz da página e do Papo reto vem só do briefing.
+- Nome da empresa: o briefing e a página usam "S4 Marketing Digital de Resultados"; a assinatura do texto de blog do Ferrér (17/11) traz "S4 Marketing de Resultados". Qual é o nome correto?
+- Tratamento no Papo reto: RESPONDIDO pelo material de voz de 17/11. No blog ele trata o leitor por "você" e chama de "Gestor,". Fica "você".
+- Marca registrada: a assinatura do blog traz "O Gestor Sincero®". Confirmar o registro no INPI (pergunta acima) antes de usar o símbolo ® na página.
