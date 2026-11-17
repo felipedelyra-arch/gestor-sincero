@@ -52,5 +52,4 @@ graphify-out/
 /docs/voz-ferrer/*
 !/docs/voz-ferrer/README.md
 # vídeos do personagem: fora do git até a autorização escrita do Ferrér (ADR 0003)
-/public/ferrer-avatar/
 /public/ferrer-avatar.zip
