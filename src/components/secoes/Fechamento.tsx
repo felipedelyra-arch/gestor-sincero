@@ -1,26 +1,34 @@
 import { pagina } from "@content";
 import { ConversaPapoReto } from "../papo-reto/ConversaPapoReto";
 import { Botao } from "../ui/Botao";
+import { Imagem } from "../ui/Imagem";
 
-/** 15. Faixa marinho: a frase final (36px), a frase de apoio e a última chamada. */
+/**
+ * S14. Fechamento centralizado sobre o retrato do Ferrér escurecido: uma frase em manifesto, um parágrafo e um botão
+ * (o Papo reto fica como link de texto ao lado). A foto vai bem apagada para o texto manter o contraste AA.
+ */
 export function Fechamento() {
   const { frases, texto, chamada } = pagina.fechamento;
-  const [primeira, ...demais] = frases;
   return (
-    <section id="fechamento" aria-labelledby="fechamento-titulo" className="bg-marinho py-(--espaco-secao)">
-      <div data-revela suppressHydrationWarning className="conteiner flex flex-col items-center text-center">
-        <h2 id="fechamento-titulo" className="max-w-[40ch] font-titulo text-manifesto font-medium text-balance">
-          {primeira}
+    <section id="fechamento" aria-labelledby="fechamento-titulo" className="relative isolate overflow-hidden py-(--sec-ampla)">
+      <div aria-hidden="true" className="absolute inset-0 -z-10 opacity-[0.2] blur-sm">
+        <Imagem
+          nome="ferrer-retrato"
+          alt=""
+          tamanhos="100vw"
+          largura={1080}
+          altura={1080}
+          className="size-full object-cover object-[50%_18%]"
+        />
+      </div>
+      <div data-revela suppressHydrationWarning className="conteiner-v2 flex flex-col items-center text-center">
+        <h2 id="fechamento-titulo" className="manifesto max-w-[20ch] text-balance">
+          {frases[0]}
         </h2>
-        {demais.map((frase) => (
-          <p key={frase} className="mt-3 font-titulo text-h3 text-texto-2">
-            {frase}
-          </p>
-        ))}
-        {texto && <p className="mt-4 max-w-texto text-pretty">{texto}</p>}
-        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
+        {texto && <p className="mt-10 max-w-[56ch] text-lead text-pretty">{texto}</p>}
+        <div className="mt-10 flex flex-col items-center gap-x-8 gap-y-2 sm:flex-row">
           <Botao chamada={chamada} />
-          <ConversaPapoReto className="max-sm:w-full" />
+          <ConversaPapoReto variante="secundario" />
         </div>
       </div>
     </section>

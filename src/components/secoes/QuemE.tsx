@@ -1,30 +1,8 @@
-import { Fragment } from "react";
 import { pagina } from "@content";
 import { Imagem } from "../ui/Imagem";
+import { LinhaCorrida } from "../ui/LinhaCorrida";
 
 const sub = "font-titulo text-sub font-medium";
-
-/** Nomes em linha corrida, separados por ponto médio. */
-function LinhaCorrida({ itens }: { itens: string[] }) {
-  return (
-    <p>
-      {itens.map((item, i) => (
-        // o separador acompanha o nome anterior (nunca começa uma linha), cada nome fica inteiro, e o espaço
-        // depois do separador é onde a linha pode quebrar
-        <Fragment key={item}>
-          <span className="whitespace-nowrap">
-            {item}
-            {i < itens.length - 1 && (
-              <span aria-hidden="true" className="pl-2 text-ouro">
-                ·
-              </span>
-            )}
-          </span>{" "}
-        </Fragment>
-      ))}
-    </p>
-  );
-}
 
 /**
  * S6. Perfil de revista (5 + 7): a foto do prêmio na altura toda da seção, à esquerda; à direita o texto corrido, a

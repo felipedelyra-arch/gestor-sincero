@@ -290,10 +290,10 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
               alt={papoReto.altVideo}
               somentePoster={somentePoster}
               aoFimCetico={() => fimCetico.current?.()}
-              className="size-20 shrink-0 rounded-cartao"
+              className="size-20 shrink-0 rounded-base"
             />
           )}
-          <h2 id="papo-titulo" className="flex-1 font-titulo text-h3 font-medium text-balance">
+          <h2 id="papo-titulo" className="flex-1 font-titulo text-sub font-medium text-balance">
             {papoReto.titulo}
           </h2>
           <button
@@ -363,7 +363,7 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
                   key={m.id}
                   className={
                     m.de === "voce"
-                      ? "max-w-[85%] justify-self-end rounded-cartao border border-chumbo bg-preto px-4 py-2"
+                      ? "max-w-[85%] justify-self-end border-r border-ouro pr-4 text-right"
                       : m.de === "pergunta"
                         ? "pl-4 font-medium"
                         : "border-l border-ouro pl-4 text-balance"
@@ -375,8 +375,8 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
               {enviando && <li className="pl-4 text-apoio text-texto-2">{papoReto.enviando}</li>}
               {erro && <li className="pl-4 text-erro">{papoReto.erros[erro]}</li>}
               {final && (
-                <li className="grid gap-3 rounded-cartao border border-chumbo border-t-ouro bg-marinho p-5">
-                  <h3 className="font-titulo text-h3 font-medium">{papoReto.fechamento.titulo}</h3>
+                <li className="grid gap-3 border-t border-ouro pt-5">
+                  <h3 className="font-titulo text-sub font-medium">{papoReto.fechamento.titulo}</h3>
                   <p className="text-texto-2">{papoReto.fechamento.abertura}</p>
                   <ul className="grid gap-2">
                     {final.pontos.map((p, i) => (

@@ -51,14 +51,6 @@
   }
 }
 
-/* Largura da grade: 1200px mais a margem lateral. */
-@utility conteiner {
-  width: 100%;
-  max-width: calc(1200px + 2 * var(--margem));
-  margin-inline: auto;
-  padding-inline: var(--margem);
-}
-
 /* Largura editorial: contêiner de 1280px e margem lateral de 20/32/48px (DESIGN-v2). */
 @utility conteiner-v2 {
   width: 100%;

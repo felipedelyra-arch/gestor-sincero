@@ -204,7 +204,7 @@ export function Formulario({ formulario, campos, rota, turnstileSiteKey }: Props
           onChange={(e) => e.target instanceof HTMLElement && limparErro(e.target.getAttribute("name") ?? "")}
           className="grid gap-x-4 gap-y-4 sm:grid-cols-2"
         >
-          <h3 id={idTitulo} className="font-titulo text-h3 font-medium sm:col-span-2">
+          <h3 id={idTitulo} className="font-titulo text-sub font-medium sm:col-span-2">
             {formulario.titulo}
           </h3>
           {formulario.introducao && <p className="text-apoio text-texto-2 sm:col-span-2">{formulario.introducao}</p>}
@@ -271,7 +271,7 @@ export function Formulario({ formulario, campos, rota, turnstileSiteKey }: Props
         )}
         {estado === "sucesso" && (
           <div className="grid justify-items-start gap-4">
-            <h3 ref={tituloSucesso} tabIndex={-1} className="font-titulo text-h3 font-medium">
+            <h3 ref={tituloSucesso} tabIndex={-1} className="font-titulo text-sub font-medium">
               {formulario.sucesso.titulo}
             </h3>
             <p>{formulario.sucesso.texto}</p>

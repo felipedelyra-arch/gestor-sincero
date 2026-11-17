@@ -12,8 +12,8 @@ export function DocumentoLegal({ documento }: { documento: Documento }) {
   return (
     <>
       <Cabecalho base="/" />
-      <main id="conteudo" tabIndex={-1} className="bg-preto py-(--espaco-secao) text-texto outline-none">
-        <article className="conteiner">
+      <main id="conteudo" tabIndex={-1} className="bg-preto py-(--sec-media) text-texto outline-none">
+        <article className="conteiner-v2">
           <div className="mx-auto max-w-[72ch]">
             <Link
               href="/"
@@ -21,11 +21,11 @@ export function DocumentoLegal({ documento }: { documento: Documento }) {
             >
               {pagina.rodape.voltarAoInicio}
             </Link>
-            <h1 className="mt-4 font-titulo text-h2 font-medium text-balance">{documento.titulo}</h1>
+            <h1 className="mt-4 font-titulo text-secao font-medium text-balance">{documento.titulo}</h1>
             {documento.atualizadoEm && <p className="mt-2 text-apoio text-texto-2">{documento.atualizadoEm}</p>}
             {secoes.map((secao) => (
               <section key={secao.titulo} className="mt-10 border-t border-chumbo pt-6">
-                <h2 className="font-titulo text-h3 font-medium">{secao.titulo}</h2>
+                <h2 className="font-titulo text-sub font-medium">{secao.titulo}</h2>
                 {secao.paragrafos.map((paragrafo, i) => (
                   // lista estática: índice é chave estável, e parágrafos pendentes se repetem
                   <p key={i} className="mt-3 text-pretty">

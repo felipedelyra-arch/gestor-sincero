@@ -41,13 +41,13 @@ export function Campo({ id, nome, rotulo, ajuda, erro, tipo = "text", opcoes, ob
 
   return (
     <div className={className}>
-      <label htmlFor={id} className="mb-2 block font-medium">
+      <label htmlFor={id} className="mb-2 block text-[0.889rem] font-medium">
         {rotulo}
       </label>
       {tipo === "textarea" ? (
         <textarea {...comum} rows={3} className={`${caixa} py-3`} />
       ) : tipo === "select" ? (
-        <select {...comum} defaultValue="" className={`${caixa} h-14`}>
+        <select {...comum} defaultValue="" className={`${caixa} h-13`}>
           <option value="" />
           {Object.entries(opcoes ?? {}).map(([valor, texto]) => (
             <option key={valor} value={valor}>
@@ -56,7 +56,7 @@ export function Campo({ id, nome, rotulo, ajuda, erro, tipo = "text", opcoes, ob
           ))}
         </select>
       ) : (
-        <input {...comum} type={tipo} inputMode={tipo === "text" ? undefined : tipo} className={`${caixa} h-14`} />
+        <input {...comum} type={tipo} inputMode={tipo === "text" ? undefined : tipo} className={`${caixa} h-13`} />
       )}
       {ajuda && (
         <p id={idAjuda} className="mt-2 text-apoio text-texto-2">

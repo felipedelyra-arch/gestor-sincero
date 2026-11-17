@@ -1,38 +1,45 @@
 import { pagina } from "@content";
-import { Cartao } from "../ui/Cartao";
-import { etiqueta } from "../ui/estilos";
-import { ListaConferencia } from "../ui/ListaConferencia";
-import { Secao } from "../ui/Secao";
+import { LinhaCorrida } from "../ui/LinhaCorrida";
 
-const subtitulo = "font-titulo text-h3 font-medium";
+const sub = "font-titulo text-sub font-medium";
 
-/** 12. Dois cartões (é / não é), os requisitos em linha e a frase que resume a seção. */
+/**
+ * S12. Duas colunas de texto separadas por um filete vertical, sem cartões nem checks; os requisitos em uma linha
+ * corrida; e o requisito principal em tamanho de manifesto.
+ */
 export function ParaQuemE() {
   const p = pagina.paraQuem;
   return (
-    <Secao id="para-quem" titulo={p.titulo} fundo="marinho">
-      <div className="grid gap-4 sm:grid-cols-2 lg:gap-6">
-        <Cartao fundo="preto">
-          <h3 className={subtitulo}>{p.tituloEh}</h3>
-          <ListaConferencia itens={p.eh} className="mt-3" />
-        </Cartao>
-        <Cartao fundo="preto">
-          <h3 className={subtitulo}>{p.tituloNaoEh}</h3>
-          <ListaConferencia itens={p.naoEh} marca="nao" className="mt-3 text-texto-2" />
-        </Cartao>
-      </div>
+    <section id="para-quem" aria-labelledby="para-quem-titulo" className="py-(--sec-curta)">
+      <div className="conteiner-v2">
+        <h2 id="para-quem-titulo" data-revela suppressHydrationWarning className="max-w-[680px] font-titulo text-secao font-medium text-balance">
+          {p.titulo}
+        </h2>
 
-      <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
-        <h3 className={`${subtitulo} mr-2 max-sm:w-full max-sm:text-center`}>{p.tituloRequisitos}</h3>
-        <ul className="contents">
-          {p.requisitos.map((i, n) => (
-            <li key={n} className={etiqueta}>
-              {i}
-            </li>
-          ))}
-        </ul>
+        <div className="mt-12 grid gap-10 md:grid-cols-2 md:gap-0 md:divide-x md:divide-chumbo">
+          <div className="md:pr-12">
+            <h3 className={sub}>{p.tituloEh}</h3>
+            <ul className="mt-5 grid gap-4 text-lead">
+              {p.eh.map((i) => (
+                <li key={i}>{i}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="md:pl-12">
+            <h3 className={sub}>{p.tituloNaoEh}</h3>
+            <ul className="mt-5 grid gap-4 text-lead">
+              {p.naoEh.map((i) => (
+                <li key={i}>{i}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <h3 className={`${sub} mt-14`}>{p.tituloRequisitos}</h3>
+        <LinhaCorrida itens={p.requisitos} className="mt-4 max-w-[66ch] text-lead" />
+
+        <p className="manifesto mt-16 max-w-[26ch] text-balance lg:mt-24 lg:max-w-[22ch]">{p.fraseRequisito}</p>
       </div>
-      <p className="mx-auto mt-6 max-w-texto text-center font-titulo text-h3 text-balance">{p.fraseRequisito}</p>
-    </Secao>
+    </section>
   );
 }

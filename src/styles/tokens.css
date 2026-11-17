@@ -1,9 +1,5 @@
-/* Tokens do site. Dois conjuntos convivem enquanto o redesenho editorial (docs/DESIGN-v2.md) não termina:
-   - os antigos (text-h1, text-h2, text-manifesto de 26/36px, --radius-cartao, --espaco-secao), usados pelas seções
-     que ainda não foram refeitas;
-   - os editoriais (text-display, text-secao, text-sub, text-lead, text-legenda, text-cabtab, text-numeracao,
-     --sec-curta/media/ampla, filete-ouro, papel, tinta), usados pelas seções já refeitas (S0, S1 e S6).
-   A raiz tem 18px em todas as larguras: os rem abaixo valem px/18. */
+/* Tokens do site (Design v2 editorial, docs/DESIGN-v2.md): escala tipográfica, cores, três tamanhos de seção e
+   contêiner de 1280px. A raiz tem 18px em todas as larguras: os rem abaixo valem px/18. */
 
 @theme {
   --color-*: initial;
@@ -31,17 +27,6 @@
   --spacing: 4px;
 
   --text-*: initial;
-  --text-h1: 2rem; /* 36px */
-  --text-h1--line-height: 1.12;
-  --text-h1--letter-spacing: -0.02em;
-  --text-h2: 1.556rem; /* 28px */
-  --text-h2--line-height: 1.15;
-  --text-h3: 1.111rem; /* 20px */
-  --text-h3--line-height: 1.25;
-  --text-manifesto: 1.444rem; /* 26px */
-  --text-manifesto--line-height: 1.2;
-  --text-numero: 2rem; /* 36px */
-  --text-numero--line-height: 1.1;
   --text-corpo: 1rem; /* 18px */
   --text-corpo--line-height: 1.6;
   --text-apoio: 0.833rem; /* 15px */
@@ -68,16 +53,12 @@
 
   --radius-*: initial;
   --radius-base: 2px; /* botões, campos, imagens */
-  --radius-cartao: 12px;
 
   --shadow-*: initial;
 
-  --container-texto: 60ch;
 }
 
 :root {
-  --margem: 20px;
-  --espaco-secao: 56px;
   --altura-cabecalho: 56px;
   /* editorial: margem lateral 20 / 32 / 48 e os três tamanhos de seção (celular) */
   --margem-v2: 20px;
@@ -96,21 +77,12 @@
 
 @media (min-width: 768px) {
   :root {
-    --margem: 48px;
     --margem-v2: 32px;
   }
 }
 
 @media (min-width: 1024px) {
   :root {
-    --text-h1: 3.111rem; /* 56px */
-    --text-h1--line-height: 1.08;
-    --text-h2: 2.222rem; /* 40px */
-    --text-h2--line-height: 1.12;
-    --text-h3: 1.222rem; /* 22px */
-    --text-manifesto: 2rem; /* 36px */
-    --text-manifesto--line-height: 1.15;
-    --text-numero: 2.667rem; /* 48px */
     /* editorial, desktop */
     --margem-v2: 48px;
     --sec-curta: 64px;
@@ -122,7 +94,6 @@
     --text-lead: 1.111rem; /* 20px */
     --text-cabtab: 0.778rem; /* 14px */
     --text-numeracao: 3.111rem; /* 56px */
-    --espaco-secao: 72px;
     --altura-cabecalho: 64px;
   }
 }

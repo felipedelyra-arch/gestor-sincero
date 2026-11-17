@@ -14,9 +14,6 @@ export const estilosBotao = {
 
 export type VarianteBotao = keyof typeof estilosBotao;
 
-/** Etiqueta de texto (credenciais, empresas, requisitos). */
-export const etiqueta = "rounded-base border border-chumbo px-3 py-1 text-apoio text-texto-2";
-
 /** Fileira que rola na horizontal com encaixe (sem biblioteca). Quem usa põe `tabIndex={0}` para o teclado. */
 export const trilho = "flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-2";
 /** Item da fileira: deixa um pedaço do próximo à vista para indicar que há mais. */
