@@ -35,7 +35,7 @@ for (const javaScriptEnabled of [true, false])
         await expect(bloco.locator("table")).toHaveCount(1);
         await expect(bloco.locator("tbody tr")).toHaveCount(c.pares.length);
         expect(c.pares).toHaveLength(17);
-        await expect(bloco.locator("caption")).toHaveText(c.titulo);
+        if (c.titulo) await expect(bloco.locator("caption")).toHaveText(c.titulo); // v2.1: o título da tabela é opcional
         await expect(bloco.locator('thead th[scope="col"]')).toHaveText([c.rotuloAnalogica, c.rotuloDigital]);
         await expect(bloco.locator('tbody th[scope="row"]')).toHaveText(c.pares.map((p) => p.tema));
         await expect(bloco.locator("tbody td").first()).toContainText(c.pares[0].analogica);
