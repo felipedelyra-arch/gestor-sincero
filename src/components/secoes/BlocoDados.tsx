@@ -28,7 +28,7 @@ export function BlocoDados() {
               </li>
             ))}
           </ul>
-          <p className="mt-8 font-titulo text-sub font-medium text-balance">{fechamento}</p>
+          <p className="mt-8 max-w-[62ch]">{fechamento}</p>
           <p className="mt-6 text-legenda text-texto-2">{fonte}</p>
         </div>
       </div>

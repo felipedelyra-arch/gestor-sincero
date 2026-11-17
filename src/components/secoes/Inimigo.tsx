@@ -10,7 +10,9 @@ export function Inimigo() {
           <h2 id="inimigo-titulo" className="font-titulo text-secao font-medium text-balance">
             {titulo}
           </h2>
+          {/* o fechamento é parágrafo de corpo, continuação da introdução (não é frase de efeito) */}
           <p className="mt-6 max-w-[34em] text-lead">{introducao}</p>
+          <p className="mt-4 max-w-[34em]">{fechamento}</p>
         </header>
         <div className="lg:col-span-7">
           <ul className="border-b border-filete-ouro">
@@ -21,7 +23,6 @@ export function Inimigo() {
               </li>
             ))}
           </ul>
-          <p className="mt-8 font-titulo text-sub font-medium text-balance">{fechamento}</p>
         </div>
       </div>
     </section>
