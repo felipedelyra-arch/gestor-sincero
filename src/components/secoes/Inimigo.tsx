@@ -1,32 +1,24 @@
 import { pagina } from "@content";
 
 /**
- * S4. Introdução à esquerda (fixa enquanto as falas rolam); à direita as frases como falas de mesa de reunião: aspas
- * tipográficas grandes em ouro, fala em manifesto e recuo alternado, como numa conversa. Sem risco, sem cartões.
+ * S4. Compacta (até 520px no desktop). Introdução à esquerda; à direita as cinco frases em serifa, todas na mesma
+ * margem, separadas por filete fino. Sem risco, sem aspas decorativas e sem cartões.
  */
 export function Inimigo() {
-  const { titulo, introducao, frases, fechamento } = pagina.inimigo;
+  const { titulo, introducao, frases } = pagina.inimigo;
   return (
-    <section id="inimigo" aria-labelledby="inimigo-titulo" className="py-(--sec-media)">
-      <div className="conteiner-v2 grid gap-12 lg:grid-cols-12 lg:gap-x-8">
-        <header data-revela data-desloca suppressHydrationWarning className="lg:sticky lg:top-[calc(var(--altura-cabecalho)+32px)] lg:col-span-5 lg:self-start">
+    <section id="inimigo" aria-labelledby="inimigo-titulo" className="py-12 lg:py-16">
+      <div className="conteiner-v2 grid gap-8 lg:grid-cols-12 lg:items-center lg:gap-x-8">
+        <header data-revela data-desloca suppressHydrationWarning className="lg:col-span-5">
           <h2 id="inimigo-titulo" className="font-titulo text-secao font-medium text-balance">
             {titulo}
           </h2>
-          <p className="mt-6 max-w-[34em] text-lead">{introducao}</p>
-          {/* o fechamento é parágrafo de corpo, continuação da introdução */}
-          <p className="mt-4 max-w-[34em]">{fechamento}</p>
+          <p className="mt-5 max-w-[34em] text-lead">{introducao}</p>
         </header>
-        <ul className="lg:col-span-7">
+        <ul className="border-b border-filete-ouro lg:col-span-6 lg:col-start-7">
           {frases.map((frase) => (
-            <li key={frase} className="border-t border-filete-ouro py-7 first:border-t-0 first:pt-0 lg:py-9 lg:first:pt-0 lg:even:pl-16">
-              <blockquote className="grid grid-cols-[auto_1fr] gap-x-4 lg:gap-x-6">
-                {/* aspas só de ornamento tipográfico: o leitor de tela lê a fala */}
-                <span aria-hidden="true" className="font-manifesto text-[4.5rem] leading-[0.8] text-ouro lg:text-[6.5rem]">
-                  “
-                </span>
-                <p className="manifesto text-[length:clamp(1.667rem,3.4vw,2.889rem)] text-balance">{frase}</p>
-              </blockquote>
+            <li key={frase} className="border-t border-filete-ouro py-3.5 font-manifesto text-[1.556rem] leading-[1.2] lg:text-[1.778rem]">
+              {frase}
             </li>
           ))}
         </ul>

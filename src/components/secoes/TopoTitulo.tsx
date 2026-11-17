@@ -18,8 +18,8 @@ export function TopoTitulo({ variacoes }: Props) {
   return (
     <>
       {/* a única entrada animada do topo: o título, por opacidade */}
-      <h1 className="entra manifesto relative z-1 text-balance lg:w-[64%] lg:text-[length:clamp(3.556rem,5vw,4.222rem)]">{titulo}</h1>
-      <p className="relative z-1 mt-4 max-w-[46ch] text-pretty lg:w-[48%] max-sm:text-corpo sm:text-lead lg:mt-9">{subtitulo}</p>
+      <h1 className="entra manifesto relative z-1 text-balance lg:w-[52%] lg:text-[length:clamp(3.556rem,5vw,4.222rem)]">{titulo}</h1>
+      <p className="relative z-1 mt-4 max-w-[46ch] text-pretty lg:w-[44%] max-sm:text-corpo sm:text-lead lg:mt-9">{subtitulo}</p>
     </>
   );
 }
