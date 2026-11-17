@@ -100,6 +100,20 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
   const [avatar, setAvatar] = useState<EstadoAvatar>("ouvindo");
   const [numero, setNumero] = useState("");
   const [livre, setLivre] = useState("");
+  // O servidor diz se o texto livre é lido por IA. Enquanto não responde (ou se falhar), vale o aviso mais completo.
+  const [comIA, setComIA] = useState(true);
+  useEffect(() => {
+    let vivo = true;
+    fetch(rotaPapoReto)
+      .then((r) => (r.ok ? (r.json() as Promise<{ comIA?: boolean }>) : null))
+      .then((j) => {
+        if (vivo && j && j.comIA === false) setComIA(false);
+      })
+      .catch(() => {});
+    return () => {
+      vivo = false;
+    };
+  }, []);
 
   const adicionar = useCallback((de: Mensagem["de"], texto: string) => {
     setMensagens((atual) => [...atual, { id: proximoId.current++, de, texto }]);
@@ -323,7 +337,7 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
         <div ref={log} role="log" aria-live="polite" aria-relevant="additions" aria-label={papoReto.titulo} tabIndex={0} className="min-h-0 flex-1 overflow-y-auto p-4">
           {fase === "aviso" ? (
             <div className="grid gap-4">
-              <p className="text-apoio text-texto-2">{papoReto.avisos.roteiro}</p>
+              <p className="text-apoio text-texto-2">{comIA ? papoReto.avisos.comIA : papoReto.avisos.roteiro}</p>
               <p>{papoReto.consentimento.texto}</p>
               <div className="grid gap-2 sm:grid-cols-2">
                 {[
