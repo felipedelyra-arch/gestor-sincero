@@ -2,9 +2,11 @@ import { mkdirSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 
 // Gera tests/prints/. Só roda a pedido: PRINTS=1 scripts/pesado.sh npx playwright test tests/e2e/prints.spec.ts
-const SAIDA = "tests/prints";
+// PRINTS_SAIDA e PRINTS_LARGURAS ("390x844,1440x900") permitem gravar outro conjunto (v1, v2) sem tocar no padrão.
+const SAIDA = process.env.PRINTS_SAIDA ?? "tests/prints";
+const LARGURAS = (process.env.PRINTS_LARGURAS ?? "390x844,1280x800").split(",").map((p) => p.split("x").map(Number) as [number, number]);
 
-for (const [largura, altura] of [[390, 844], [1280, 800]] as const) {
+for (const [largura, altura] of LARGURAS) {
   test.describe(`prints em ${largura}px`, () => {
     test.skip(!process.env.PRINTS, "defina PRINTS=1 para regravar os prints");
     test.use({ viewport: { width: largura, height: altura } });

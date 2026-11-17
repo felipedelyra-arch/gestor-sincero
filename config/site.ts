@@ -55,6 +55,13 @@ const siteSchema = z.object({
     ga4Id: pendente(z.string().regex(/^G-[A-Z0-9]+$/)),
   }),
   turnstileSiteKey: z.string().min(1),
+  // Design v2 (docs/DESIGN-v2.md): propostas aguardando o Felipe.
+  tipografiaManifesto: z.enum(["outfit", "serifa"]),
+  secaoPapel: z.boolean(),
+  // Seção 03: sem estudo e ano confirmados, a seção inteira não aparece.
+  dados: z.object({ fonte: pendente(z.string().min(1)) }),
+  // PENDENTE: o briefing diz 40 anos de carreira; o certificado do prêmio diz 35.
+  ferrer: z.object({ anosCarreira: z.number().int(), livros: z.number().int() }),
   // Papo reto (ADR 0003): desligado em produção até haver chaves e a autorização de imagem do Ferrér.
   papoReto: z.object({ ativo: z.boolean(), videos: z.string().min(1) }),
 });
@@ -102,6 +109,10 @@ export const site: Site = siteSchema.parse({
   },
   // Chave de teste pública da Cloudflare (sempre aprova); trocar pela real via env.
   turnstileSiteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA",
+  tipografiaManifesto: "outfit",
+  secaoPapel: true,
+  dados: { fonte: null },
+  ferrer: { anosCarreira: 40, livros: 3 },
   papoReto: {
     ativo: process.env.NEXT_PUBLIC_PAPO_RETO === "1" || process.env.NODE_ENV !== "production",
     videos: "/ferrer-avatar", // ferrer-{ouvindo,falando,cetico}-{16x9,1x1}.{mp4,webm} e ferrer-poster-*.jpg

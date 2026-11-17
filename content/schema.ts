@@ -50,6 +50,7 @@ export const paginaSchema = z.object({
     chamadaSecundaria: chamada,
     altFoto: t,
     tituloVideo: t,
+    prova: lista(2), // linha de prova em texto corrido, abaixo dos botões (Design v2, S1)
   }),
 
   espelho: z.object({ // 02
@@ -115,6 +116,7 @@ export const paginaSchema = z.object({
     titulo: t,
     introducao: t,
     pautas: z.array(z.object({ titulo: t, descricao: t })).length(3),
+    rotuloReuniao: t, // "Reunião", para a agenda numerada (Design v2, S8)
     rotuloHorario: t,
     datasPendentes: t, // exibido enquanto config.jornada.datas for null
     manual: item,
@@ -124,7 +126,7 @@ export const paginaSchema = z.object({
   dicionario: z.object({ // 09
     titulo: t,
     introducao: t,
-    termos: z.array(z.object({ termo: t, traducao: t })).length(6),
+    termos: z.array(z.object({ termo: t, classe: t.optional(), traducao: t })).length(6), // classe gramatical: "s.m."
     avisoValidacao: t,
     prova: t, // linha de prova abaixo dos termos
   }),

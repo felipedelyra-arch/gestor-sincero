@@ -52,10 +52,16 @@ export const paginaBruta: PaginaEntrada = {
           "Para empresários experientes que não aceitam ser espectadores da Nova Economia. Comece pelo manual Gestão Sem Maquiagem e por três reuniões executivas com Sidney Ferrér, o Gestor Sincero.",
       },
     },
-    chamadaPrincipal: { rotulo: "Quero meu manual e minha vaga na Jornada", destino: "captacao" },
+    chamadaPrincipal: { rotulo: "Quero o manual e a vaga", destino: "captacao" },
     chamadaSecundaria: { rotulo: "Conhecer a mentoria", destino: "mentoria" },
     altFoto: "Sidney Ferrér, o Gestor Sincero, de terno escuro e braços cruzados",
     tituloVideo: "Sidney Ferrér apresenta o Gestor Sincero",
+    prova: [
+      `${site.ferrer.anosCarreira} anos de carreira`,
+      `Autor de ${site.ferrer.livros} livros`,
+      `${premio} ${site.premio.ano}`,
+      "S4 Marketing Digital de Resultados",
+    ],
   },
 
   espelho: {
@@ -88,7 +94,7 @@ export const paginaBruta: PaginaEntrada = {
       { valor: "71%", descricao: "têm de 1 a 5 funcionários" },
       { valor: "92%", descricao: "estão há mais de 2 anos no negócio" },
     ],
-    fonte: "Sebrae/IBGE [PENDENTE FERRÉR: estudo e ano]",
+    fonte: site.dados.fonte ?? "Sebrae/IBGE [PENDENTE FERRÉR: estudo e ano]",
     fechamento: "O problema nunca foi a idade. Foi a velocidade com que o mercado mudou.",
   },
 
@@ -220,6 +226,7 @@ export const paginaBruta: PaginaEntrada = {
         descricao: "O segundo motor de crescimento, do primeiro passo em diante. E a pergunta que fecha a Jornada: quanto custa não mudar agora?",
       },
     ],
+    rotuloReuniao: "Reunião",
     rotuloHorario: "Sempre às",
     datasPendentes: "Datas a confirmar. Quem se inscreve é avisado primeiro.",
     manual: {
@@ -491,7 +498,7 @@ export const paginaBruta: PaginaEntrada = {
       { rotulo: "Ressonância", ancora: "#ressonancia" },
       { rotulo: "Mentoria", ancora: "#mentoria" },
     ],
-    chamada: { rotulo: "Quero meu manual", destino: "captacao" },
+    chamada: { rotulo: "Receber o manual", destino: "captacao" },
   },
   rotulos: { verTodos: "Ver todos", verMenos: "Ver menos", anterior: "Anterior", proximo: "Próximo" },
   pularParaConteudo: "Pular para o conteúdo",
