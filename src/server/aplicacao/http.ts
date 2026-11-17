@@ -36,9 +36,9 @@ export function ipDe(req: Request): string | null {
 }
 
 /** Lê no máximo `maximo` bytes; null = grande demais. Não confia só no Content-Length. */
-export async function lerCorpo(req: Request, maximo = CORPO_MAXIMO_BYTES): Promise<string | null> {
+export async function lerBytes(req: Request, maximo: number): Promise<Buffer | null> {
   if (Number(req.headers.get("content-length")) > maximo) return null;
-  if (!req.body) return "";
+  if (!req.body) return Buffer.alloc(0);
   const leitor = req.body.getReader();
   const partes: Uint8Array[] = [];
   let total = 0;
@@ -52,7 +52,11 @@ export async function lerCorpo(req: Request, maximo = CORPO_MAXIMO_BYTES): Promi
     }
     partes.push(value);
   }
-  return Buffer.concat(partes).toString("utf8");
+  return Buffer.concat(partes);
+}
+
+export async function lerCorpo(req: Request, maximo = CORPO_MAXIMO_BYTES): Promise<string | null> {
+  return (await lerBytes(req, maximo))?.toString("utf8") ?? null;
 }
 
 /**

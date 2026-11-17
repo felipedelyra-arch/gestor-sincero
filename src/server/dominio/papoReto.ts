@@ -19,3 +19,9 @@ export interface ClassificadorLivre {
   /** Nunca lança. null = não deu (falha, timeout, saída inválida): o chamador segue sem o texto. O texto não é guardado nem logado. */
   classificar(texto: string, pergunta: PerguntaParaClassificar): Promise<ExtracaoLivre | null>;
 }
+
+/** Transcrição da resposta por voz (ADR 0003, revisão de 17/11). */
+export interface TranscritorDeAudio {
+  /** Nunca lança. null = não deu (falha, 429, timeout, texto vazio). O áudio e o texto não são guardados nem logados. */
+  transcrever(audio: Blob): Promise<string | null>;
+}

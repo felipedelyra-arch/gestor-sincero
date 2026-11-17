@@ -4,6 +4,7 @@ import type { RepositorioPapoReto } from "../dominio/papoReto";
 import type { AutenticadorAdmin, Cifra, LeitorExportacao, LimitadorDeTaxa, RepositorioCadastros } from "../dominio/portas";
 import { criarCifra } from "../infra/cripto/cifra";
 import { criarGroq, MODELO_PADRAO } from "../infra/groq";
+import { criarGroqAudio, MODELO_AUDIO_PADRAO } from "../infra/groqAudio";
 import { memoria } from "../infra/memoria";
 import { criarConversoesMeta } from "../infra/meta";
 import { criarAdminSupabase } from "../infra/supabase/admin";
@@ -138,5 +139,6 @@ export function comporPapoReto(): PortasPapoReto | null {
   if (!base) return null;
   const chaveGroq = process.env.GROQ_API_KEY;
   const classificador = chaveGroq ? criarGroq(chaveGroq, process.env.AI_MODEL_LIVRE || MODELO_PADRAO) : null;
-  return { cifra: base.cifra, limitador: base.limitador, antirrobo: base.antirrobo, repositorio: base.repositorioPapoReto, classificador, segredo };
+  const transcritor = chaveGroq ? criarGroqAudio(chaveGroq, process.env.AI_MODEL_AUDIO || MODELO_AUDIO_PADRAO) : null;
+  return { cifra: base.cifra, limitador: base.limitador, antirrobo: base.antirrobo, repositorio: base.repositorioPapoReto, classificador, transcritor, segredo };
 }

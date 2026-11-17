@@ -2,7 +2,7 @@ import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
 import { z } from "zod";
 import { papoReto } from "@content";
 import { MAX_MENSAGENS, turnoSchema, type Recomendacao, type Resposta, type RespostaPapoReto } from "@/shared/papoReto";
-import type { ClassificadorLivre, RepositorioPapoReto } from "../dominio/papoReto";
+import type { ClassificadorLivre, RepositorioPapoReto, TranscritorDeAudio } from "../dominio/papoReto";
 import type { Cifra, LimitadorDeTaxa, VerificadorAntirrobo } from "../dominio/portas";
 import { disparadas, recomendar, type RespostaDada } from "../papo-reto/regras";
 
@@ -18,6 +18,8 @@ export type PortasPapoReto = {
   repositorio: RepositorioPapoReto;
   /** Camada opcional de texto livre; null = desligada (sem GROQ_API_KEY). */
   classificador: ClassificadorLivre | null;
+  /** Resposta por voz; null = desligada (sem GROQ_API_KEY). */
+  transcritor: TranscritorDeAudio | null;
   /** Chave do HMAC do estado. */
   segredo: string;
 };
@@ -30,9 +32,9 @@ export type ContextoPapoReto = {
 
 const CONVERSAS_POR_DIA = 3;
 // Teto de turnos por IP além do de conversas (estado reenviado não pode render turnos sem fim). 3 conversas de 8 perguntas cabem.
-const TURNOS_POR_DIA = 60;
-const DIA_SEGUNDOS = 24 * 60 * 60;
-const VALIDADE_ESTADO_MS = 2 * 60 * 60 * 1000;
+export const TURNOS_POR_DIA = 60;
+export const DIA_SEGUNDOS = 24 * 60 * 60;
+export const VALIDADE_ESTADO_MS = 2 * 60 * 60 * 1000;
 const PONTOS = 3;
 
 const slug = z.string().regex(/^[a-z0-9-]{1,40}$/);
@@ -60,7 +62,7 @@ export function assinarEstado(estado: EstadoConversa, segredo: string): string {
   return `${carga}.${mac(carga, segredo)}`;
 }
 
-function lerEstado(token: string, segredo: string): EstadoConversa | null {
+export function lerEstado(token: string, segredo: string): EstadoConversa | null {
   const [carga, assinatura, sobra] = token.split(".");
   if (!carga || !assinatura || sobra !== undefined) return null;
   const esperado = Buffer.from(mac(carga, segredo));

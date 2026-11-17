@@ -280,12 +280,12 @@ test("GET informa comIA conforme a chave, sem cache e sem expor mais nada", asyn
   const com = await GET();
   expect(com.status).toBe(200);
   expect(com.headers.get("cache-control")).toBe("no-store");
-  expect(await com.json()).toEqual({ ativo: true, comIA: true });
+  expect(await com.json()).toEqual({ ativo: true, comIA: true, audio: true });
 
   vi.stubEnv("GROQ_API_KEY", "");
   const sem = await GET();
   expect(sem.headers.get("cache-control")).toBe("no-store");
-  expect(await sem.json()).toEqual({ ativo: true, comIA: false });
+  expect(await sem.json()).toEqual({ ativo: true, comIA: false, audio: false });
 
   flags.ativo = false;
   const desligado = await GET();
