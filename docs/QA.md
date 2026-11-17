@@ -1,3 +1,56 @@
+## Design v2, Onda 4 (17/11/2026, prod em http://localhost:3000, `next start`, build das 13:53; HEAD 52731e8)
+
+Specs: `tests/e2e/` todos rodados um por vez, 1 worker, chromium. Resultado: tudo passa, exceto 3 testes de `design-v2.spec.ts` (contagem de fonte < 16px, 390/1440/1920) e 2 de `qa-onda4.spec.ts` (formulário da Jornada, 390/1440), que falham por defeitos de produto (A1 a A3). Pulados por ambiente: Turnstile sem token (cadastro, cookies, ressonância) e checkout sem URL. Nada de produção foi alterado.
+Ajustes de spec: `comparativo.spec.ts` (tabela de 17 linhas, `th scope`, sem alternador, empilhado em 390 e lado a lado em 1440, sem rolagem lateral, com e sem JavaScript); `acessibilidade.spec.ts` (details abertos conta o que existe: só a sanfona de `#perguntas`, 5 itens hoje porque o resto é pendente; axe agora em 1440, não 1280); `design-v2.spec.ts` (telas 390/1440/1920, fonte máxima 44/88 px da tabela do DESIGN-v2, recorte de overflow por estilo calculado, teto de altura só como guarda de regressão, teste novo de contagem). Novo `qa-onda4.spec.ts` (varredura de texto, formulário da Jornada, Dicionário em papel).
+
+| Meta | Alvo | Medido (390 / 1440) | Situação |
+|---|---|---|---|
+| Elementos com borda + fundo próprios (sem campos e botões) | ≤ 8 | 3 / 3 (caixa do formulário, mockup do manual, cartão de investimento) | aprovado |
+| Pílulas ou etiquetas | 0 | 0 / 0 | aprovado |
+| Ícones de check em lista | 0 | 0 / 0 (o tique dentro da caixa do Espelho é do campo, invisível até marcar) | aprovado |
+| Seções com tudo centralizado | ≤ 2 | 1 / 1 (fechamento) | aprovado |
+| Texto < 16px fora de legenda, nota e rodapé | 0 | 10 / 14 itens | **reprovado** (A1) |
+| Rolagem horizontal | 0 | 0 / 0 | aprovado |
+| Tabela da Virada | 17 linhas, th scope, sem rolagem | 17, 2 `th[scope=col]` + 17 `th[scope=row]`, sem rolagem; pares empilhados no celular | aprovado |
+| axe (4 rotas, 390 e 1440, com erros de formulário, menu e sanfona aberta) | 0 graves | 0 violações de qualquer impacto (17 execuções); `color-contrast` ficou "incompleto" em 1 a 3 nós por rota (texto sobre imagem, não decidível pelo axe) | aprovado |
+| Dicionário em papel (fundo rgb 242,240,234) | AA | menor razão de contraste 17,2:1 (390 e 1440); sem elemento focável na seção, então não há foco a medir | aprovado |
+| Formulário da Jornada | campos 52px, rótulos 16px, caixas 24px | campos 52px (nome a cargo), caixas 24x24, botão 56px; rótulos de campo 16px; **rótulos das 3 caixas 15px** | reprovado em parte (A1) |
+| Topo no celular com banner de cookies | título, chamada e rosto acima do banner | título termina em 383, chamadas em 640 e 692, rosto em 450; banner começa em 735 | aprovado |
+| Varredura: "Sem … e sem …", emoji, pendente, inglês | 0 | 0 em `content/` e nas 4 rotas (inglês só em #quem-e e #dicionario, permitido) | aprovado (ver B2) |
+
+Lighthouse (`tests/lighthouse/*.json`; pontuação desempenho / acessibilidade / boas práticas / SEO; índice da máquina = benchmarkIndex):
+
+| Medição | Desemp. | LCP | TBT | CLS | Índice | Elemento do LCP |
+|---|---|---|---|---|---|---|
+| / celular 1 | 99 | 1,1 s | 130 ms | 0,02 | 1816 | parágrafo de abertura do topo (`p.relative`) |
+| / celular 2 | 99 | 1,1 s | 140 ms | 0,02 | 1817 | idem |
+| / celular 3 (mediana: 99, 1,1 s, 130 ms, 0,02) | 99 | 1,1 s | 110 ms | 0,02 | 1834 | idem |
+| / desktop | 100 | 0,8 s | 20 ms | 0,005 | 1845 | retrato (`img.luz-contorno`) |
+| /ressonancia celular | 99 | 1,1 s | 100 ms | 0 | 1836 | parágrafo de abertura (`p` em `div.mt-5`) |
+
+Todas as medições: acessibilidade 100, boas práticas 100, SEO 69 (só por `is-crawlable`: o `<meta name="robots" content="noindex, nofollow">` está no ar; esperado antes do lançamento, mas precisa sair no deploy final). Metas de desempenho, LCP e CLS atendidas.
+
+### Achados
+
+**Alta**: nenhum.
+
+**Média**
+- A1. Texto de leitura abaixo de 16px (meta 0). Opções do DESIGN-v2 permitem 15px só em legenda, nota e rodapé. Fora disso: tarja do topo 13px (`src/components/secoes/Tarja.tsx:10`; o DESIGN-v2 prevê 13px na tarja, então ou a meta ou o desenho muda); cabeçalhos "Analógica/Digital" da tabela 13 a 14px, versalete (`src/components/secoes/Virada.tsx:5` e `:23-27`); links do cabeçalho e "Receber o manual" 15px (`src/components/global/Cabecalho.tsx:35`, classe `text-apoio`); em #jornada: aviso de contato e dica do WhatsApp 15px (`src/components/formulario/Formulario.tsx:210` e `:237`) e os três rótulos de consentimento 15px (a spec do DESIGN pede rótulos de 16px). Os 28 itens restantes (legendas, credenciais do topo, rodapé) estão na exceção.
+- B1. Mentoria mostra "Valor a confirmar" (`content/pagina.ts:392`, `precoPendente`) ao lado do botão "Entrar para a Mentoria" ativo, em #mentoria nas duas larguras. É marcador pendente visível na prática, que o filtro não pega. Decidir se o botão deve ficar até haver preço.
+
+**Baixa**
+- B2. Cabeçalhos com `data-revela` ficaram em branco nos prints de #dicionario (390), #mentoria (390) e #para-quem (390 e 1440): o título e a introdução não aparecem e sobra um vazio de 150 a 400px no topo da seção. Não reproduzi com rolagem real (3 ritmos, 4 rotas, nenhum `[data-revela]` ficou com opacidade 0), então parece efeito do `prints.spec.ts` (`scrollIntoViewIfNeeded` + `animations: "disabled"`), mas `src/components/global/Revelacao.tsx:15-21` (observador com `rootMargin` de -10%) é o suspeito se um usuário relatar título sumido.
+- B3. Credenciais do topo e listas em "·" quebram deixando o "·" no fim da linha (topo 390 e 1440; "O que você precisa trazer" em #para-quem; "Empresas por onde passou" em #quem-e).
+- B4. Em 1440 as colunas do Método ficam desiguais (4 etapas à esquerda, 6 à direita), com vazio no canto inferior esquerdo; a Jornada tem o mockup do manual flutuando no meio da coluna direita e Mentoria/Quem é deixam o lado esquerdo ou direito vazio abaixo do conteúdo fixo. Nos prints o `sticky` é desligado, então em uso real a coluna acompanha a rolagem; só confira em tela alta.
+- B5. A sanfona de perguntas mostra 5 itens (2 de 7 são pendentes e ficam ocultos): conteúdo, não defeito.
+- B6. Altura total: 24.446px em 390 e 16.593px em 1440 (sem meta no DESIGN-v2; guardas de 26.000 e 18.000).
+
+### Prints (tests/prints/v2/{390,1440}, gerados com o comando do pedido)
+Vistos em 390: primeira tela, topo, espelho, inimigo, virada, quem é, método, jornada, dicionário, ressonância, mentoria, para quem, perguntas, fechamento e rodapé. Vistos em 1440: primeira tela, espelho, inimigo, virada, quem é, método, jornada, dicionário, mentoria, para quem e fechamento. Sem texto cortado nem sobreposição. Tabela da Virada em 390: 17 pares empilhados legíveis, sem rolagem lateral. Formulário da Jornada em 390: campos de 52px, caixas de 24px, rótulos legíveis. Dicionário em papel legível e sem faixa escura. Achados em B2 a B4.
+
+### Não verificado
+Papo reto (desligado neste build). Perguntas e rodapé em 1440, e /ressonancia, /privacidade e /termos nos prints (só a ausência de rolagem lateral foi medida). Foco visível dentro do Dicionário (não há elemento focável). Contraste real dos nós "incompletos" do axe sobre imagem. Cadastro, cookies e ressonância ponta a ponta (Turnstile sem rede), checkout (sem URL). Lighthouse em máquina diferente da de produção: o índice da máquina (~1830) é de notebook, não de servidor. O build em execução foi feito às 13:53, depois do commit 52731e8 aparecer; não confirmei qual árvore foi construída.
+
 # QA da Onda 3 (16/11/2026)
 
 Alvo: `http://localhost:3000` em modo prod (build do orquestrador), sem `.env.local` (sem Supabase, Turnstile real, Pixel ou GA4). Chromium sem interface, 1 worker. Nada de código de produção foi alterado.

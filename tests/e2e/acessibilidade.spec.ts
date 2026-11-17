@@ -32,7 +32,7 @@ async function auditar(page: Page, nome: string) {
 
 const graves = (r: Awaited<ReturnType<typeof auditar>>) => r.filter((v) => v.impacto === "critical" || v.impacto === "serious");
 
-for (const [largura, altura] of [[390, 844], [1280, 800]] as const) {
+for (const [largura, altura] of [[390, 844], [1440, 900]] as const) {
   test.describe(`axe em ${largura}px`, () => {
     test.use({ viewport: { width: largura, height: altura } });
 
@@ -66,7 +66,7 @@ for (const [largura, altura] of [[390, 844], [1280, 800]] as const) {
       expect(graves(await auditar(page, `ressonancia-erros-${largura}`))).toEqual([]);
     });
 
-    // Details: a inicial e a Ressonância. As páginas legais não têm nenhum.
+    // Details que existem hoje: só a sanfona das perguntas frequentes (inicial; a Ressonância e as páginas legais não têm).
     for (const rota of ["/", "/ressonancia"]) {
       test(`${rota} com os details abertos`, async ({ page }) => {
         await page.goto(rota);
@@ -80,7 +80,10 @@ for (const [largura, altura] of [[390, 844], [1280, 800]] as const) {
           });
           return todos.length;
         });
-        if (rota === "/") expect(abertos).toBeGreaterThan(10);
+        // Conta o que existe: só a sanfona das perguntas (o conteúdo pendente não é renderizado); na Ressonância, nenhum.
+        const faq = await page.locator("#perguntas details").count();
+        expect(abertos).toBe(faq);
+        if (rota === "/") expect(faq).toBeGreaterThanOrEqual(5);
         const nome = `${rota === "/" ? "inicio" : rota.slice(1)}-abertos-${largura}`;
         expect(graves(await auditar(page, nome))).toEqual([]);
       });
