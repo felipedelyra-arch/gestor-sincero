@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { pagina } from "@content";
 import { site } from "@config/site";
 import { Botao } from "../ui/Botao";
@@ -5,19 +6,20 @@ import { ConversaPapoReto } from "../papo-reto/ConversaPapoReto";
 import { Imagem } from "../ui/Imagem";
 import { TopoTitulo } from "./TopoTitulo";
 
-/** 01. Texto à esquerda e retrato à direita, tudo na primeira tela. O retrato cede o lugar ao vídeo quando houver um. */
+/**
+ * S1. Topo editorial: título em manifesto à esquerda, retrato grande sangrando à direita e até a base, linha de prova.
+ * Desktop: o retrato ocupa de 45 a 55% da largura (a altura da seção fixa o tamanho, a seção tem no mínimo 88vh).
+ * Celular: o retrato flutua à direita (rosto e ombros, sangrando até a borda) e o título corre ao lado dele.
+ */
 export function Topo() {
   const { topo } = pagina;
   return (
-    <section className="overflow-hidden">
-      {/*
-        Celular: o retrato (rosto e ombros, nítido) flutua à direita e o título corre ao lado dele; o que vem depois
-        (subtítulo e ações) ocupa a largura toda. Assim o título longo da variação B não empurra as ações para trás
-        do banner de cookies. O retrato vem antes no HTML por causa do float; no desktop a grade o devolve à direita.
-        Desktop: texto em 7 colunas e retrato em 5.
-      */}
-      <div className="conteiner py-5 lg:grid lg:grid-cols-12 lg:items-end lg:gap-x-8 lg:py-0">
-        <div className="entra float-right mb-2 ml-4 w-[124px] lg:float-none lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:m-0 lg:w-auto">
+    <section className="relative isolate flex min-h-[max(88vh,50vw)] flex-col overflow-hidden">
+      <div className="conteiner-v2 flex flex-1 flex-col justify-center py-4 lg:py-20">
+       {/* bloco comum dentro do flex: float só funciona fora de um contêiner flex */}
+       <div>
+        {/* O retrato vem antes no HTML por causa do float do celular; no desktop é absoluto e fica atrás do texto. */}
+        <div className="retrato-topo float-right -mr-5 mb-2 ml-3 h-[175px] w-[150px] md:-mr-8 lg:pointer-events-none lg:absolute lg:inset-y-0 lg:right-[-3%] lg:float-none lg:m-0 lg:h-full lg:w-auto lg:aspect-square">
           {site.video.url ? (
             // shortcut: iframe direto serve para link de incorporação; quando o vídeo existir, trocar por
             // fachada (foto + botão de tocar) se o player pesar na carga.
@@ -26,35 +28,50 @@ export function Topo() {
               title={topo.tituloVideo}
               loading="lazy"
               allow="fullscreen; picture-in-picture"
-              className="aspect-video w-full rounded-cartao lg:mb-20"
+              className="aspect-video w-full"
             />
           ) : (
-            <div className="relative h-[150px] w-[124px] overflow-hidden rounded-cartao border border-chumbo bg-preto-2 lg:h-auto lg:w-full lg:rounded-none lg:border-0 lg:bg-transparent">
-              {/* Celular: recorte de rosto e ombros dentro do quadro. Desktop: a foto inteira. */}
+            <div className="relative size-full overflow-hidden lg:overflow-visible">
               <Imagem
                 nome="ferrer-retrato"
                 alt={topo.altFoto}
-                tamanhos="(min-width: 1024px) 40vw, 240px"
+                tamanhos="(min-width: 1024px) 55vw, 270px"
                 largura={1080}
                 altura={1080}
                 prioridade
-                className="absolute -top-1.5 left-[-58px] h-auto w-[240px] max-w-none lg:static lg:w-full"
+                className="luz-contorno absolute -top-2 left-[-62px] h-auto w-[270px] max-w-none lg:static lg:size-full lg:object-contain lg:object-bottom"
               />
-              {/* O único esmaecimento da página: a base da foto some no preto (só no desktop). */}
-              <div aria-hidden="true" className="absolute inset-x-0 bottom-0 hidden h-1/4 bg-linear-to-t from-preto to-transparent lg:block" />
             </div>
           )}
+          {/* degradê escuro na base do retrato: some no preto, sem corte seco (no celular é a máscara do .retrato-topo) */}
+          <div aria-hidden="true" className="absolute inset-x-0 bottom-0 hidden h-2/5 bg-linear-to-t from-preto via-preto/70 to-transparent lg:block" />
         </div>
 
-        <div className="lg:col-span-7 lg:col-start-1 lg:row-start-1 lg:py-20">
+        <div className="lg:w-[58%]">
           <TopoTitulo variacoes={topo.variacoes} />
-          {/* Celular: a captação ocupa a linha toda e, embaixo, o link da mentoria e o Papo reto dividem a linha (texto de apoio de 15px, em duas linhas). */}
-          <div className="entra clear-both mt-3 grid grid-cols-2 items-center gap-x-3 gap-y-1 sm:flex sm:flex-row sm:gap-x-6 lg:mt-8">
+          {/* Celular: a captação ocupa a linha toda e, embaixo, o link da mentoria e o Papo reto dividem a linha. */}
+          <div className="relative z-1 clear-both mt-3 grid grid-cols-2 items-center gap-x-3 gap-y-1 sm:flex sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-3 lg:mt-10">
             <Botao chamada={topo.chamadaPrincipal} className="max-sm:col-span-2 max-sm:py-2" />
             <Botao chamada={topo.chamadaSecundaria} variante="secundario" className="max-sm:py-1 max-sm:text-apoio" />
             <ConversaPapoReto className="max-sm:px-3 max-sm:py-1.5 max-sm:text-apoio" />
           </div>
+          {/* Linha de prova: texto corrido, sem cartões nem etiquetas. */}
+          <p className="relative z-1 mt-6 max-w-[60ch] text-legenda text-texto-2 lg:mt-10">
+            {topo.prova.map((item, i) => (
+              <Fragment key={item}>
+                <span className="whitespace-nowrap">
+                  {item}
+                  {i < topo.prova.length - 1 && (
+                    <span aria-hidden="true" className="pl-2">
+                      ·
+                    </span>
+                  )}
+                </span>{" "}
+              </Fragment>
+            ))}
+          </p>
         </div>
+       </div>
       </div>
     </section>
   );

@@ -1,5 +1,9 @@
-/* Tokens da "Direção v2" de docs/DESIGN.md. Componentes usam só estes nomes. */
-/* A raiz tem 18px em todas as larguras: os rem abaixo valem px/18. Nada na página passa de 56px. */
+/* Tokens do site. Dois conjuntos convivem enquanto o redesenho editorial (docs/DESIGN-v2.md) não termina:
+   - os antigos (text-h1, text-h2, text-manifesto de 26/36px, --radius-cartao, --espaco-secao), usados pelas seções
+     que ainda não foram refeitas;
+   - os editoriais (text-display, text-secao, text-sub, text-lead, text-legenda, text-cabtab, text-numeracao,
+     --sec-curta/media/ampla, filete-ouro, papel, tinta), usados pelas seções já refeitas (S0, S1 e S6).
+   A raiz tem 18px em todas as larguras: os rem abaixo valem px/18. */
 
 @theme {
   --color-*: initial;
@@ -13,10 +17,15 @@
   --color-texto: #f2f0ea;
   --color-texto-2: #b9b5aa;
   --color-erro: #e8a08c;
+  --color-filete-ouro: #493b21; /* filete dourado apagado: entre itens de lista, linhas de tabela e de agenda */
+  --color-papel: #f2f0ea; /* fundo da seção do Dicionário */
+  --color-tinta: #0b0c0e; /* texto sobre papel */
 
   --font-*: initial;
   --font-titulo: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
   --font-corpo: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* frases-manifesto: Outfit por padrão, Newsreader com `site.tipografiaManifesto = "serifa"` (ver globals.css) */
+  --font-manifesto: var(--familia-manifesto), ui-sans-serif, system-ui, sans-serif;
 
   /* escala de 4px: h-14 = 56px, h-12 = 48px */
   --spacing: 4px;
@@ -38,6 +47,25 @@
   --text-apoio: 0.833rem; /* 15px */
   --text-apoio--line-height: 1.5;
 
+  /* escala editorial (DESIGN-v2): celular aqui, desktop no :root dentro do @media abaixo */
+  --text-display: clamp(2rem, 9.6vw, 2.444rem); /* manifesto: 36 a 44px */
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.02em;
+  --text-secao: 1.667rem; /* título de seção: 30px */
+  --text-secao--line-height: 1.12;
+  --text-secao--letter-spacing: -0.01em;
+  --text-sub: 1.222rem; /* subtítulo: 22px */
+  --text-sub--line-height: 1.25;
+  --text-lead: 1.056rem; /* corpo grande: 19px */
+  --text-lead--line-height: 1.55;
+  --text-legenda: 0.833rem; /* legenda e nota: 15px */
+  --text-legenda--line-height: 1.5;
+  --text-cabtab: 0.722rem; /* cabeçalho de tabela: 13px, em versalete */
+  --text-cabtab--line-height: 1.3;
+  --text-numeracao: 2.222rem; /* numeração grande: 40px */
+  --text-numeracao--line-height: 1;
+  --text-numeracao--letter-spacing: -0.02em;
+
   --radius-*: initial;
   --radius-base: 2px; /* botões, campos, imagens */
   --radius-cartao: 12px;
@@ -51,11 +79,25 @@
   --margem: 20px;
   --espaco-secao: 56px;
   --altura-cabecalho: 56px;
+  /* editorial: margem lateral 20 / 32 / 48 e os três tamanhos de seção (celular) */
+  --margem-v2: 20px;
+  --sec-curta: 48px;
+  --sec-media: 72px;
+  --sec-ampla: 104px;
+  --peso-manifesto: 500;
+  --familia-manifesto: var(--font-outfit);
+}
+
+/* Com a flag "serifa" (atributo posto no <html> pelo layout): Newsreader 400 nas frases-manifesto. */
+:root[data-manifesto="serifa"] {
+  --familia-manifesto: var(--font-newsreader);
+  --peso-manifesto: 400;
 }
 
 @media (min-width: 768px) {
   :root {
     --margem: 48px;
+    --margem-v2: 32px;
   }
 }
 
@@ -69,6 +111,17 @@
     --text-manifesto: 2rem; /* 36px */
     --text-manifesto--line-height: 1.15;
     --text-numero: 2.667rem; /* 48px */
+    /* editorial, desktop */
+    --margem-v2: 48px;
+    --sec-curta: 64px;
+    --sec-media: 112px;
+    --sec-ampla: 176px;
+    --text-display: clamp(3.556rem, 5.6vw, 4.889rem); /* manifesto: 64 a 88px */
+    --text-secao: 2.222rem; /* 40px */
+    --text-sub: 1.333rem; /* 24px */
+    --text-lead: 1.111rem; /* 20px */
+    --text-cabtab: 0.778rem; /* 14px */
+    --text-numeracao: 3.111rem; /* 56px */
     --espaco-secao: 72px;
     --altura-cabecalho: 64px;
   }

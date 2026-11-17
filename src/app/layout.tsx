@@ -17,9 +17,15 @@ const inter = Inter({ subsets: ["latin"], display: "swap", preload: false, varia
 
 const PULAR = pagina.pularParaConteudo;
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // Newsreader só é carregada com a flag "serifa": sem ela o módulo nem entra na página.
+  const serifa = site.tipografiaManifesto === "serifa" ? (await import("./fonte-serifa")).newsreader : null;
   return (
-    <html lang="pt-BR" className={`${outfit.variable} ${inter.variable} antialiased`}>
+    <html
+      lang="pt-BR"
+      data-manifesto={site.tipografiaManifesto}
+      className={`${outfit.variable} ${inter.variable} ${serifa?.variable ?? ""} antialiased`}
+    >
       <body className="bg-preto">
         <a
           href="#conteudo"
