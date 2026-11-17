@@ -3,6 +3,7 @@ import { site } from "@config/site";
 import type { RepositorioPapoReto } from "../dominio/papoReto";
 import type { AutenticadorAdmin, Cifra, LeitorExportacao, LimitadorDeTaxa, RepositorioCadastros } from "../dominio/portas";
 import { criarCifra } from "../infra/cripto/cifra";
+import { criarGroq, MODELO_PADRAO } from "../infra/groq";
 import { memoria } from "../infra/memoria";
 import { criarConversoesMeta } from "../infra/meta";
 import { criarAdminSupabase } from "../infra/supabase/admin";
@@ -116,6 +117,9 @@ export function comporAdmin(): PortasAdmin | null {
   return process.env.SUPABASE_URL ? reais() : null;
 }
 
+/** A camada de texto livre existe quando há chave do Groq (vazia conta como ausente). */
+export const comIA = (): boolean => Boolean(process.env.GROQ_API_KEY);
+
 // Segredo só para desenvolvimento e teste: em produção PAPO_RETO_SEGREDO é obrigatório.
 const SEGREDO_DE_DESENVOLVIMENTO = "segredo-de-desenvolvimento-do-papo-reto-nao-usar-em-producao";
 
@@ -132,5 +136,7 @@ export function comporPapoReto(): PortasPapoReto | null {
   }
   const base = process.env.SUPABASE_URL ? reais() : producao ? null : memoria;
   if (!base) return null;
-  return { cifra: base.cifra, limitador: base.limitador, antirrobo: base.antirrobo, repositorio: base.repositorioPapoReto, segredo };
+  const chaveGroq = process.env.GROQ_API_KEY;
+  const classificador = chaveGroq ? criarGroq(chaveGroq, process.env.AI_MODEL_LIVRE || MODELO_PADRAO) : null;
+  return { cifra: base.cifra, limitador: base.limitador, antirrobo: base.antirrobo, repositorio: base.repositorioPapoReto, classificador, segredo };
 }

@@ -2,19 +2,22 @@ import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
 import { z } from "zod";
 import { papoReto } from "@content";
 import { MAX_MENSAGENS, turnoSchema, type Recomendacao, type Resposta, type RespostaPapoReto } from "@/shared/papoReto";
-import type { RepositorioPapoReto } from "../dominio/papoReto";
+import type { ClassificadorLivre, RepositorioPapoReto } from "../dominio/papoReto";
 import type { Cifra, LimitadorDeTaxa, VerificadorAntirrobo } from "../dominio/portas";
 import { disparadas, recomendar, type RespostaDada } from "../papo-reto/regras";
 
 // Caso de uso do Papo reto (ADR 0003): modo base por opções, sem IA. O servidor não guarda a conversa:
 // o navegador reenvia o `estado` assinado (HMAC) a cada turno.
-// A camada opcional de texto livre (Groq) ainda não existe: o campo `livre` é aceito e ignorado (nunca guardado nem repassado).
+// Texto livre (`livre`): só com o classificador ligado ele é lido, e apenas para virar uma opção ou número da pergunta atual.
+// Nunca é guardado, logado nem entra no estado; sem classificador, ou se ele falhar, é ignorado.
 
 export type PortasPapoReto = {
   cifra: Cifra;
   limitador: LimitadorDeTaxa;
   antirrobo: VerificadorAntirrobo;
   repositorio: RepositorioPapoReto;
+  /** Camada opcional de texto livre; null = desligada (sem GROQ_API_KEY). */
+  classificador: ClassificadorLivre | null;
   /** Chave do HMAC do estado. */
   segredo: string;
 };
@@ -138,13 +141,25 @@ export async function responderPapoReto(entrada: unknown, ctx: ContextoPapoReto,
   if (estado.n >= MAX_MENSAGENS) return erro("limite");
   const atual = perguntas.find((q) => q.numero === estado.q);
   if (!atual) return erro("validacao");
-  const dada = lerResposta(atual, resposta);
+  let dada = lerResposta(atual, resposta);
   if (dada === null) return erro("validacao");
   if (!(await p.limitador.consumir(`papo-reto-turno:${chaveIp}`, TURNOS_POR_DIA, DIA_SEGUNDOS))) return erro("limite");
 
   const mensagens = estado.n + 1;
+  if (dada === "livre" && p.classificador && resposta.livre !== null) {
+    const extraido = await p.classificador.classificar(resposta.livre, {
+      texto: atual.texto,
+      opcoes: atual.opcoes.map((o) => ({ id: o.id, rotulo: o.rotulo })),
+      campoNumero: atual.campoNumero ? { rotulo: atual.campoNumero.rotulo, min: atual.campoNumero.min, max: atual.campoNumero.max } : null,
+    });
+    // Confere contra o conteúdo real, como se a pessoa tivesse clicado: opção inexistente, número fora do limite ou os dois nulos ficam "livre".
+    if (extraido) {
+      const lida = lerResposta(atual, { ...extraido, livre: null });
+      if (lida !== null) dada = lida;
+    }
+  }
   if (dada === "livre") {
-    // Sem a camada de texto livre, o texto não é lido: pede para escolher uma opção e repete a pergunta.
+    // Sem a camada de texto livre (ou sem classificação válida), o texto não é lido: pede para escolher uma opção e repete a pergunta.
     return {
       ok: true,
       fala: papoReto.naoEntendi,

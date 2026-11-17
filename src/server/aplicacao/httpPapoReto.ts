@@ -1,6 +1,6 @@
 import { site } from "@config/site";
 import type { RespostaPapoReto } from "@/shared/papoReto";
-import { comporPapoReto } from "./composicao";
+import { comIA, comporPapoReto } from "./composicao";
 import { ipDe, lerCorpo, mesmaOrigem } from "./http";
 import { responderPapoReto, type ContextoPapoReto } from "./papoReto";
 
@@ -42,4 +42,10 @@ export async function responderRotaPapoReto(req: Request, agendar: ContextoPapoR
     console.error(`[papo-reto] falha interna: ${e instanceof Error ? e.name : "desconhecida"}`);
     return responder({ ok: false, erro: "indisponivel" }, 503);
   }
+}
+
+/** GET /api/papo-reto: só diz ao navegador se a conversa está ligada e se há IA no texto livre (para escolher o aviso). */
+export function responderConfigPapoReto(): Response {
+  if (!site.papoReto.ativo) return new Response(null, { status: 404, headers: { "Cache-Control": "no-store" } });
+  return Response.json({ ativo: true, comIA: comIA() }, { headers: { "Cache-Control": "no-store" } });
 }
