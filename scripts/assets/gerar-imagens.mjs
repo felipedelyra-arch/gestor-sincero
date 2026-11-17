@@ -104,12 +104,12 @@ const retrato = await (async () => {
   limpar(0.45, 0, 0.73, 0.12, 215); // topo do cabelo
   const parte = fundo.reduce((s, f) => s + f, 0) / fundo.length;
   if (parte < 0.3 || parte > 0.7) throw new Error(`recorte do retrato suspeito: fundo = ${Math.round(parte * 100)}% da imagem`);
-  // a borda recua 2px para tirar a franja clara da compressão e é suavizada
+  // a borda recua 2px para tirar a franja clara da compressão e é suavizada (desfoque de 2,2px: com 1px a borda da barba serrilhava quando o retrato aparece grande)
   const cru = Buffer.from(fundo.map((f) => (f ? 0 : 255)));
-  const alfa = await sharp(cru, { raw: { width, height, channels: 1 } }).dilate(2).blur(1).toColourspace("b-w").raw().toBuffer();
+  const alfa = await sharp(cru, { raw: { width, height, channels: 1 } }).dilate(2).blur(2.2).toColourspace("b-w").raw().toBuffer();
   return sharp(rgb, { raw: info }).joinChannel(alfa, { raw: { width, height, channels: 1 } }).png().toBuffer();
 })();
-await variantes("ferrer-retrato", () => sharp(retrato), [480, 768, 1080], ["avif", "webp"]);
+await variantes("ferrer-retrato", () => sharp(retrato), [480, 768, 1080], ["avif", "webp"], { avif: 82, webp: 92 }); // qualidade alta: o rosto aparece grande no topo e a compressão forte quadriculava a barba
 
 // 2. Prêmio e 4. capa: só redimensionar.
 await variantes("ferrer-premio", () => sharp(path.join(fonte, "ferrer-premio.jpg")), [480, 768, 1080], ["avif", "webp"]);
