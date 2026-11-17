@@ -18,11 +18,11 @@ export function MenuCelular({ rotulo, itens }: Props) {
           <span className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-texto group-open:opacity-0" />
         </span>
       </summary>
-      <nav aria-label={rotulo} className="absolute inset-x-0 top-full border-b border-chumbo bg-preto">
-        <ul className="conteiner py-2">
+      <nav aria-label={rotulo} className="absolute inset-x-0 top-full h-[calc(100dvh-var(--altura-cabecalho))] overflow-y-auto border-b border-chumbo bg-preto">
+        <ul className="conteiner-v2 py-4">
           {itens.map((item) => (
             <li key={item.ancora}>
-              <a href={item.ancora} onClick={fechar} className="flex min-h-12 items-center font-medium">
+              <a href={item.ancora} onClick={fechar} className="flex min-h-14 items-center border-b border-filete-ouro text-sub font-medium">
                 {item.rotulo}
               </a>
             </li>

@@ -49,9 +49,9 @@ export function useVoz() {
     return voz.current !== null;
   }, [suportada, ligada, calar]);
 
-  /** Lê o texto; `aoFim` roda quando a voz termina. Devolve false se não há voz ligada (quem chama usa o tempo estimado). */
+  /** Lê o texto; `aoIniciar` roda quando a voz de fato começa e `aoFim` quando termina (ou falha). Devolve false se não há voz ligada (quem chama usa o tempo estimado). */
   const falar = useCallback(
-    (texto: string, aoFim: () => void): boolean => {
+    (texto: string, aoFim: () => void, aoIniciar?: () => void): boolean => {
       if (!suportada || !voz.current) return false;
       calar();
       const u = new SpeechSynthesisUtterance(texto);
@@ -59,6 +59,9 @@ export function useVoz() {
       u.voice = voz.current;
       const fim = () => {
         if (atual.current === u) aoFim();
+      };
+      u.onstart = () => {
+        if (atual.current === u) aoIniciar?.();
       };
       u.onend = fim;
       u.onerror = fim;

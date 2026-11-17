@@ -57,9 +57,15 @@ export function Avatar({ estado, formato, pasta, alt, somentePoster, aoFimCetico
       v.load();
       v.play().catch(() => {}); // autoplay bloqueado: o de baixo continua à vista
     }, 150);
+    // O navegador pode pausar o clipe (aba em segundo plano, economia de energia): enquanto fala, ele volta a tocar.
+    const retomar = () => {
+      if (!cancelado && estado === "falando" && !v.ended) v.play().catch(() => {});
+    };
+    v.addEventListener("pause", retomar);
     return () => {
       cancelado = true;
       window.clearTimeout(t);
+      v.removeEventListener("pause", retomar);
     };
   }, [estado, formato, pasta, somentePoster, falhou]);
 

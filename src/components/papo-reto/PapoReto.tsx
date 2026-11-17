@@ -40,6 +40,8 @@ type Erro = "limite" | "antirrobo" | "indisponivel";
 
 const ESPERA_TOKEN_MS = 20_000;
 const ESPERA_CETICO_MS = 4_500;
+// Se a voz do navegador não começar a falar neste prazo, o avatar passa a seguir o tempo estimado.
+const INICIO_VOZ_MS = 1_500;
 
 // Só valores simples chegam da rota; qualquer coisa fora do formato vira "indisponível".
 function lerResposta(v: unknown): RespostaPapoReto {
@@ -226,6 +228,32 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
     el.scrollTo({ top: el.scrollHeight, behavior: suave ? "smooth" : "auto" });
   }, [mensagens, final, erro]);
 
+  // Celular: o teclado virtual não encolhe o dialog (nem o dvh). Acompanha a área realmente visível (visualViewport) para o campo
+  // e a última fala não ficarem atrás do teclado.
+  const [tela, setTela] = useState<{ altura: number; topo: number } | null>(null);
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const ajustar = () => {
+      const desktop = window.matchMedia("(min-width: 1024px)").matches;
+      const nova = desktop ? null : { altura: Math.round(vv.height), topo: Math.round(vv.offsetTop) };
+      setTela((velha) => (velha?.altura === nova?.altura && velha?.topo === nova?.topo ? velha : nova));
+    };
+    ajustar();
+    vv.addEventListener("resize", ajustar);
+    vv.addEventListener("scroll", ajustar);
+    return () => {
+      vv.removeEventListener("resize", ajustar);
+      vv.removeEventListener("scroll", ajustar);
+    };
+  }, []);
+  const tecladoAberto = tela !== null && tela.altura < 560;
+  // Depois que o painel encolhe, a última fala continua à vista (o aviso do início fica no topo).
+  useEffect(() => {
+    const el = log.current;
+    if (el && tela && fase === "conversa") el.scrollTop = el.scrollHeight;
+  }, [tela, fase]);
+
   // Depois de cada envio o foco volta ao campo de mensagem (ao campo numérico, se a pergunta só tem ele); no fim, à recomendação.
   useEffect(() => {
     if (enviando || transcrevendo) return;
@@ -250,15 +278,27 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
   const falar = (texto: string) => {
     if (!aberto.current) return;
     window.clearTimeout(timerFala.current);
-    setAvatar("falando");
     const parar = () => {
       window.clearTimeout(timerFala.current);
       setAvatar("ouvindo");
     };
-    // Com voz, a boca se mexe até o evento `end` (o tempo longo é só rede de segurança). Sem voz, pelo tempo de ler a fala
-    // (cerca de 45 ms por caractere, entre 1,5 e 7 s).
-    if (voz.falar(texto, parar)) timerFala.current = window.setTimeout(parar, Math.max(10_000, texto.length * 150));
-    else timerFala.current = window.setTimeout(parar, Math.min(7000, Math.max(1500, texto.length * 45)));
+    // Sem voz (ou se ela não começar), a boca se mexe pelo tempo de ler a fala: cerca de 45 ms por caractere, entre 1,5 e 7 s.
+    const porEstimativa = () => {
+      setAvatar("falando");
+      timerFala.current = window.setTimeout(parar, Math.min(7000, Math.max(1500, texto.length * 45)));
+    };
+    const comVoz = voz.falar(
+      texto,
+      parar,
+      // Com voz, "falando" vale do evento `start` ao `end`/`error` (o tempo longo é só rede de segurança).
+      () => {
+        window.clearTimeout(timerFala.current);
+        setAvatar("falando");
+        timerFala.current = window.setTimeout(parar, Math.max(10_000, texto.length * 150));
+      },
+    );
+    if (comVoz) timerFala.current = window.setTimeout(porEstimativa, INICIO_VOZ_MS);
+    else porEstimativa();
   };
 
   const enviar = async (resposta: Resposta | null, rotuloDaResposta?: string) => {
@@ -423,11 +463,12 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
       ref={dialogo}
       aria-labelledby="papo-titulo"
       onClose={aoFechar}
+      style={tela ? { height: tela.altura, top: tela.topo, bottom: "auto" } : undefined}
       className="fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-hidden border-0 bg-preto-2 p-0 text-texto backdrop:bg-black/60 lg:inset-y-0 lg:right-0 lg:left-auto lg:w-[min(560px,100vw)] lg:border-l lg:border-chumbo"
     >
       <div className="flex h-full flex-col">
         <header className="flex shrink-0 items-center gap-2 border-b border-chumbo py-2 pr-2 pl-4">
-          <h2 id="papo-titulo" className="flex-1 font-titulo text-lead font-medium text-balance lg:text-sub">
+          <h2 id="papo-titulo" className="min-w-0 flex-1 font-titulo text-lead font-medium text-balance max-[400px]:text-legenda lg:text-sub">
             {papoReto.titulo}
           </h2>
           {voz.suportada && (
@@ -451,7 +492,7 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
           <button
             type="button"
             onClick={() => dialogo.current?.close()}
-            className="inline-flex min-h-12 shrink-0 items-center px-2 text-apoio font-medium underline decoration-ouro decoration-1 underline-offset-4 hover:decoration-ouro-claro"
+            className="inline-flex min-h-12 shrink-0 items-center px-2 text-apoio font-medium whitespace-nowrap underline decoration-ouro decoration-1 underline-offset-4 hover:decoration-ouro-claro"
           >
             {papoReto.encerrar}
           </button>
@@ -465,7 +506,12 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
         {/* Personagem inteiro e em destaque: quadrado de 240px ou mais no celular; no desktop, uns 40% da altura do painel. */}
         {formato === "1x1" ? (
           <div className="shrink-0 border-b border-chumbo bg-preto">
-            <Avatar {...avatarProps} formato="1x1" className="mx-auto aspect-square h-[clamp(240px,30dvh,320px)]" />
+            <Avatar
+              {...avatarProps}
+              formato="1x1"
+              // inteiro só no aviso inicial; na conversa encolhe para sobrar espaço às falas (menor ainda com o teclado aberto)
+              className={`mx-auto aspect-square ${fase === "aviso" ? "h-[clamp(240px,30dvh,320px)]" : tecladoAberto ? "h-16" : "h-40"}`}
+            />
           </div>
         ) : (
           <Avatar {...avatarProps} formato="16x9" className="h-[34%] max-h-[420px] min-h-[240px] w-full shrink-0 border-b border-chumbo" />
@@ -474,7 +520,7 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
         {/* Fica montado a conversa toda: o token chega alguns segundos depois e o widget só aparece se a Cloudflare pedir uma ação. */}
         <div ref={alvoTurnstile} className="shrink-0 px-4 empty:hidden" />
 
-        <div ref={log} role="log" aria-live="polite" aria-relevant="additions" aria-label={papoReto.titulo} tabIndex={0} className="min-h-24 flex-1 overflow-y-auto p-4">
+        <div ref={log} data-fase={fase} role="log" aria-live="polite" aria-relevant="additions" aria-label={papoReto.titulo} tabIndex={0} className="min-h-24 flex-1 overflow-y-auto p-4">
           {fase === "aviso" ? (
             <div className="grid gap-4">
               <p className="text-apoio text-texto-2">{comIA ? papoReto.avisos.comIA : papoReto.avisos.roteiro}</p>
@@ -515,7 +561,7 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
               {mensagens.map((m) => (
                 <li
                   key={m.id}
-                  className={`${balao} ${
+                  className={`${balao} ${tecladoAberto ? "max-w-[94%] py-2 leading-snug" : ""} ${
                     m.de === "voce"
                       ? "justify-self-end border-ouro-escuro bg-marinho"
                       : `justify-self-start border-chumbo bg-preto text-pretty ${m.de === "pergunta" ? "font-medium" : ""}`
@@ -616,7 +662,7 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
                 e.preventDefault();
                 enviarMensagem();
               }}
-              className="flex items-end gap-2 p-4"
+              className={`flex items-end gap-2 px-4 ${tecladoAberto ? "py-2" : "py-4"}`}
             >
               <textarea
                 ref={campoMensagem}

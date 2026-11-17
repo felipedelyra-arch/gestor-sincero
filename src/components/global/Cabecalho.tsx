@@ -15,7 +15,7 @@ export function Cabecalho({ base = "" }: { base?: string }) {
   const itens = pagina.navegacao.itens.map((i) => ({ ...i, ancora: base + i.ancora }));
   return (
     <header className="sticky top-0 z-40 border-b border-chumbo bg-preto">
-      <div className="conteiner-v2 flex h-(--altura-cabecalho) items-center gap-4 lg:gap-10">
+      <div className="conteiner-v2 flex h-(--altura-cabecalho) items-center gap-2 sm:gap-4 lg:gap-10">
         <Link href="/" className="flex min-h-12 shrink-0 items-center">
           <Imagem
             nome="logo-gestor-sincero"
@@ -23,7 +23,7 @@ export function Cabecalho({ base = "" }: { base?: string }) {
             tamanhos="130px"
             largura={640}
             altura={196}
-            className="h-10 w-auto"
+            className="h-8 w-auto min-[380px]:h-10"
           />
         </Link>
         <nav aria-label={rotuloMenu} className="hidden lg:block">
@@ -41,7 +41,7 @@ export function Cabecalho({ base = "" }: { base?: string }) {
           </ul>
         </nav>
         <div className="ml-auto flex items-center gap-1">
-          <Botao chamada={chamada} variante="compacto" base={base} className="whitespace-nowrap max-sm:px-3" />
+          <Botao chamada={chamada} variante="compacto" base={base} className="whitespace-nowrap max-sm:px-3 max-sm:text-apoio" />
           <MenuCelular rotulo={rotuloMenu} itens={itens} />
         </div>
       </div>

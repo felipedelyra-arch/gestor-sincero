@@ -71,11 +71,19 @@
 /* Retrato do topo: luz de contorno dourada sutil (o recorte tem transparência, o drop-shadow acompanha a silhueta).
    A máscara apaga a base e a lateral esquerda: o retrato sai do preto em vez de parecer colado. */
 @utility luz-contorno {
-  filter: drop-shadow(0 0 1px rgb(206 163 61 / 0.5)) drop-shadow(0 0 24px rgb(206 163 61 / 0.11));
+  /* celular: só o contorno; o halo de 24px era cortado pela caixa do retrato e aparecia como um retângulo */
+  filter: drop-shadow(0 0 1px rgb(206 163 61 / 0.5));
+}
+
+@media (min-width: 1024px) {
+  .luz-contorno {
+    filter: drop-shadow(0 0 1px rgb(206 163 61 / 0.5)) drop-shadow(0 0 24px rgb(206 163 61 / 0.11));
+  }
 }
 
 .retrato-topo {
-  mask-image: linear-gradient(to bottom, #000 58%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 58%, transparent 100%), linear-gradient(to right, transparent 0, #000 22%);
+  mask-composite: intersect;
 }
 
 @media (min-width: 1024px) {

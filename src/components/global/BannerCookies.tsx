@@ -21,7 +21,7 @@ function publicarAltura(el: HTMLElement | null) {
 
 // No celular o rótulo cabe em uma linha: recuo menor e os dois botões dividem a largura.
 const botao =
-  "min-h-12 flex-1 rounded-[2px] border border-ouro-escuro px-3 font-medium text-texto transition-colors duration-200 hover:border-ouro-claro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ouro sm:flex-none sm:px-6";
+  "min-h-12 flex-1 rounded-[2px] max-sm:text-apoio border border-ouro-escuro px-3 font-medium text-texto transition-colors duration-200 hover:border-ouro-claro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ouro sm:flex-none sm:px-6";
 
 // Textos e link chegam do layout (servidor): este componente não leva conteúdo nem config para o navegador.
 type Props = { texto: string; aceitar: string; recusar: string; rotuloPolitica: string; linkPolitica: string };
