@@ -23,9 +23,10 @@
     line-height: 1.6;
   }
 
+  /* foco do teclado em ouro, 2px, deslocado 2px (DESIGN-v2), em toda a página */
   :focus-visible {
-    outline: 2px solid var(--color-texto);
-    outline-offset: 3px;
+    outline: 2px solid var(--color-ouro);
+    outline-offset: 2px;
   }
 
   ::selection {

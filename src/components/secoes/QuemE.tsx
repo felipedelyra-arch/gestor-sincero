@@ -37,17 +37,16 @@ export function QuemE() {
     <section id="quem-e" aria-labelledby="quem-e-titulo" className="py-(--sec-ampla)">
       <div className="conteiner-v2 grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-12 lg:gap-x-8">
         {/* o único elemento revelado da seção: a foto, por opacidade */}
-        <figure data-revela suppressHydrationWarning className="flex flex-col lg:col-span-5">
-          <div className="relative aspect-4/5 w-full lg:aspect-auto lg:min-h-[520px] lg:flex-1">
-            <Imagem
-              nome="ferrer-premio"
-              alt={q.altFoto}
-              tamanhos="(min-width: 1024px) 520px, 100vw"
-              largura={1080}
-              altura={1440}
-              className="size-full object-cover object-[55%_center] lg:absolute lg:inset-0"
-            />
-          </div>
+        {/* Desktop: a foto fica fixa (sticky) enquanto o texto rola e aparece inteira, com o logo do fundo. */}
+        <figure data-revela suppressHydrationWarning className="max-w-[260px] lg:sticky lg:top-[calc(var(--altura-cabecalho)+24px)] lg:col-span-5 lg:max-w-none lg:self-start">
+          <Imagem
+            nome="ferrer-premio"
+            alt={q.altFoto}
+            tamanhos="(min-width: 1024px) 520px, 260px"
+            largura={1080}
+            altura={1440}
+            className="aspect-3/4 w-full object-cover"
+          />
           <figcaption className="mt-4 text-legenda text-texto-2">
             <span className="block font-medium text-texto">{q.premio.nome}</span>
             {q.premio.descricao}
@@ -66,17 +65,21 @@ export function QuemE() {
           </div>
 
           {/* A frase do Ferrér: o elemento memorável da página, ao lado do retrato dele. */}
-          {q.frase && <blockquote className="manifesto my-14 text-balance lg:my-16">{q.frase}</blockquote>}
+          {q.frase && <blockquote className="manifesto my-10 text-balance lg:my-16">{q.frase}</blockquote>}
 
-          <ul className="grid gap-x-10 border-b border-filete-ouro sm:grid-cols-2">
+          {/* Credenciais: lista de duas colunas com filetes no desktop; no celular, texto corrido com ponto médio. */}
+          <ul className="max-sm:block sm:grid sm:grid-cols-2 sm:gap-x-10 sm:border-b sm:border-filete-ouro">
             {q.credenciais.map((c) => (
-              <li key={c} className="border-t border-filete-ouro py-4">
+              <li
+                key={c}
+                className="max-sm:inline max-sm:after:px-0.5 max-sm:after:text-ouro max-sm:after:content-['_·_'] max-sm:last:after:content-none sm:border-t sm:border-filete-ouro sm:py-4"
+              >
                 {c}
               </li>
             ))}
           </ul>
 
-          <div className="mt-14 grid gap-10 sm:grid-cols-2 sm:gap-0 sm:divide-x sm:divide-chumbo">
+          <div className="mt-10 grid gap-8 sm:mt-14 sm:grid-cols-2 sm:gap-0 sm:divide-x sm:divide-chumbo">
             <div className="sm:pr-10">
               <h3 className={sub}>{q.tituloEh}</h3>
               <ul className="mt-4 grid gap-3">
@@ -95,7 +98,7 @@ export function QuemE() {
             </div>
           </div>
 
-          <h3 className={`${sub} mt-14`}>{q.tituloEmpresas}</h3>
+          <h3 className={`${sub} mt-10 sm:mt-14`}>{q.tituloEmpresas}</h3>
           <div className="mt-4 max-w-[66ch]">
             <LinhaCorrida itens={q.empresas} />
           </div>

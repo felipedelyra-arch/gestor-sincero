@@ -1,24 +1,29 @@
 import { pagina } from "@content";
-import { Cartao } from "../ui/Cartao";
-import { FraseManifesto } from "../ui/FraseManifesto";
-import { Secao } from "../ui/Secao";
 
-/** 04. As frases que adiam a decisão, cada uma em um cartão de citação, e a frase-manifesto. */
+/** S4. Introdução à esquerda; à direita as frases empilhadas, grandes, cada uma riscada por um traço dourado fino. */
 export function Inimigo() {
   const { titulo, introducao, frases, fechamento } = pagina.inimigo;
   return (
-    <Secao id="inimigo" titulo={titulo} apoio={introducao} fundo="marinho">
-      <ul className="flex flex-wrap justify-center gap-3 lg:gap-4">
-        {frases.map((frase) => (
-          <li key={frase} className="w-[calc(50%-6px)] sm:w-[calc(33.333%-8px)] lg:w-[calc(20%-13px)]">
-            {/* filete dourado de 1px: marca a citação */}
-            <Cartao fundo="preto" respiro="p-4 lg:p-5" className="h-full border-l-ouro font-titulo text-h3">
-              <q>{frase}</q>
-            </Cartao>
-          </li>
-        ))}
-      </ul>
-      <FraseManifesto className="mt-10 text-center">{fechamento}</FraseManifesto>
-    </Secao>
+    <section id="inimigo" aria-labelledby="inimigo-titulo" className="py-(--sec-media)">
+      <div className="conteiner-v2 grid gap-12 lg:grid-cols-12 lg:gap-x-8">
+        <header data-revela suppressHydrationWarning className="lg:col-span-5">
+          <h2 id="inimigo-titulo" className="font-titulo text-secao font-medium text-balance">
+            {titulo}
+          </h2>
+          <p className="mt-6 max-w-[34em] text-lead">{introducao}</p>
+        </header>
+        <div className="lg:col-span-7">
+          <ul className="border-b border-filete-ouro">
+            {frases.map((frase) => (
+              <li key={frase} className="border-t border-filete-ouro py-5 font-titulo text-[1.333rem] leading-[1.25] font-medium lg:py-6 lg:text-[1.778rem]">
+                {/* o risco é só decoração (text-decoration): o texto continua inteiro para o leitor de tela */}
+                <span className="line-through decoration-ouro decoration-1">{frase}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-8 font-titulo text-sub font-medium text-balance">{fechamento}</p>
+        </div>
+      </div>
+    </section>
   );
 }

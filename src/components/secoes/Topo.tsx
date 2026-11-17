@@ -47,13 +47,14 @@ export function Topo() {
           <div aria-hidden="true" className="absolute inset-x-0 bottom-0 hidden h-2/5 bg-linear-to-t from-preto via-preto/70 to-transparent lg:block" />
         </div>
 
-        <div className="lg:w-[58%]">
+        <div className="lg:w-[68%]">
           <TopoTitulo variacoes={topo.variacoes} />
           {/* Celular: a captação ocupa a linha toda e, embaixo, o link da mentoria e o Papo reto dividem a linha. */}
-          <div className="relative z-1 clear-both mt-3 grid grid-cols-2 items-center gap-x-3 gap-y-1 sm:flex sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-3 lg:mt-10">
+          {/* Desktop: captação, mentoria e Papo reto numa linha só (os dois últimos são links de texto). Celular: o Papo reto vira botão de contorno ao lado do link. */}
+          <div className="relative z-1 clear-both mt-3 grid grid-cols-2 items-center gap-x-3 gap-y-1 sm:flex sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-3 lg:mt-10 lg:flex-nowrap lg:gap-x-7">
             <Botao chamada={topo.chamadaPrincipal} className="max-sm:col-span-2 max-sm:py-2" />
             <Botao chamada={topo.chamadaSecundaria} variante="secundario" className="max-sm:py-1 max-sm:text-apoio" />
-            <ConversaPapoReto className="max-sm:px-3 max-sm:py-1.5 max-sm:text-apoio" />
+            <ConversaPapoReto variante="secundario" className="max-sm:justify-center max-sm:rounded-base max-sm:border max-sm:border-ouro-escuro max-sm:px-3 max-sm:py-1.5 max-sm:text-center max-sm:text-apoio max-sm:no-underline" />
           </div>
           {/* Linha de prova: texto corrido, sem cartões nem etiquetas. */}
           <p className="relative z-1 mt-6 max-w-[60ch] text-legenda text-texto-2 lg:mt-10">

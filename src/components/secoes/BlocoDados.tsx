@@ -1,24 +1,37 @@
 import { pagina } from "@content";
-import { Cartao } from "../ui/Cartao";
-import { FraseManifesto } from "../ui/FraseManifesto";
-import { Secao } from "../ui/Secao";
+import { site } from "@config/site";
 
-/** 03. Quatro cartões de número em linha, a fonte e a frase que fecha o argumento. */
+/**
+ * S3. Só existe com a fonte dos números (`site.dados.fonte`); sem ela a seção inteira, título incluído, não é renderizada.
+ * O primeiro número em manifesto, os outros em texto corrido ao lado e a fonte em nota de rodapé. Sem caixas.
+ */
 export function BlocoDados() {
-  const { titulo, itens, fonte, fechamento } = pagina.dados;
+  const fonte = site.dados.fonte;
+  if (!fonte) return null;
+  const { titulo, itens, fechamento } = pagina.dados;
+  const [primeiro, ...demais] = itens;
   return (
-    <Secao id="dados" titulo={titulo}>
-      <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
-        {itens.map((item) => (
-          <Cartao key={item.descricao} respiro="p-5 lg:p-6" className="flex flex-col">
-            <dt className="order-2 mt-2 text-apoio text-texto-2">{item.descricao}</dt>
-            <dd className="order-1 font-titulo text-numero font-medium text-ouro tabular-nums">{item.valor}</dd>
-          </Cartao>
-        ))}
-      </dl>
-      {/* Em produção a fonte pendente chega vazia: o bloco inteiro some, sem linha em branco. */}
-      {fonte && <p className="mt-4 text-center text-apoio text-texto-2">{fonte}</p>}
-      <FraseManifesto className="mx-auto mt-10 max-w-[34ch] text-center">{fechamento}</FraseManifesto>
-    </Secao>
+    <section id="dados" aria-labelledby="dados-titulo" className="py-(--sec-curta)">
+      <div className="conteiner-v2 grid gap-10 lg:grid-cols-12 lg:gap-x-8">
+        <div data-revela suppressHydrationWarning className="lg:col-span-5">
+          <h2 id="dados-titulo" className="font-titulo text-secao font-medium text-balance">
+            {titulo}
+          </h2>
+          <p className="manifesto mt-8 text-ouro tabular-nums">{primeiro.valor}</p>
+          <p className="mt-3 max-w-[34ch]">{primeiro.descricao}</p>
+        </div>
+        <div className="lg:col-span-7 lg:col-start-6">
+          <ul className="border-b border-filete-ouro">
+            {demais.map((item) => (
+              <li key={item.descricao} className="border-t border-filete-ouro py-4 text-lead">
+                <span className="font-medium">{item.valor}</span> {item.descricao}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-8 font-titulo text-sub font-medium text-balance">{fechamento}</p>
+          <p className="mt-6 text-legenda text-texto-2">{fonte}</p>
+        </div>
+      </div>
+    </section>
   );
 }

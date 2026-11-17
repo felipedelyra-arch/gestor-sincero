@@ -1,37 +1,40 @@
 import { pagina } from "@content";
-import { Cartao } from "../ui/Cartao";
-import { Secao } from "../ui/Secao";
-import { SinalAbrir } from "../ui/SinalAbrir";
 
-/** 07. Um cartão por pilar, com as etapas numeradas (sequência real); a descrição de cada etapa abre no toque. */
+/** S7. Duas colunas grandes, uma por pilar, com as etapas numeradas de 1 a 10 em ouro; nome e descrição sempre à vista. */
 export function Metodo() {
   const { titulo, introducao, pilares } = pagina.metodo;
   return (
-    <Secao id="metodo" titulo={titulo} apoio={introducao}>
-      <div className="grid gap-4 lg:grid-cols-2 lg:gap-6">
-        {pilares.map((pilar) => (
-          <Cartao key={pilar.nome}>
-            <h3 className="font-titulo text-h3 font-medium">{pilar.nome}</h3>
-            <p className="mt-1 text-apoio text-texto-2">{pilar.descricao}</p>
-            <ol start={pilar.etapas[0].numero} className="mt-4 grid items-start gap-x-6 sm:grid-cols-2">
-              {pilar.etapas.map((etapa) => (
-                <li key={etapa.numero} className="border-t border-chumbo">
-                  <details className="group">
-                    <summary className="flex min-h-12 cursor-pointer list-none items-center gap-3 py-2">
-                      <span aria-hidden="true" className="w-[2ch] shrink-0 font-titulo font-medium text-ouro tabular-nums">
-                        {etapa.numero}
-                      </span>
-                      <span className="flex-1 font-medium">{etapa.nome}</span>
-                      <SinalAbrir />
-                    </summary>
-                    <p className="pb-3 pl-[calc(2ch+12px)] text-apoio text-texto-2">{etapa.descricao}</p>
-                  </details>
-                </li>
-              ))}
-            </ol>
-          </Cartao>
-        ))}
+    <section id="metodo" aria-labelledby="metodo-titulo" className="py-(--sec-media)">
+      <div className="conteiner-v2">
+        <header data-revela suppressHydrationWarning className="max-w-[680px]">
+          <h2 id="metodo-titulo" className="font-titulo text-secao font-medium text-balance">
+            {titulo}
+          </h2>
+          <p className="mt-5 text-lead">{introducao}</p>
+        </header>
+
+        <div className="mt-14 grid gap-16 lg:mt-20 lg:grid-cols-2 lg:gap-x-20">
+          {pilares.map((pilar) => (
+            <div key={pilar.nome}>
+              <h3 className="font-titulo text-sub font-medium">{pilar.nome}</h3>
+              <p className="mt-2 max-w-[44ch]">{pilar.descricao}</p>
+              <ol start={pilar.etapas[0].numero} className="mt-8 border-b border-filete-ouro">
+                {pilar.etapas.map((etapa) => (
+                  <li key={etapa.numero} className="grid grid-cols-[3.25rem_1fr] gap-x-4 border-t border-filete-ouro py-5 lg:grid-cols-[4.5rem_1fr] lg:gap-x-5">
+                    <span aria-hidden="true" className="font-titulo text-numeracao font-normal text-ouro tabular-nums">
+                      {etapa.numero}
+                    </span>
+                    <div>
+                      <h4 className="font-titulo text-sub font-medium">{etapa.nome}</h4>
+                      <p className="mt-1">{etapa.descricao}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ))}
+        </div>
       </div>
-    </Secao>
+    </section>
   );
 }

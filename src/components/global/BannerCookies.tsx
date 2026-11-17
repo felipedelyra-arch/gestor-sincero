@@ -21,7 +21,7 @@ function publicarAltura(el: HTMLElement | null) {
 
 // No celular o rótulo cabe em uma linha: recuo menor e os dois botões dividem a largura.
 const botao =
-  "min-h-12 flex-1 rounded-[2px] border border-ouro-escuro px-3 font-medium text-texto transition-colors duration-200 hover:border-ouro-claro focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-texto sm:flex-none sm:px-6";
+  "min-h-12 flex-1 rounded-[2px] border border-ouro-escuro px-3 font-medium text-texto transition-colors duration-200 hover:border-ouro-claro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ouro sm:flex-none sm:px-6";
 
 // Textos e link chegam do layout (servidor): este componente não leva conteúdo nem config para o navegador.
 type Props = { texto: string; aceitar: string; recusar: string; rotuloPolitica: string; linkPolitica: string };
@@ -42,7 +42,7 @@ export function BannerCookies({ texto, aceitar, recusar, rotuloPolitica, linkPol
           {texto}{" "}
           <Link
             href={linkPolitica}
-            className="underline decoration-ouro decoration-1 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-texto"
+            className="underline decoration-ouro decoration-1 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ouro"
           >
             {rotuloPolitica}
           </Link>
