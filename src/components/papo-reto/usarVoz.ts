@@ -2,8 +2,12 @@
 
 import { useCallback, useRef, useState } from "react";
 
-const acharVoz = () =>
-  window.speechSynthesis.getVoices().find((v) => v.lang.replace("_", "-").toLowerCase() === "pt-br") ?? null;
+// Prefere pt-BR, depois qualquer português e, no teste, a primeira voz que o navegador tiver.
+const acharVoz = () => {
+  const vozes = window.speechSynthesis.getVoices();
+  const idioma = (v: SpeechSynthesisVoice) => v.lang.replace("_", "-").toLowerCase();
+  return vozes.find((v) => idioma(v) === "pt-br") ?? vozes.find((v) => idioma(v).startsWith("pt")) ?? vozes[0] ?? null;
+};
 
 // O Chrome carrega a lista de vozes depois do primeiro uso: espera o evento por até 1,5 s.
 function esperarVoz(): Promise<SpeechSynthesisVoice | null> {
@@ -20,7 +24,7 @@ function esperarVoz(): Promise<SpeechSynthesisVoice | null> {
   });
 }
 
-/** Voz de saída do personagem pelo navegador (pt-BR). Desligada por padrão; sem voz pt-BR, não liga. */
+/** Voz de saída do personagem pelo navegador. Desligada por padrão. `alternar` devolve false quando não há voz instalada. */
 export function useVoz() {
   const suportada = typeof window !== "undefined" && "speechSynthesis" in window;
   const [ligada, setLigada] = useState(false);
@@ -32,16 +36,17 @@ export function useVoz() {
     if (suportada) window.speechSynthesis.cancel();
   }, [suportada]);
 
-  const alternar = useCallback(async () => {
-    if (!suportada) return;
+  const alternar = useCallback(async (): Promise<boolean> => {
+    if (!suportada) return false;
     if (ligada) {
       calar();
       voz.current = null;
       setLigada(false);
-      return;
+      return true;
     }
     voz.current = await esperarVoz();
     setLigada(voz.current !== null);
+    return voz.current !== null;
   }, [suportada, ligada, calar]);
 
   /** Lê o texto; `aoFim` roda quando a voz termina. Devolve false se não há voz ligada (quem chama usa o tempo estimado). */

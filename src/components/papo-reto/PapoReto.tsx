@@ -123,6 +123,11 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
   const [consentimento, setConsentimento] = useState<boolean | null>(null);
   const [mensagens, setMensagens] = useState<Mensagem[]>([]);
   const [pergunta, setPergunta] = useState<number | null>(null);
+  // A conversa é por texto e por voz. As respostas prontas só aparecem quando ele não entendeu a resposta
+  // (a mesma pergunta voltou), para a pessoa nunca ficar sem saída.
+  const [mostrarOpcoes, setMostrarOpcoes] = useState(false);
+  // Voz pedida e nenhuma voz instalada neste navegador: avisa em vez de ficar mudo sem explicação.
+  const [semVoz, setSemVoz] = useState(false);
   const [final, setFinal] = useState<Final | null>(null);
   const [encerrada, setEncerrada] = useState(false);
   const [enviando, setEnviando] = useState(false);
@@ -317,6 +322,7 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
     adicionar("personagem", r.fala);
     falar(r.fala);
     if (r.pergunta !== null) adicionar("pergunta", papoReto.perguntas[r.pergunta - 1].texto);
+    setMostrarOpcoes(r.pergunta !== null && r.pergunta === pergunta && r.regra === null);
     setPergunta(r.pergunta);
     setFinal(r.final);
     setEncerrada(r.encerrada);
@@ -427,7 +433,7 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
           {voz.suportada && (
             <button
               type="button"
-              onClick={() => void voz.alternar()}
+              onClick={() => void voz.alternar().then((ok) => setSemVoz(ok === false))}
               aria-label={textoVozLigada}
               title={textoVozLigada}
               className={`${botaoIcone} ${voz.ligada ? "border-ouro bg-marinho" : ""}`}
@@ -450,6 +456,11 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
             {papoReto.encerrar}
           </button>
         </header>
+        {semVoz && (
+          <p role="status" className="shrink-0 border-b border-chumbo px-4 py-2 text-legenda text-texto-2">
+            {papoReto.conversa.semVoz}
+          </p>
+        )}
 
         {/* Personagem inteiro e em destaque: quadrado de 240px ou mais no celular; no desktop, uns 40% da altura do painel. */}
         {formato === "1x1" ? (
@@ -541,7 +552,7 @@ export default function PapoReto({ aoFechar, videos, linkRessonancia, turnstileS
 
         {mostrarEntrada && (
           <div className="shrink-0 border-t border-chumbo bg-preto-2">
-            {(atual.opcoes.length > 0 || atual.campoNumero) && (
+            {mostrarOpcoes && (atual.opcoes.length > 0 || atual.campoNumero) && (
               <div className="grid max-h-[32dvh] gap-2 overflow-y-auto px-4 pt-3 sm:grid-cols-2">
                 {atual.opcoes.length > 0 && <p className="text-legenda text-texto-2 sm:col-span-2">{papoReto.conversa.sugestoes}</p>}
                 {atual.opcoes.map((o) => (

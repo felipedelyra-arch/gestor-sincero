@@ -261,6 +261,7 @@ export const papoRetoSchema = z.object({
     audioNaoEntendido: fala, // a transcrição falhou: pede para repetir ou escrever
     ouvirFalas: t, // liga a voz do personagem
     silenciarFalas: t,
+    semVoz: t, // o navegador não tem nenhuma voz instalada
     sugestoes: t, // título discreto das respostas prontas
   }),
   responder: t, // botão que envia número ou texto livre

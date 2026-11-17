@@ -261,6 +261,7 @@ export const papoRetoBruto: PapoRetoEntrada = {
     audioNaoEntendido: "Não peguei o que você disse. Pode repetir, mais perto do microfone, ou escrever?",
     ouvirFalas: "Ouvir as respostas em voz alta",
     silenciarFalas: "Silenciar a voz",
+    semVoz: "Este navegador não tem voz instalada, então não consigo falar aqui. No celular a voz funciona.",
     sugestoes: "Respostas rápidas",
   },
   naoEntendi: "Quero ter certeza de que entendi direito. Escolha a resposta que chega mais perto do seu caso, e seguimos.",
