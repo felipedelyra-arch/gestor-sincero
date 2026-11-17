@@ -2,6 +2,63 @@
 
 Alvo: `http://localhost:3000` em modo prod (build do orquestrador), sem `.env.local` (sem Supabase, Turnstile real, Pixel ou GA4). Chromium sem interface, 1 worker. Nada de código de produção foi alterado.
 
+## Papo reto, Onda C (17/11/2026, dev em http://localhost:3000, adaptadores em memória)
+
+Specs em `tests/papo-reto/` (config própria, `playwright.config.ts`, 1 worker, chromium): `regras` (rota, por requisição), `limites`, `texto-livre`, `painel` (navegador) e `tom`. Resultado: 54 passam e 1 falha de propósito (achado R-M1). Não houve Lighthouse: fica para o build de prod.
+
+| Critério | Meta | Medido | Situação |
+|---|---|---|---|
+| Regras de contradição disparadas (de 9) | 9 | 9 (cada uma com sequência que dispara e uma parecida) | aprovado |
+| Alarmes falsos (de 9) | 0 | 0 | aprovado |
+| Final com 3 pontos, sem repetição, sem chave sobrando | sim | sim, em 3 conversas completas | aprovado |
+| Recomendação: ja-decidi → mentoria; não-sei em P3 ou P5 → ressonância; demais → jornada | sim | sim (7 casos, inclusive a precedência de ja-decidi sobre não-sei) | aprovado |
+| 20 mensagens cabem; a 21ª → 429 | sim | sim | aprovado |
+| Estado adulterado, de outra chave, vencido (2 h) | 400 | 400 nos três | aprovado |
+| Estado de outra conversa (válido) | recusado? | aceito (200): sem vínculo com IP ou sessão | anotação (R-B2) |
+| Opção inexistente, de outra pergunta, número fora de min/max, resposta vazia, opção+número | 400 | 400 em todos | aprovado |
+| Corpo acima de 16 KB | 413 | 413 | aprovado |
+| Primeiro turno sem Turnstile (null) / token vazio | antirrobo / validação | antirrobo / validação | aprovado |
+| Quarta conversa do mesmo IP no dia | 429 | 429 | aprovado (ver R-B1) |
+| Origin de outro site ou ausente | 403 | 403 | aprovado |
+| Texto livre sem chave: 6 injeções + HTML + script | fala "não entendi", pergunta repetida, nada do texto volta | igual nas 6; opção junto com texto usa a opção | aprovado |
+| Texto livre acima de 600 caracteres | 400 | 400 | aprovado |
+| Painel: aviso e consentimento antes de qualquer pergunta | sim | sim, 390 e 1280 | aprovado |
+| Painel: conversa completa só pelo teclado até a recomendação | sim | sim, 390 e 1280; foco vai para o botão da recomendação | aprovado |
+| Painel: contradição mostra o clipe cético e a fala com as respostas entre aspas | sim | sim, 390 e 1280 | aprovado |
+| Painel: "Encerrar a conversa" fecha e devolve o foco | sim | sim, 390 | aprovado |
+| Painel: alvos ≥ 48px | sim | sim, 390 e 1280 (consentimento e pergunta) | aprovado |
+| Painel: axe com o painel aberto | 0 graves | 0 violações (consentimento e pergunta), 390 e 1280 | aprovado |
+| Painel: movimento reduzido não baixa vídeo | sim | nenhum .mp4/.webm, poster presente | aprovado |
+| Painel: nada de mídia antes do clique | sim | nenhum vídeo nem poster antes do clique | aprovado |
+| Painel: nenhum script antes do clique (nem com o ponteiro) | 0 | 5 scripts após hover (R-M1) | reprovado |
+| Topo, variações A e B, 390x844: três ações acima do banner | sim | sim (bases 607, 664 e 670 px; banner em 726 px) | aprovado |
+| Tom: emoji, inglês, promessa, falas acima de 400 caracteres | nenhum | nenhum; números: 30 dias (ADR), 52 temas e 10 etapas (briefing §5), 12 meses (pergunta 3) | aprovado |
+
+### Achados do Papo reto
+
+Médio:
+
+- **R-M1** o ponteiro sobre o botão, ou o foco nele, já baixa o pedaço de JavaScript do painel (zod, `next/navigation` e o chunk do painel: 5 requisições em `painel.spec.ts`, teste "nenhum vídeo, poster ou script"). Isso contraria a regra de não carregar nada do painel antes do clique. Arquivo: `src/components/papo-reto/BotaoPapoReto.tsx:29-30` (`onPointerEnter` e `onFocus` chamam `carregarPainel`). Decisão: manter o pré-carregamento (ganha tempo) ou tirar (cumpre a regra). Não corrigido, como pedido.
+
+Baixo:
+
+- **R-B1** sem IP (`x-forwarded-for`, `x-real-ip` e `x-vercel-forwarded-for` ausentes), todos caem na mesma cota `sem-ip`: são 3 conversas por dia para todo mundo. Em produção a Vercel põe o cabeçalho, então é só ambiente local/dev. Arquivo: `src/server/aplicacao/papoReto.ts:112`. Foi a causa de os testes de painel travarem com "limite": cada teste de painel recebe um IP próprio pela rota (`page.route`).
+- **R-B2** estado de outra conversa, válido e assinado, é aceito (200). O ADR 0003 não guarda estado no servidor, então isso é por desenho. Consequência: é possível bifurcar a conversa a partir de um estado anterior e ganhar mais 20 mensagens; o freio é o limite de 60 turnos por IP por dia. Arquivo: `src/server/aplicacao/papoReto.ts:136` (`lerEstado`, sem vínculo com a sessão).
+- **R-B3** (por leitura de código, não testado no navegador) a mensagem do visitante entra na conversa antes do envio: `src/components/papo-reto/PapoReto.tsx:196`. Se a rota recusar (limite, por exemplo), a resposta fica na tela como se tivesse sido aceita, e a pergunta continua aberta.
+- **R-B4** (por leitura de código) quando a pergunta tem opções e número (P5), escolher uma opção descarta o número digitado sem aviso: `src/components/papo-reto/PapoReto.tsx:266` manda `numero: null`.
+- **R-B5** o texto livre não tem caminho com Groq: não há cliente no código (grep em `src/` e `content/` não acha nada; `src/server/aplicacao/papoReto.ts:11` diz "ainda não existe"). Por isso o caminho com erro ou timeout não tem teste nem unitário. O que foi testado é o caminho sem chave.
+
+### O que não foi verificado no Papo reto
+
+- Lighthouse de `/` no celular: pendente para o build de prod (o servidor está em dev).
+- Em prod a rota responde 503 sem Supabase e sem `PAPO_RETO_SEGREDO`; não testado.
+- Gravação com consentimento (`papo_reto`, AES-GCM, 30 dias): não verificada; o repositório em memória é o único ativo em dev.
+- Conexão lenta (`saveData` ou 2G, que mostra só o poster): não testado.
+- Turnstile: em dev o token é o de teste da Cloudflare (`1x0000...AA`) e o verificador em memória aceita qualquer token. Os testes de rota usam um token fixo; a validação real do Turnstile não foi exercitada.
+- Nenhuma requisição externa do texto livre: verificado só pela ausência de código do Groq, não por monitoramento de rede.
+- Prints do painel e prints de 1920: não gerados nesta rodada.
+- Limite de 3 conversas por IP foi testado com o IP da própria execução; a contagem fica na memória do servidor de dev e só zera ao reiniciá-lo.
+
 ## Reteste final (16/11/2026, build de prod de 1057e8a: Ressonância em /ressonancia, pendências ocultas)
 
 Specs: `ressonancia` reescrito para a rota nova (o botão do resumo leva a `/ressonancia`); `saude` ganhou a varredura de pendências nas 4 rotas; `cabecalho` ganhou as âncoras de `/ressonancia` voltando para `/#seção` e o menu do celular; `acessibilidade` passa a auditar `/ressonancia` e os details e o menu dela; `design-v2` roda fonte, rolagem e alvos também em `/ressonancia`. Corrigido na medida de largura: um recorte com overflow oculto que cabe na tela (o retrato do topo em 390) não conta como vazamento.
