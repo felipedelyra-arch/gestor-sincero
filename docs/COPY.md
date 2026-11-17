@@ -6,6 +6,50 @@ Gerado a partir de `content/pagina.ts`, que é a fonte usada pela página. Para 
 
 O que aparece como `[PENDENTE FERRÉR]` depende de resposta sua e está listado em `docs/PERGUNTAS_FERRER.md`. Preço, datas, horário e contatos não estão neste texto: a página busca em `config/site.ts`.
 
+## Títulos propostos (aguardam aprovação do Felipe)
+
+Design v2, Onda 2. Já aplicados em `content/pagina.ts`; se algum for recusado, volta o texto da coluna "Antes". O nome do produto saiu do título e passou para a primeira frase da introdução, para não sumir da seção.
+
+| Seção | Antes | Depois |
+|---|---|---|
+| 02 Espelho da dor | Você se reconhece? | Quantas destas acontecem na sua empresa? |
+| 05 Comparativo | A mesma empresa, em duas versões | Em qual das duas colunas está a sua empresa? |
+| 06 Quem é | Quem é o Gestor Sincero | Do Telex à inteligência artificial |
+| 07 Método | Método Empresas do Futuro | Primeiro muda a cabeça de quem decide. Depois, a operação. |
+| 08 Jornada | Jornada Executiva Gestão Sem Maquiagem | Três reuniões de conselho com o Gestor Sincero |
+| 09 Dicionário | Dicionário do Internetês | O que a agência quis dizer naquela reunião |
+| 11 Mentoria | Mentoria Empresas do Futuro | Seis meses ao lado de quem já esteve na sua cadeira |
+| 12 Para quem é | Para quem é e para quem não é | Esta mentoria não é para todo mundo |
+| 12 Requisitos | Requisitos | O que você precisa trazer |
+| 14 Perguntas | Perguntas frequentes | Antes que você pergunte |
+
+Mantidos, porque já são específicos: 03 "Quem tem estrada segue gerando emprego neste país", 04 "O inimigo tem voz de prudência", 05 "Sua empresa não precisa nascer de novo. Precisa de um segundo motor.", o título do formulário da Jornada e os títulos da página /ressonancia.
+
+## Regras de texto da Onda 2
+
+- **Frases de efeito soltas: só três na página.** O título do topo, a citação da seção 06 ("Experiência sem atualização vira nostalgia.") e a pergunta do fechamento ("Quanto custa continuar sem entender as novas regras?"). As outras viraram parte de um parágrafo: o fechamento dos Dados, o do Inimigo, "Você não construiu sua empresa para depender dos outros." (agora no 2º parágrafo da Virada), a frase do requisito principal e "Afrouxem a gravata..." (agora no texto do fechamento). As frases-manifesto mantêm o texto exato.
+- **Nenhum "Sem X e sem Y".** "Sem plateia e sem julgamento" e "Sem palco e sem espetáculo" foram reescritas em frase direta.
+- **Espelho da dor com uma instrução só**, a da introdução. O texto de "nenhum marcado" deixou de ser instrução (e a página hoje nem o exibe).
+- **Voz do blog do Ferrér** (`docs/voz-ferrer/`): vocativo "Gestor," em poucos pontos, pergunta direta, cena concreta, frase curta. "Informatizar a bagunça" (Método) vem do próprio blog. Sem emoji, sem promessa, sem número novo, sempre "você". Inglês segue a regra do §6: os termos aparecem só como verbetes do Dicionário.
+- **Classe gramatical do Dicionário:** os seis verbetes são substantivos masculinos ("o lead", "o funil", "o CRM", "o tráfego pago", "o algoritmo", "o prompt"), todos `s.m.`.
+
+## Botões que levam à captação
+
+| Onde | Rótulo | Decisão |
+|---|---|---|
+| Cabeçalho | Receber o manual | curto, cabe na barra fixa |
+| Topo (principal) | Quero o manual e a vaga | já definido |
+| Formulário da Jornada | Quero o manual e a vaga | acompanha o topo: mesma ação, mesmo rótulo; dentro da seção da Jornada o "na Jornada" sobra |
+| Fechamento | Quero o manual e a vaga | acompanha o topo, pelo mesmo motivo |
+| Papo reto, recomendação da Jornada | Quero o manual e a vaga | acompanha o topo; o texto da recomendação já nomeia a Jornada |
+
+O rótulo longo do briefing ("Quero meu manual e minha vaga na Jornada") saiu da página. Os outros botões (mentoria, Ressonância) não mudaram.
+
+## Pedidos ao Front-end (dependem de componente)
+
+- `dados.fechamento`, `inimigo.fechamento` e `paraQuem.fraseRequisito` agora são parágrafos de corpo, não frases de efeito: hoje saem em `font-titulo` (BlocoDados.tsx:31, Inimigo.tsx:24, ParaQuemE.tsx:35, este centralizado). Trocar para texto de corpo. Se preferir tirar os campos, o orquestrador torna `fechamento` opcional no schema.
+- O DESIGN-v2 (S12) pede "o requisito principal em manifesto"; isso conflita com a regra das três frases soltas. Fica para o orquestrador decidir.
+
 ## Busca e compartilhamento
 
 _Por quê: é o que aparece no Google e no WhatsApp quando alguém envia o endereço; usa a frase-manifesto do público e cita as duas portas de entrada._
@@ -32,7 +76,7 @@ Versão B: **O problema nunca foi a idade. Foi a velocidade com que o mercado mu
 
 Para empresários experientes que não aceitam ser espectadores da Nova Economia. Comece pelo manual Gestão Sem Maquiagem e por três reuniões executivas com Sidney Ferrér, o Gestor Sincero.
 
-Botão principal: **Quero meu manual e minha vaga na Jornada**
+Botão principal: **Quero o manual e a vaga**
 
 Botão secundário: **Conhecer a mentoria**
 
@@ -44,9 +88,9 @@ Descrição da foto para leitores de tela: Sidney Ferrér, o Gestor Sincero, de 
 
 _Por quê: o empresário se reconhece sozinho, marcando as frases, sem ser acusado de nada; a resposta final acolhe e não promete._
 
-**Você se reconhece?**
+**Quantas destas acontecem na sua empresa?**
 
-Marque o que é verdade hoje na sua empresa. Sem plateia e sem julgamento.
+Gestor, marque só o que já é verdade hoje. Ninguém além de você vê esta lista.
 
 - As vendas caíram e ninguém na empresa consegue explicar o motivo.
 - Concorrentes menores e mais novos estão crescendo na sua frente.
@@ -59,11 +103,11 @@ Marque o que é verdade hoje na sua empresa. Sem plateia e sem julgamento.
 
 Contador: {n} de {total} marcados
 
-Nenhum marcado: Marque as frases que descrevem o seu momento.
+Nenhum marcado (não aparece na página): Nenhuma frase marcada até agora.
 
-Poucos marcados: Poucos sinais. É a melhor hora para agir, com calma e antes que a pressa decida por você.
+Poucos marcados: Poucos sinais, e essa é a melhor hora para agir. Com calma, antes que a pressa decida por você.
 
-Muitos marcados: Você não está sozinho, e isso nada diz sobre a sua capacidade. A liderança virou o cargo mais solitário. O mercado mudou depressa, e quase ninguém avisou quem estava ocupado tocando a empresa.
+Muitos marcados: Você não está sozinho, e isso não diz nada sobre a sua capacidade. A liderança virou o cargo mais solitário. O mercado mudou depressa, e ninguém mandou aviso para quem estava ocupado tocando a empresa.
 
 ## 03 Dados
 
@@ -78,7 +122,7 @@ _Por quê: prova com número e fonte de que o empresário experiente pesa na eco
 
 Fonte: Sebrae/IBGE [PENDENTE FERRÉR: estudo e ano]
 
-Fechamento: **O problema nunca foi a idade. Foi a velocidade com que o mercado mudou.**
+Repare no que esses números dizem. Quem tem estrada continua contratando, pagando a folha e segurando o negócio de pé ano após ano. A idade não tirou ninguém do jogo. O que mudou foi a regra do jogo.
 
 ## 04 O inimigo
 
@@ -86,7 +130,7 @@ _Por quê: dá nome ao adversário sem atacar o leitor: a prudência que virou a
 
 **O inimigo tem voz de prudência**
 
-Ele não aparece no balanço nem bate à porta. Mora em frases razoáveis, ditas por gente séria, que adiam a decisão por mais um ano. E carrega uma crença antiga, a de que o mercado ainda recompensa as mesmas escolhas de 10 ou 20 anos atrás.
+Ele não aparece no balanço nem bate à porta. Mora em frases razoáveis, ditas por gente séria na mesa de reunião, que empurram a decisão para o ano que vem. E carrega uma crença antiga, a de que o mercado ainda paga pelas mesmas escolhas de 10 ou 20 anos atrás. Reconhece alguma destas?
 
 - Vou estudar depois.
 - Meu sobrinho cuida das redes.
@@ -94,7 +138,7 @@ Ele não aparece no balanço nem bate à porta. Mora em frases razoáveis, ditas
 - Vou esperar. Isso passa.
 - Sempre fiz assim.
 
-Fechamento: **Experiência sem atualização virou risco.**
+Nenhuma delas é mentira, e é isso que as torna perigosas. Cada uma parece prudência e adia a decisão por mais um ano, e o ano adiado não volta. Experiência sem atualização virou risco.
 
 ## 05 A virada
 
@@ -102,13 +146,11 @@ _Por quê: é o alívio depois da dor: o legado fica, e o que entra é um segund
 
 **Sua empresa não precisa nascer de novo. Precisa de um segundo motor.**
 
-Ninguém aqui vai pedir que você derrube o que levou décadas para erguer. O legado fica, assim como os clientes, o nome e a palavra dada.
+Ninguém aqui vai pedir que você derrube o que levou décadas para erguer. O legado fica. Os clientes, o nome e a palavra dada também.
 
-O que falta é criar, dentro da própria empresa, a versão digital do negócio. Um segundo motor de crescimento, ligado ao primeiro e comandado por você.
+O que falta é criar, dentro da própria empresa, a versão digital do negócio. Um segundo motor de crescimento, ligado ao primeiro e comandado por você, e não pela agência ou pelo sobrinho. Você não construiu sua empresa para depender dos outros.
 
-Você não construiu sua empresa para depender dos outros.
-
-**A mesma empresa, em duas versões**
+**Em qual das duas colunas está a sua empresa?**
 
 | Tema | Analógica | Digital |
 |---|---|---|
@@ -134,11 +176,13 @@ Você não construiu sua empresa para depender dos outros.
 
 _Por quê: trajetória e prova no lugar de adjetivo; dizer o que ele não é afasta a imagem de guru. As quatro décadas dependem da pergunta sobre 40 ou 35 anos._
 
-**Quem é o Gestor Sincero**
+**Do Telex à inteligência artificial**
 
-Gestor Sincero é o nome com que Sidney Ferrér assina o que aprendeu em quatro décadas de carreira. Ele começou na era do Telex e viu de dentro cada troca de regra do mercado, como executivo e como dono de empresa.
+Gestor Sincero é o nome com que Sidney Ferrér assina o que aprendeu em quatro décadas de carreira. Ele começou na era do Telex e viu de dentro cada troca de regra do mercado, como executivo e como dono de empresa. Viu a chegada do computador pessoal, da internet, das redes sociais e agora da inteligência artificial.
 
-Hoje comanda a S4 Marketing Digital de Resultados e faz uma ponte que pouca gente faz. De um lado, a velocidade dos jovens. Do outro, a visão estratégica e a experiência em crise de quem tem estrada. Ele traduz a Era Digital para quem cresceu sem internet.
+Hoje comanda a S4 Marketing Digital de Resultados e faz uma ponte que pouca gente faz. De um lado, a velocidade dos jovens. Do outro, a visão estratégica e a experiência em crise de quem tem estrada. Ele traduz a Era Digital para quem cresceu sem internet, sem pedir que ninguém vire técnico.
+
+Citação em destaque: **Experiência sem atualização vira nostalgia.**
 
 **Credenciais**
 
@@ -176,9 +220,9 @@ Empresas por onde passou: Marfinite, Purificadores Europa, Guia do Imóvel, Topv
 
 _Por quê: mostra que existe método e ordem. A linha de cada etapa foi escrita a partir do nome da etapa e precisa da sua validação._
 
-**Método Empresas do Futuro**
+**Primeiro muda a cabeça de quem decide. Depois, a operação.**
 
-Dez etapas em dois pilares. Primeiro muda a forma de pensar a empresa, depois a forma de operá-la.
+O Método Empresas do Futuro tem dez etapas em dois pilares. Comprar ferramenta antes de mudar a forma de pensar é informatizar a bagunça, por isso a ordem importa.
 
 **Melhoria Contínua. A mentalidade. O que precisa mudar na cabeça de quem decide antes de mudar na operação.**
 
@@ -200,9 +244,9 @@ Dez etapas em dois pilares. Primeiro muda a forma de pensar a empresa, depois a 
 
 _Por quê: é a chamada principal da página: três reuniões com cara de conselho, nunca de lançamento, e um formulário curto com consentimentos separados._
 
-**Jornada Executiva Gestão Sem Maquiagem**
+**Três reuniões de conselho com o Gestor Sincero**
 
-Três reuniões ao vivo, com pauta e hora marcada, no formato de um conselho executivo. Sem palco e sem espetáculo. Quem se inscreve recebe também o manual Gestão Sem Maquiagem.
+A Jornada Executiva Gestão Sem Maquiagem são três reuniões ao vivo, com pauta e hora marcada, no formato de um conselho executivo. É conversa de mesa, de quem toca empresa para quem toca empresa. Quem se inscreve recebe também o manual Gestão Sem Maquiagem.
 
 - Pauta 1: **Você não ficou velho, mas algumas ideias suas ficaram**. Uma conversa franca sobre as crenças que sustentaram a empresa por décadas e hoje seguram o crescimento.
 - Pauta 2: **O manual que fez você vencer não foi escrito para o mundo de hoje**. O que mudou no jeito de vender, contratar e liderar, e por que repetir a receita antiga passou a ser arriscado.
@@ -230,7 +274,7 @@ Usamos seu contato para enviar o manual e os avisos das três reuniões. Convite
 - E-mail: Aceito receber conteúdos e convites do Gestor Sincero por e-mail. Posso cancelar quando quiser.
 - Privacidade (obrigatória): Li a política de privacidade e estou ciente de como meus dados serão usados.
 
-Botão: **Quero meu manual e minha vaga na Jornada** (durante o envio: Enviando)
+Botão: **Quero o manual e a vaga** (durante o envio: Enviando)
 
 Depois do envio: **Inscrição confirmada**. Sua vaga na Jornada está reservada. O manual e os avisos das reuniões chegam pelo contato que você informou. Botão: **Baixar o manual agora**
 
@@ -244,16 +288,16 @@ Depois do envio: **Inscrição confirmada**. Sua vaga na Jornada está reservada
 
 _Por quê: prova na prática a promessa de traduzir o digital: seis termos explicados com imagens do dia a dia do empresário. As palavras em inglês aparecem aqui só como verbetes a traduzir._
 
-**Dicionário do Internetês**
+**O que a agência quis dizer naquela reunião**
 
-O mundo digital fala uma língua própria, e boa parte dela é nome novo para coisa que você conhece há anos. Esta é uma amostra do Dicionário do Internetês, o tradutor de gerações com 5.000 verbetes.
+Imagine a reunião com a agência. Alguém fala em lead, funil e tráfego pago, e todo mundo balança a cabeça. Quantos entenderam? Boa parte dessa língua é nome novo para coisa que você conhece há anos. Esta é uma amostra do Dicionário do Internetês, o tradutor de gerações com 5.000 verbetes.
 
-- **Lead**: O interessado. Alguém que deixou nome e contato porque quer saber mais sobre o que você vende. Ainda não é cliente.
-- **Funil**: O caminho que a pessoa percorre de desconhecida a cliente. Muitos entram, poucos chegam ao fim, e o trabalho é descobrir onde os outros ficaram.
-- **CRM**: A velha caderneta de clientes, agora em sistema. Guarda quem comprou, o quê, quando e o que ficou combinado.
-- **Tráfego pago**: Anúncio pago na internet. Você paga para aparecer para quem procura o que você vende e fica sabendo quanto custou cada visita.
-- **Algoritmo**: O conjunto de regras que cada rede usa para decidir o que mostrar a cada pessoa. Funciona como um porteiro, que escolhe quem vê a sua empresa.
-- **Prompt**: O pedido que você escreve para a inteligência artificial. Pedido vago, resposta vaga, como acontece com qualquer funcionário.
+- **Lead** _s.m._: O interessado. Alguém que deixou nome e contato porque quer saber mais sobre o que você vende. Ainda não é cliente.
+- **Funil** _s.m._: O caminho que a pessoa percorre de desconhecida a cliente. Muitos entram, poucos chegam ao fim, e o trabalho é descobrir onde os outros ficaram.
+- **CRM** _s.m._: A velha caderneta de clientes, agora em sistema. Guarda quem comprou, o quê, quando e o que ficou combinado.
+- **Tráfego pago** _s.m._: Anúncio pago na internet. Você paga para aparecer para quem procura o que você vende e fica sabendo quanto custou cada visita.
+- **Algoritmo** _s.m._: O conjunto de regras que cada rede usa para decidir o que mostrar a cada pessoa. Funciona como um porteiro, que escolhe quem vê a sua empresa.
+- **Prompt** _s.m._: O pedido que você escreve para a inteligência artificial. Pedido vago, resposta vaga, como acontece com qualquer funcionário.
 
 Aviso: Amostra a validar pelo Ferrér
 
@@ -340,9 +384,9 @@ Depois do envio: **Pedido recebido**. A equipe da S4 vai ler o que você enviou 
 
 _Por quê: para quem já chega decidido: o que está incluído, os bônus, o esforço pedido e a garantia, sem pressa artificial. O valor aparece só quando for confirmado._
 
-**Mentoria Empresas do Futuro**
+**Seis meses ao lado de quem já esteve na sua cadeira**
 
-Seis meses de educação executiva para criar a versão digital da sua empresa, com o método das 10 etapas e o acompanhamento de quem já esteve na sua cadeira.
+A Mentoria Empresas do Futuro são seis meses de educação executiva para criar a versão digital da sua empresa, com o método das 10 etapas. Você não precisa saber programar nem acompanhar cada novidade. Precisa saber o que perguntar, o que exigir e o que decidir.
 
 **Inclui**
 
@@ -380,7 +424,7 @@ Oferta posterior: Depois da inscrição, você pode incluir 12 meses da revista 
 
 _Por quê: dizer para quem não é dá credibilidade e poupa o tempo dos dois lados; os requisitos tiram o medo de precisar entender de tecnologia._
 
-**Para quem é e para quem não é**
+**Esta mentoria não é para todo mundo**
 
 **É para você se**
 
@@ -397,7 +441,7 @@ _Por quê: dizer para quem não é dá credibilidade e poupa o tempo dos dois la
 - Acredita que o mercado vai voltar a ser o que era
 - Não está disposto a rever nenhuma crença
 
-**Requisitos**
+**O que você precisa trazer**
 
 - Saber ler e estudar
 - Familiaridade básica com celular e internet
@@ -405,7 +449,7 @@ _Por quê: dizer para quem não é dá credibilidade e poupa o tempo dos dois la
 - Atitude e humildade
 - Não é preciso entender de tecnologia, inteligência artificial ou marketing
 
-**O principal requisito é a decisão de voltar a aprender para voltar a liderar.**
+Repare que nenhum item da lista fala de tecnologia. O principal requisito é a decisão de voltar a aprender para voltar a liderar.
 
 ## 13 Depoimentos
 
@@ -417,13 +461,15 @@ Título reservado: Quem já passou pela mentoria
 
 _Por quê: responde às objeções de quem tem pouco tempo e desconfia de promessa, só com fatos do briefing._
 
+**Antes que você pergunte**
+
 **Preciso entender de tecnologia?**
 
 Não. Você não precisa entender de tecnologia, de inteligência artificial nem de marketing. Precisa saber ler e estudar, usar o celular e a internet no básico e estar aberto a rever algumas crenças. O objetivo é você decidir bem, e o trabalho técnico continua com os técnicos.
 
 **Tenho pouco tempo**
 
-O plano da mentoria pede 1 hora por semana, e você aplica no seu ritmo. Levar alguém jovem da equipe ajuda bastante: ele executa enquanto você decide.
+O plano da mentoria pede 1 hora por semana, e você aplica no seu ritmo. Leve junto alguém jovem da equipe: ele executa enquanto você decide.
 
 **Isso é curso online?**
 
@@ -451,11 +497,9 @@ _Por quê: termina com a pergunta do custo de não mudar e com o seu chamado, e 
 
 **Quanto custa continuar sem entender as novas regras?**
 
-**Afrouxem a gravata e arregacem as mangas! Antes que terceiros decidam o destino da empresa.**
+Para o sênior, mudar é difícil… mas na Era Digital não mudar é fatal. O primeiro passo é pequeno: um manual e três reuniões. Afrouxem a gravata e arregacem as mangas! Antes que terceiros decidam o destino da empresa.
 
-Para o sênior, mudar é difícil… mas na Era Digital não mudar é fatal. O primeiro passo é pequeno: um manual e três reuniões.
-
-Botão: **Quero meu manual e minha vaga na Jornada**
+Botão: **Quero o manual e a vaga**
 
 ## 16 Rodapé
 

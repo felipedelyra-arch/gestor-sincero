@@ -20,7 +20,7 @@ export const papoRetoBruto: PapoRetoEntrada = {
   },
   comecar: "Começar a conversa",
   abertura:
-    "Eu sou o Gestor Sincero. São oito perguntas rápidas sobre a sua empresa, quase todas com respostas para escolher. Vou ser direto com você: se uma resposta não combinar com outra, eu aviso. No fim, você recebe um papo reto em três pontos e a minha sugestão de próximo passo.",
+    "Muito prazer, eu sou o Gestor Sincero. São oito perguntas rápidas sobre a sua empresa, quase todas com resposta para escolher. Vou ser franco com você: se uma resposta brigar com outra, eu aviso. No fim, você leva um papo reto em três pontos e a minha sugestão de próximo passo. Combinado?",
   perguntas: [
     {
       numero: 1,
@@ -32,7 +32,7 @@ export const papoRetoBruto: PapoRetoEntrada = {
         sufixo: "anos",
         min: 1,
         max: 200,
-        fala: "Anos de mercado: {valor}. Anotado. O que me interessa agora é o que mudou no seu mercado nesse tempo, e se a empresa mudou junto.",
+        fala: "Anos de mercado: {valor}. Anotado. Agora pense comigo: quanta regra do mercado mudou nesse tempo? E a empresa, mudou junto ou ficou esperando passar?",
       },
     },
     {
@@ -43,18 +43,18 @@ export const papoRetoBruto: PapoRetoEntrada = {
         {
           id: "numeros",
           rotulo: "Mais dos números",
-          fala: "Então você decide olhando os números. Guarde essa resposta, porque daqui a pouco eu volto nela.",
+          fala: "Decide olhando os números. Então guarde bem essa resposta, que daqui a pouco eu volto nela.",
         },
         {
           id: "experiencia",
           rotulo: "Mais da minha experiência",
-          fala: "Experiência é patrimônio, ninguém tira isso de você. O risco é ela decidir sozinha num mercado que trocou as regras. Seu feeling já não basta quando o jogo muda tão rápido.",
+          fala: "Experiência é patrimônio, ninguém tira isso de você. O perigo é deixar que ela decida sozinha num mercado que trocou as regras no meio do jogo. Seu feeling já não basta.",
           ponto: "As decisões grandes saem da sua experiência, e experiência sem atualização virou risco.",
         },
         {
           id: "um-pouco-de-cada",
           rotulo: "Um pouco de cada",
-          fala: "É uma resposta honesta. A pergunta que fica é esta: quando os números e a sua experiência discordam, quem ganha?",
+          fala: "Resposta honesta. Agora me diga: quando os números apontam para um lado e a sua experiência para o outro, quem ganha a discussão?",
         },
       ],
     },
@@ -66,24 +66,24 @@ export const papoRetoBruto: PapoRetoEntrada = {
         {
           id: "cresceram",
           rotulo: "Cresceram",
-          fala: "Bom. O motor ainda funciona. A pergunta é se é o mesmo motor que vai levar a empresa pelos próximos anos.",
+          fala: "Bom, o motor ainda funciona. Só fica uma pergunta: é o mesmo motor que vai levar a empresa pelos próximos anos?",
         },
         {
           id: "paradas",
           rotulo: "Ficaram paradas",
-          fala: "Parado, num mercado que anda, é andar para trás devagar. Vale entender se o problema está em quem compra ou em como você vende.",
+          fala: "Ficar parado num mercado que anda é andar para trás devagar. Falta descobrir se o problema está em quem compra ou em como você vende.",
           ponto: "As vendas pararam de crescer, e o mercado não espera quem fica parado.",
         },
         {
           id: "cairam",
           rotulo: "Caíram",
-          fala: "Obrigado pela franqueza. É comum culpar a economia ou o governo, e às vezes eles pesam mesmo. Mas é preciso olhar também o que mudou dentro de casa.",
+          fala: "Obrigado pela franqueza. A culpa costuma ir para a economia, para o governo, para os jovens. Às vezes eles pesam mesmo. Mas alguém já olhou o que mudou dentro de casa?",
           ponto: "As vendas caíram no último ano. Antes de culpar a economia, vale olhar o que mudou dentro de casa.",
         },
         {
           id: "nao-sei",
           rotulo: "Não sei dizer",
-          fala: "Tudo bem admitir. Mas guarde isto: número que você não mede é opinião.",
+          fala: "Pelo menos você admite, e isso já é um começo. Mas guarde isto: número que você não mede é opinião.",
           ponto: "Você não sabe dizer como foram as vendas no último ano, e número que você não mede é opinião.",
         },
       ],
@@ -96,29 +96,29 @@ export const papoRetoBruto: PapoRetoEntrada = {
         {
           id: "eu-mesmo",
           rotulo: "Eu mesmo",
-          fala: "Respeito quem põe a mão na massa. Só cuidado para o digital não virar mais uma tarefa que só você sabe fazer.",
+          fala: "Respeito quem põe a mão na massa. Só cuidado para o digital não virar mais uma gaveta que só você sabe abrir.",
         },
         {
           id: "equipe",
           rotulo: "Alguém da equipe",
-          fala: "Bom ter alguém de casa. A pergunta é se essa pessoa sabe o que a empresa quer do digital, ou só publica o que dá tempo.",
+          fala: "Bom ter alguém de casa. A pergunta é se essa pessoa sabe o que a empresa quer do digital ou só publica o que deu tempo de fazer.",
         },
         {
           id: "agencia",
           rotulo: "Uma agência",
-          fala: "Agência boa ajuda muito. O risco é a empresa não saber o que pedir nem como cobrar resultado. Você não construiu sua empresa para depender dos outros.",
+          fala: "Agência boa ajuda muito. O perigo é a empresa não saber o que pedir nem como cobrar. Aí o relatório chega bonito todo mês, e ninguém sabe dizer quanto ele vendeu. Você não construiu sua empresa para depender dos outros.",
           ponto: "O digital está nas mãos de uma agência, e a empresa precisa saber o que pedir e como cobrar.",
         },
         {
           id: "parente",
           rotulo: "Um filho ou sobrinho",
-          fala: "Acontece muito, e quase sempre com boa intenção. Mas o digital da empresa não pode depender da agenda de alguém da família.",
+          fala: "Acontece nas melhores famílias, e quase sempre com boa intenção. Mas o digital da empresa não pode ficar para a folga de alguém da família.",
           ponto: "O digital depende de alguém da família, e você não construiu sua empresa para depender dos outros.",
         },
         {
           id: "ninguem",
           rotulo: "Ninguém, na prática",
-          fala: "Pelo menos é uma resposta honesta. Enquanto o digital não tem dono, o cliente que procura a sua empresa pode acabar encontrando outra.",
+          fala: "Pelo menos é sincero. Agora pense: enquanto o digital não tem dono, o cliente que procura a sua empresa na internet encontra quem? O concorrente.",
           ponto: "O digital da empresa está sem dono.",
         },
       ],
@@ -131,13 +131,13 @@ export const papoRetoBruto: PapoRetoEntrada = {
         {
           id: "tenho-ideia",
           rotulo: "Tenho uma ideia, sem número exato",
-          fala: "Ideia já é um começo. Mas, sem o número exato, fica difícil saber se cada cliente novo dá lucro ou só dá trabalho.",
+          fala: "Ideia já é um começo. Mas, sem o número exato, como você sabe se cada cliente novo dá lucro ou só dá trabalho?",
           ponto: "O custo de conquistar um cliente é uma estimativa, não um número medido.",
         },
         {
           id: "nao-sei",
           rotulo: "Não sei",
-          fala: "Obrigado pela franqueza. Esse é o número que diz se cada venda nova dá lucro ou só dá trabalho. Vale a pena descobrir.",
+          fala: "Obrigado pela franqueza. Esse é o número que diz se cada venda nova paga a conta. Sem ele, investir em venda vira aposta.",
           ponto: "Você não sabe quanto custa conquistar um cliente, e sem esse número investir em venda vira aposta.",
         },
       ],
@@ -146,7 +146,7 @@ export const papoRetoBruto: PapoRetoEntrada = {
         sufixo: "reais",
         min: 0,
         max: 1000000,
-        fala: "Custo por cliente novo: R$ {valor}. Anotado. Você tem o número, e isso já muda a conversa. A próxima pergunta é se ele cabe na sua margem.",
+        fala: "Custo por cliente novo: R$ {valor}. Anotado. Você tem o número na mão, e isso muda a conversa. A pergunta agora é se ele cabe na sua margem.",
       },
     },
     {
@@ -157,24 +157,24 @@ export const papoRetoBruto: PapoRetoEntrada = {
         {
           id: "segue",
           rotulo: "Segue, sem problema",
-          fala: "Bom sinal. Aproveite essa confiança para levar alguém jovem para perto das decisões.",
+          fala: "Bom sinal. Aproveite essa confiança e traga alguém jovem para perto das decisões.",
         },
         {
           id: "segue-em-parte",
           rotulo: "Segue em parte",
-          fala: "Acontece muito em empresa com várias gerações: concordam na reunião e fazem diferente depois.",
+          fala: "Conheço bem essa cena. Todo mundo concorda na reunião e, no corredor, faz diferente.",
           ponto: "A equipe jovem segue só em parte, e falta uma linguagem comum entre as gerações.",
         },
         {
           id: "jeito-dela",
           rotulo: "Faz do jeito dela",
-          fala: "Isso incomoda, eu sei. A liderança virou o cargo mais solitário. Mas quase sempre é falta de linguagem comum, não de respeito.",
+          fala: "Isso incomoda, eu sei. A liderança virou o cargo mais solitário. Mas o problema costuma ser falta de linguagem comum, não de respeito.",
           ponto: "A equipe mais jovem faz do jeito dela, e a autoridade precisa ser reconstruída com linguagem comum, não com cobrança.",
         },
         {
           id: "sem-jovens",
           rotulo: "Não tenho equipe jovem",
-          fala: "Entendido. Uma hora a empresa vai precisar dessa geração, como equipe ou como cliente. Vale pensar nisso antes de precisar.",
+          fala: "Entendido. Mas uma hora essa geração chega, como equipe ou como cliente. Melhor pensar nisso antes de precisar.",
         },
       ],
     },
@@ -186,7 +186,7 @@ export const papoRetoBruto: PapoRetoEntrada = {
         {
           id: "planejada",
           rotulo: "Está planejada",
-          fala: "Essa é uma decisão que protege o legado. Vou só conferir se o resto da conversa acompanha esse plano.",
+          fala: "Essa decisão protege o legado. Vou só conferir se o resto da conversa acompanha esse plano.",
         },
         {
           id: "em-conversa",
@@ -197,13 +197,13 @@ export const papoRetoBruto: PapoRetoEntrada = {
         {
           id: "so-eu",
           rotulo: "Sem mim, a empresa para",
-          fala: "Essa frase costuma vir com orgulho, e com razão: foi você quem construiu tudo. Mas empresa que só anda com o dono é um risco para o próprio legado.",
+          fala: "Essa frase costuma vir com orgulho, e com razão: foi você quem construiu tudo. Mas empresa que só anda com o dono é um risco para o próprio legado. E se amanhã você precisar parar?",
           ponto: "A empresa depende de você para funcionar, e isso é um risco para o legado.",
         },
         {
           id: "nao-pensei",
           rotulo: "Ainda não pensei nisso",
-          fala: "Você não está sozinho nessa. Mas sucessão sem plano deixa o legado nas mãos do acaso.",
+          fala: "Você não está sozinho nessa, é uma conversa que dá vontade de deixar para depois. Mas sucessão sem plano deixa o legado nas mãos do acaso.",
           ponto: "A sucessão não tem plano, e o legado fica nas mãos do acaso.",
         },
       ],
@@ -216,19 +216,19 @@ export const papoRetoBruto: PapoRetoEntrada = {
         {
           id: "vender-mais",
           rotulo: "Vender mais",
-          fala: "Justo. Antes de vender mais, vale saber de onde vem cada venda de hoje.",
+          fala: "Justo. Mas, antes de vender mais, me diga: você sabe de onde vem cada venda de hoje?",
           ponto: "Você quer vender mais, e o primeiro passo é saber de onde vem cada venda hoje.",
         },
         {
           id: "digital",
           rotulo: "Resolver o digital",
-          fala: "Entendido. Resolver o digital não começa por trocar quem faz. Começa por decidir o que ele precisa entregar.",
+          fala: "Entendido. Resolver o digital não começa por trocar de agência ou de sobrinho. Começa por decidir o que ele precisa entregar.",
           ponto: "Você quer resolver o digital, e isso começa por decidir o que ele precisa entregar, não por trocar quem faz.",
         },
         {
           id: "equipe",
           rotulo: "Acertar a equipe",
-          fala: "Faz sentido. Muito problema que parece de venda começa na equipe.",
+          fala: "Faz sentido. Muito problema que parece de venda nasce na equipe.",
           ponto: "Você quer acertar a equipe, e isso começa por levar alguém jovem para perto das decisões.",
         },
         {
@@ -250,28 +250,28 @@ export const papoRetoBruto: PapoRetoEntrada = {
     rotulo: "Quer explicar melhor?",
     ajuda: "Opcional. Escreva com as suas palavras, sem nome, telefone nem documentos.",
   },
-  naoEntendi: "Quero ter certeza de que entendi. Escolha a resposta que chega mais perto do seu caso, e seguimos.",
+  naoEntendi: "Quero ter certeza de que entendi direito. Escolha a resposta que chega mais perto do seu caso, e seguimos.",
   responder: "Responder",
   enviando: "Enviando",
   confrontos: {
     "numeros-sem-custo":
-      'Sobre as decisões, você disse "{antes}". Sobre o custo de um cliente novo, disse "{agora}". As duas coisas não andam juntas. Qual delas vale hoje?',
+      'Sobre as decisões, você disse "{antes}". Sobre o custo de um cliente novo, disse "{agora}". Decide pelos números sem ter esse número na mão? Qual das duas vale hoje?',
     "vendas-boas-problema-vender":
-      'Sobre as vendas do último ano, você disse "{antes}". Agora, como prioridade, disse "{agora}". As duas coisas não andam juntas. Qual delas vale hoje?',
+      'Sobre as vendas do último ano, você disse "{antes}". Agora, como prioridade, escolheu "{agora}". Se as vendas vão bem, por que vender é o primeiro problema? Qual das duas vale hoje?',
     "digital-terceirizado-quer-digital":
-      'Sobre quem cuida do digital, você disse "{antes}". Agora, como prioridade, disse "{agora}". Se o digital está em boas mãos, ele não seria o primeiro problema. Qual das duas vale hoje?',
+      'Sobre quem cuida do digital, você disse "{antes}". Agora, como prioridade, escolheu "{agora}". Se o digital estivesse em boas mãos, ele não seria o primeiro problema. Qual das duas vale hoje?',
     "equipe-segue-mas-problema-equipe":
-      'Sobre a equipe jovem, você disse "{antes}". Agora, como prioridade, disse "{agora}". As duas coisas não andam juntas. Qual delas vale hoje?',
+      'Espera aí. Sobre a equipe jovem, você disse "{antes}". Agora, como prioridade, escolheu "{agora}". Equipe que segue sem problema não costuma ser a primeira dor. Qual das duas vale hoje?',
     "sucessao-planejada-sem-numeros":
-      'Sobre os números da empresa, você disse "{antes}". Agora, sobre a sucessão, disse "{agora}". Sucessão planejada pede números que passem de mão em mão. Qual das duas vale hoje?',
+      'Sobre os números da empresa, você disse "{antes}". Agora, sobre a sucessão, disse "{agora}". Sucessão planejada pede números que passem de mão em mão. Sem eles, o sucessor herda o quê? Qual das duas vale hoje?',
     "experiencia-mas-vendas-caindo":
-      'Sobre as decisões, você disse "{antes}". Sobre as vendas, disse "{agora}". Se a experiência decide e as vendas caem, talvez seja ela que precise de atualização. O que mudou no seu mercado?',
+      'Sobre as decisões, você disse "{antes}". Sobre as vendas, disse "{agora}". Se é a experiência que decide e as vendas caem, talvez seja ela que esteja pedindo atualização. O que mudou no seu mercado?',
     "sabe-custo-mas-decide-no-feeling":
-      'Sobre as decisões, você disse "{antes}". Sobre o custo de um cliente novo, você respondeu "{agora}". Se o número existe, por que a experiência decide sozinha? Qual dos dois manda hoje?',
+      'Sobre as decisões, você disse "{antes}". Sobre o custo de um cliente novo, você respondeu "{agora}". Tem o número na mão e deixa a experiência decidir sozinha? Qual dos dois manda hoje?',
     "sem-sucessao-prioridade-outra":
       'Sobre a sucessão, você disse "{antes}". Agora, como prioridade, escolheu "{agora}". Faz sentido, mas sucessão sem plano deixa o legado nas mãos do acaso. Quando essa conversa entra na pauta?',
     "cuida-digital-mas-depende-de-terceiros":
-      'Sobre quem cuida do digital, você disse "{antes}". Agora, como prioridade, disse "{agora}". Se o digital está nas suas mãos, de quem a empresa depende? As duas coisas não andam juntas. Qual delas vale hoje?',
+      'Sobre quem cuida do digital, você disse "{antes}". Agora, como prioridade, escolheu "{agora}". Se o digital está nas suas mãos, de quem exatamente a empresa depende? Qual das duas vale hoje?',
   },
   encerrar: "Encerrar a conversa",
   encerrada: "Conversa encerrada. Obrigado pela franqueza. O próximo passo está logo abaixo.",
@@ -284,18 +284,18 @@ export const papoRetoBruto: PapoRetoEntrada = {
   },
   fechamento: {
     titulo: "O papo reto sobre a sua empresa",
-    abertura: "Você respondeu com franqueza, então vou fazer o mesmo. Aqui vai o que eu vi, em três pontos.",
+    abertura: "Você respondeu com franqueza, então vou retribuir. Aqui vai o que eu vi, em três pontos e direto ao assunto.",
     pontoPadrao: "Experiência sem atualização virou risco. Vale conferir as suas certezas com dados antes do próximo passo.",
   },
   recomendacoes: {
     jornada: {
       texto:
-        "O meu conselho é começar pela Jornada Executiva Gestão Sem Maquiagem. São três reuniões ao vivo, com o manual gratuito, para rever essas ideias com calma antes de decidir qualquer coisa.",
-      rotuloBotao: "Quero meu manual e minha vaga na Jornada",
+        "Meu conselho é começar pela Jornada Executiva Gestão Sem Maquiagem. São três reuniões ao vivo, com o manual gratuito, para rever essas ideias com calma antes de decidir qualquer coisa.",
+      rotuloBotao: "Quero o manual e a vaga",
     },
     ressonancia: {
       texto:
-        "Pelo que você contou, falta enxergar a empresa por dentro, com dados. A Ressonância Digital da S4 examina marketing, gestão e vendas em 52 temas e mostra por onde começar.",
+        "Pelo que você contou, falta enxergar a empresa por dentro, com dados e não no achismo. A Ressonância Digital da S4 examina marketing, gestão e vendas em 52 temas e mostra por onde começar.",
       rotuloBotao: "Solicitar a Ressonância da minha empresa",
     },
     mentoria: {

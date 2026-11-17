@@ -65,8 +65,8 @@ export const paginaBruta: PaginaEntrada = {
   },
 
   espelho: {
-    titulo: "Você se reconhece?",
-    introducao: "Marque o que é verdade hoje na sua empresa. Sem plateia e sem julgamento.",
+    titulo: "Quantas destas acontecem na sua empresa?",
+    introducao: "Gestor, marque só o que já é verdade hoje. Ninguém além de você vê esta lista.",
     itens: [
       "As vendas caíram e ninguém na empresa consegue explicar o motivo.",
       "Concorrentes menores e mais novos estão crescendo na sua frente.",
@@ -79,10 +79,10 @@ export const paginaBruta: PaginaEntrada = {
     ],
     contador: "{n} de {total} marcados",
     respostas: {
-      nenhum: "Marque as frases que descrevem o seu momento.",
-      poucos: "Poucos sinais. É a melhor hora para agir, com calma e antes que a pressa decida por você.",
+      nenhum: "Nenhuma frase marcada até agora.",
+      poucos: "Poucos sinais, e essa é a melhor hora para agir. Com calma, antes que a pressa decida por você.",
       muitos:
-        "Você não está sozinho, e isso nada diz sobre a sua capacidade. A liderança virou o cargo mais solitário. O mercado mudou depressa, e quase ninguém avisou quem estava ocupado tocando a empresa.",
+        "Você não está sozinho, e isso não diz nada sobre a sua capacidade. A liderança virou o cargo mais solitário. O mercado mudou depressa, e ninguém mandou aviso para quem estava ocupado tocando a empresa.",
     },
   },
 
@@ -95,13 +95,14 @@ export const paginaBruta: PaginaEntrada = {
       { valor: "92%", descricao: "estão há mais de 2 anos no negócio" },
     ],
     fonte: site.dados.fonte ?? "Sebrae/IBGE [PENDENTE FERRÉR: estudo e ano]",
-    fechamento: "O problema nunca foi a idade. Foi a velocidade com que o mercado mudou.",
+    fechamento:
+      "Repare no que esses números dizem. Quem tem estrada continua contratando, pagando a folha e segurando o negócio de pé ano após ano. A idade não tirou ninguém do jogo. O que mudou foi a regra do jogo.",
   },
 
   inimigo: {
     titulo: "O inimigo tem voz de prudência",
     introducao:
-      "Ele não aparece no balanço nem bate à porta. Mora em frases razoáveis, ditas por gente séria, que adiam a decisão por mais um ano. E carrega uma crença antiga, a de que o mercado ainda recompensa as mesmas escolhas de 10 ou 20 anos atrás.",
+      "Ele não aparece no balanço nem bate à porta. Mora em frases razoáveis, ditas por gente séria na mesa de reunião, que empurram a decisão para o ano que vem. E carrega uma crença antiga, a de que o mercado ainda paga pelas mesmas escolhas de 10 ou 20 anos atrás. Reconhece alguma destas?",
     frases: [
       "Vou estudar depois.",
       "Meu sobrinho cuida das redes.",
@@ -109,18 +110,18 @@ export const paginaBruta: PaginaEntrada = {
       "Vou esperar. Isso passa.",
       "Sempre fiz assim.",
     ],
-    fechamento: "Experiência sem atualização virou risco.",
+    fechamento:
+      "Nenhuma delas é mentira, e é isso que as torna perigosas. Cada uma parece prudência e adia a decisão por mais um ano, e o ano adiado não volta. Experiência sem atualização virou risco.",
   },
 
   virada: {
     titulo: "Sua empresa não precisa nascer de novo. Precisa de um segundo motor.",
     paragrafos: [
-      "Ninguém aqui vai pedir que você derrube o que levou décadas para erguer. O legado fica, assim como os clientes, o nome e a palavra dada.",
-      "O que falta é criar, dentro da própria empresa, a versão digital do negócio. Um segundo motor de crescimento, ligado ao primeiro e comandado por você.",
-      "Você não construiu sua empresa para depender dos outros.",
+      "Ninguém aqui vai pedir que você derrube o que levou décadas para erguer. O legado fica. Os clientes, o nome e a palavra dada também.",
+      "O que falta é criar, dentro da própria empresa, a versão digital do negócio. Um segundo motor de crescimento, ligado ao primeiro e comandado por você, e não pela agência ou pelo sobrinho. Você não construiu sua empresa para depender dos outros.",
     ],
     comparativo: {
-      titulo: "A mesma empresa, em duas versões",
+      titulo: "Em qual das duas colunas está a sua empresa?",
       rotuloAnalogica: "Analógica",
       rotuloDigital: "Digital",
       pares: [
@@ -146,10 +147,10 @@ export const paginaBruta: PaginaEntrada = {
   },
 
   quemE: {
-    titulo: "Quem é o Gestor Sincero",
+    titulo: "Do Telex à inteligência artificial",
     paragrafos: [
-      "Gestor Sincero é o nome com que Sidney Ferrér assina o que aprendeu em quatro décadas de carreira. Ele começou na era do Telex e viu de dentro cada troca de regra do mercado, como executivo e como dono de empresa.",
-      "Hoje comanda a S4 Marketing Digital de Resultados e faz uma ponte que pouca gente faz. De um lado, a velocidade dos jovens. Do outro, a visão estratégica e a experiência em crise de quem tem estrada. Ele traduz a Era Digital para quem cresceu sem internet.",
+      "Gestor Sincero é o nome com que Sidney Ferrér assina o que aprendeu em quatro décadas de carreira. Ele começou na era do Telex e viu de dentro cada troca de regra do mercado, como executivo e como dono de empresa. Viu a chegada do computador pessoal, da internet, das redes sociais e agora da inteligência artificial.",
+      "Hoje comanda a S4 Marketing Digital de Resultados e faz uma ponte que pouca gente faz. De um lado, a velocidade dos jovens. Do outro, a visão estratégica e a experiência em crise de quem tem estrada. Ele traduz a Era Digital para quem cresceu sem internet, sem pedir que ninguém vire técnico.",
     ],
     credenciais: [
       "Growth hacker",
@@ -180,8 +181,9 @@ export const paginaBruta: PaginaEntrada = {
   },
 
   metodo: {
-    titulo: "Método Empresas do Futuro",
-    introducao: "Dez etapas em dois pilares. Primeiro muda a forma de pensar a empresa, depois a forma de operá-la.",
+    titulo: "Primeiro muda a cabeça de quem decide. Depois, a operação.",
+    introducao:
+      "O Método Empresas do Futuro tem dez etapas em dois pilares. Comprar ferramenta antes de mudar a forma de pensar é informatizar a bagunça, por isso a ordem importa.",
     pilares: [
       {
         nome: "Melhoria Contínua",
@@ -209,9 +211,9 @@ export const paginaBruta: PaginaEntrada = {
   },
 
   jornada: {
-    titulo: "Jornada Executiva Gestão Sem Maquiagem",
+    titulo: "Três reuniões de conselho com o Gestor Sincero",
     introducao:
-      "Três reuniões ao vivo, com pauta e hora marcada, no formato de um conselho executivo. Sem palco e sem espetáculo. Quem se inscreve recebe também o manual Gestão Sem Maquiagem.",
+      "A Jornada Executiva Gestão Sem Maquiagem são três reuniões ao vivo, com pauta e hora marcada, no formato de um conselho executivo. É conversa de mesa, de quem toca empresa para quem toca empresa. Quem se inscreve recebe também o manual Gestão Sem Maquiagem.",
     pautas: [
       {
         titulo: "Você não ficou velho, mas algumas ideias suas ficaram",
@@ -242,7 +244,7 @@ export const paginaBruta: PaginaEntrada = {
         empresa: { rotulo: "Empresa (opcional)", erro: "Confira o nome da empresa." },
         cargo: { rotulo: "Cargo (opcional)", erro: "Confira o cargo." },
       },
-      enviar: "Quero meu manual e minha vaga na Jornada",
+      enviar: "Quero o manual e a vaga",
       sucesso: {
         titulo: "Inscrição confirmada",
         texto: "Sua vaga na Jornada está reservada. O manual e os avisos das reuniões chegam pelo contato que você informou.",
@@ -252,16 +254,16 @@ export const paginaBruta: PaginaEntrada = {
   },
 
   dicionario: {
-    titulo: "Dicionário do Internetês",
+    titulo: "O que a agência quis dizer naquela reunião",
     introducao:
-      "O mundo digital fala uma língua própria, e boa parte dela é nome novo para coisa que você conhece há anos. Esta é uma amostra do Dicionário do Internetês, o tradutor de gerações com 5.000 verbetes.",
+      "Imagine a reunião com a agência. Alguém fala em lead, funil e tráfego pago, e todo mundo balança a cabeça. Quantos entenderam? Boa parte dessa língua é nome novo para coisa que você conhece há anos. Esta é uma amostra do Dicionário do Internetês, o tradutor de gerações com 5.000 verbetes.",
     termos: [
-      { termo: "Lead", traducao: "O interessado. Alguém que deixou nome e contato porque quer saber mais sobre o que você vende. Ainda não é cliente." },
-      { termo: "Funil", traducao: "O caminho que a pessoa percorre de desconhecida a cliente. Muitos entram, poucos chegam ao fim, e o trabalho é descobrir onde os outros ficaram." },
-      { termo: "CRM", traducao: "A velha caderneta de clientes, agora em sistema. Guarda quem comprou, o quê, quando e o que ficou combinado." },
-      { termo: "Tráfego pago", traducao: "Anúncio pago na internet. Você paga para aparecer para quem procura o que você vende e fica sabendo quanto custou cada visita." },
-      { termo: "Algoritmo", traducao: "O conjunto de regras que cada rede usa para decidir o que mostrar a cada pessoa. Funciona como um porteiro, que escolhe quem vê a sua empresa." },
-      { termo: "Prompt", traducao: "O pedido que você escreve para a inteligência artificial. Pedido vago, resposta vaga, como acontece com qualquer funcionário." },
+      { termo: "Lead", classe: "s.m.", traducao: "O interessado. Alguém que deixou nome e contato porque quer saber mais sobre o que você vende. Ainda não é cliente." },
+      { termo: "Funil", classe: "s.m.", traducao: "O caminho que a pessoa percorre de desconhecida a cliente. Muitos entram, poucos chegam ao fim, e o trabalho é descobrir onde os outros ficaram." },
+      { termo: "CRM", classe: "s.m.", traducao: "A velha caderneta de clientes, agora em sistema. Guarda quem comprou, o quê, quando e o que ficou combinado." },
+      { termo: "Tráfego pago", classe: "s.m.", traducao: "Anúncio pago na internet. Você paga para aparecer para quem procura o que você vende e fica sabendo quanto custou cada visita." },
+      { termo: "Algoritmo", classe: "s.m.", traducao: "O conjunto de regras que cada rede usa para decidir o que mostrar a cada pessoa. Funciona como um porteiro, que escolhe quem vê a sua empresa." },
+      { termo: "Prompt", classe: "s.m.", traducao: "O pedido que você escreve para a inteligência artificial. Pedido vago, resposta vaga, como acontece com qualquer funcionário." },
     ],
     avisoValidacao: "[PENDENTE FERRÉR: validar a amostra] Amostra a validar pelo Ferrér", // some em produção
     prova: `No ${premio} de ${site.premio.ano}, Sidney Ferrér presenteou todos os homenageados com um exemplar do Dicionário do Internetês.`,
@@ -356,9 +358,9 @@ export const paginaBruta: PaginaEntrada = {
   },
 
   oferta: {
-    titulo: "Mentoria Empresas do Futuro",
+    titulo: "Seis meses ao lado de quem já esteve na sua cadeira",
     introducao:
-      "Seis meses de educação executiva para criar a versão digital da sua empresa, com o método das 10 etapas e o acompanhamento de quem já esteve na sua cadeira.",
+      "A Mentoria Empresas do Futuro são seis meses de educação executiva para criar a versão digital da sua empresa, com o método das 10 etapas. Você não precisa saber programar nem acompanhar cada novidade. Precisa saber o que perguntar, o que exigir e o que decidir.",
     inclui: [
       "6 meses de mentoria com Sidney Ferrér",
       "Método Empresas do Futuro, com as 10 etapas nos 2 pilares",
@@ -393,7 +395,7 @@ export const paginaBruta: PaginaEntrada = {
   },
 
   paraQuem: {
-    titulo: "Para quem é e para quem não é",
+    titulo: "Esta mentoria não é para todo mundo",
     tituloEh: "É para você se",
     eh: [
       "Você fundou, herdou ou dirige uma empresa e quer voltar a crescer",
@@ -409,7 +411,7 @@ export const paginaBruta: PaginaEntrada = {
       "Acredita que o mercado vai voltar a ser o que era",
       "Não está disposto a rever nenhuma crença",
     ],
-    tituloRequisitos: "Requisitos",
+    tituloRequisitos: "O que você precisa trazer",
     requisitos: [
       "Saber ler e estudar",
       "Familiaridade básica com celular e internet",
@@ -417,14 +419,15 @@ export const paginaBruta: PaginaEntrada = {
       "Atitude e humildade",
       "Não é preciso entender de tecnologia, inteligência artificial ou marketing",
     ],
-    fraseRequisito: "O principal requisito é a decisão de voltar a aprender para voltar a liderar.",
+    fraseRequisito:
+      "Repare que nenhum item da lista fala de tecnologia. O principal requisito é a decisão de voltar a aprender para voltar a liderar.",
   },
 
   // oculto enquanto `itens` estiver vazio; só entram depoimentos reais e autorizados
   depoimentos: { titulo: "Quem já passou pela mentoria", itens: [] },
 
   perguntas: {
-    titulo: "Perguntas frequentes",
+    titulo: "Antes que você pergunte",
     itens: [
       {
         pergunta: "Preciso entender de tecnologia?",
@@ -434,7 +437,7 @@ export const paginaBruta: PaginaEntrada = {
       {
         pergunta: "Tenho pouco tempo",
         resposta:
-          "O plano da mentoria pede 1 hora por semana, e você aplica no seu ritmo. Levar alguém jovem da equipe ajuda bastante: ele executa enquanto você decide.",
+          "O plano da mentoria pede 1 hora por semana, e você aplica no seu ritmo. Leve junto alguém jovem da equipe: ele executa enquanto você decide.",
       },
       {
         pergunta: "Isso é curso online?",
@@ -461,12 +464,10 @@ export const paginaBruta: PaginaEntrada = {
   },
 
   fechamento: {
-    frases: [
-      "Quanto custa continuar sem entender as novas regras?",
-      "Afrouxem a gravata e arregacem as mangas! Antes que terceiros decidam o destino da empresa.",
-    ],
-    texto: "Para o sênior, mudar é difícil… mas na Era Digital não mudar é fatal. O primeiro passo é pequeno: um manual e três reuniões.",
-    chamada: { rotulo: "Quero meu manual e minha vaga na Jornada", destino: "captacao" },
+    frases: ["Quanto custa continuar sem entender as novas regras?"],
+    texto:
+      "Para o sênior, mudar é difícil… mas na Era Digital não mudar é fatal. O primeiro passo é pequeno: um manual e três reuniões. Afrouxem a gravata e arregacem as mangas! Antes que terceiros decidam o destino da empresa.",
+    chamada: { rotulo: "Quero o manual e a vaga", destino: "captacao" },
   },
 
   rodape: {

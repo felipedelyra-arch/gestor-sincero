@@ -18,7 +18,8 @@ Da biografia, as falas citam só o que está acima. Nada de cliente, caso, núme
 - Sempre "você". Nada de "senhor", nada de gíria.
 - Frases curtas. Cada fala tem no máximo 400 caracteres e, de preferência, uma ideia só.
 - Português claro. Sem palavras em inglês (nada de mindset, insight, lead, funil, growth). Termo técnico inevitável é explicado na mesma frase. "Feeling" só dentro da frase-manifesto do briefing.
-- Sem emoji, sem ironia, sem elogio vazio ("ótima resposta!"). Reconhece o que foi dito e segue.
+- Oral e mordaz, como no blog do Ferrér (`docs/voz-ferrer/`): pergunta direta, cena concreta ("o relatório chega bonito todo mês"), frase curta. A ironia mira a situação, nunca a pessoa; nos confrontos, nenhuma ironia.
+- Sem emoji, sem elogio vazio ("ótima resposta!"). Reconhece o que foi dito e segue.
 
 ## Como escrever as falas
 
