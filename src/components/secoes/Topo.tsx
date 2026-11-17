@@ -11,22 +11,13 @@ export function Topo() {
   return (
     <section className="overflow-hidden">
       {/*
-        Celular: grade de duas colunas. O título fica à esquerda e o retrato (rosto e ombros, nítido) à direita; o
-        subtítulo e as chamadas ocupam a largura toda. O bloco de texto usa `contents` para seus filhos entrarem
-        nessa grade. Desktop: texto em 7 colunas e retrato em 5.
+        Celular: o retrato (rosto e ombros, nítido) flutua à direita e o título corre ao lado dele; o que vem depois
+        (subtítulo e ações) ocupa a largura toda. Assim o título longo da variação B não empurra as ações para trás
+        do banner de cookies. O retrato vem antes no HTML por causa do float; no desktop a grade o devolve à direita.
+        Desktop: texto em 7 colunas e retrato em 5.
       */}
-      <div className="conteiner grid grid-cols-[minmax(0,1fr)_124px] items-start gap-x-4 py-6 lg:grid-cols-12 lg:items-end lg:gap-x-8 lg:py-0">
-        <div className="contents lg:col-span-7 lg:block lg:py-20">
-          <TopoTitulo variacoes={topo.variacoes} />
-          <div className="entra col-span-2 mt-4 flex flex-col items-start gap-x-6 gap-y-0 sm:flex-row sm:items-center lg:mt-8">
-            <Botao chamada={topo.chamadaPrincipal} />
-            <Botao chamada={topo.chamadaSecundaria} variante="secundario" />
-            <ConversaPapoReto className="max-sm:w-full" />
-          </div>
-        </div>
-
-        {/* Desktop: coluna à direita, apoiado na base do bloco de texto. */}
-        <div className="entra col-start-2 row-start-1 lg:col-span-5 lg:col-start-auto lg:row-start-auto">
+      <div className="conteiner py-5 lg:grid lg:grid-cols-12 lg:items-end lg:gap-x-8 lg:py-0">
+        <div className="entra float-right mb-2 ml-4 w-[124px] lg:float-none lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:m-0 lg:w-auto">
           {site.video.url ? (
             // shortcut: iframe direto serve para link de incorporação; quando o vídeo existir, trocar por
             // fachada (foto + botão de tocar) se o player pesar na carga.
@@ -53,6 +44,16 @@ export function Topo() {
               <div aria-hidden="true" className="absolute inset-x-0 bottom-0 hidden h-1/4 bg-linear-to-t from-preto to-transparent lg:block" />
             </div>
           )}
+        </div>
+
+        <div className="lg:col-span-7 lg:col-start-1 lg:row-start-1 lg:py-20">
+          <TopoTitulo variacoes={topo.variacoes} />
+          {/* Celular: a captação ocupa a linha toda e, embaixo, o link da mentoria e o Papo reto dividem a linha (texto de apoio de 15px, em duas linhas). */}
+          <div className="entra clear-both mt-3 grid grid-cols-2 items-center gap-x-3 gap-y-1 sm:flex sm:flex-row sm:gap-x-6 lg:mt-8">
+            <Botao chamada={topo.chamadaPrincipal} className="max-sm:col-span-2 max-sm:py-2" />
+            <Botao chamada={topo.chamadaSecundaria} variante="secundario" className="max-sm:py-1 max-sm:text-apoio" />
+            <ConversaPapoReto className="max-sm:px-3 max-sm:py-1.5 max-sm:text-apoio" />
+          </div>
         </div>
       </div>
     </section>
