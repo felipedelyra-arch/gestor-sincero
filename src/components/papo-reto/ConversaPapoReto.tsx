@@ -9,6 +9,7 @@ export function ConversaPapoReto({ variante, className }: { variante?: VarianteB
   return (
     <BotaoPapoReto
       rotulo={papoReto.rotuloBotao}
+      rotuloCarregando={papoReto.enviando}
       variante={variante}
       className={className}
       videos={site.papoReto.videos}
